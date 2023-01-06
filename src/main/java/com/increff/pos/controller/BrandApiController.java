@@ -28,20 +28,20 @@ public class BrandApiController {
     private BrandService service;
 
     @ApiOperation(value = "Adds brand/category")
-    @RequestMapping(path = "/api/brand", method = RequestMethod.POST)
+    @RequestMapping(path = "/api/brands", method = RequestMethod.POST)
     public void add(@RequestBody BrandForm form) throws ApiException{
         BrandPojo p = convert(form);
         service.add(p);
     }
 
     @ApiOperation(value = "Deletes brand/category by id")
-    @RequestMapping(path = "/api/brand/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(path = "/api/brands/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable int id){
         service.delete(id);
     }
 
     @ApiOperation(value = "Get brand/category by id")
-    @RequestMapping(path = "/api/brand/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/api/brands/{id}", method = RequestMethod.GET)
     public BrandData get(@PathVariable int id) throws ApiException{
         BrandPojo p = service.get(id);
         return convert(p);
@@ -49,7 +49,7 @@ public class BrandApiController {
 
 
     @ApiOperation(value = "Get all brand/category")
-    @RequestMapping(path = "/api/brand", method = RequestMethod.GET)
+    @RequestMapping(path = "/api/brands", method = RequestMethod.GET)
     public List<BrandData> get() throws ApiException{
         List<BrandPojo> list = service.getAll();
         List<BrandData> list1 = new ArrayList<BrandData>();
@@ -61,14 +61,14 @@ public class BrandApiController {
     }
 
     @ApiOperation(value = "Get brand/category by brand/category")
-    @RequestMapping(path = "/api/brand/{brand}/{category}", method = RequestMethod.GET)
+    @RequestMapping(path = "/api/brands/{brand}/{category}", method = RequestMethod.GET)
     public BrandData get(@PathVariable String brand, @PathVariable String category) throws ApiException{
         BrandPojo p = service.get(brand, category);
         return convert(p);
     }
 
     @ApiOperation(value = "Update brand/category by id")
-    @RequestMapping(path = "/api/brand/{id}", method = RequestMethod.PUT)
+    @RequestMapping(path = "/api/brands/{id}", method = RequestMethod.PUT)
     public void update(@PathVariable int id, @RequestBody BrandForm form) throws ApiException{
         BrandPojo p = convert(form);
         service.update(id, p);

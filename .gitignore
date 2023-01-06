@@ -24,7 +24,7 @@ hs_err_pid*
 /target/
 .vscode
 
-*.properties
+pos.properties
 
 jetty.log
 

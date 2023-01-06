@@ -18,20 +18,20 @@ public class BrandService {
     private BrandDao dao;
 
     @Transactional(rollbackOn = ApiException.class)
-    public void add(BrandPojo b) throws ApiException{
-        normalize(b);
-        if(StringUtil.isEmpty(b.getBrand()) || StringUtil.isEmpty(b.getCategory())){
+    public void add(BrandPojo p) throws ApiException{
+        normalize(p);
+        if(StringUtil.isEmpty(p.getBrand()) || StringUtil.isEmpty(p.getCategory())){
             throw new ApiException("Brand of category cannot be empty");
         }
-        if(checkDuplicate(b)){
-            throw new ApiException("brand/category already exist: "+b.getBrand()+"/"+b.getCategory());
+        if(checkDuplicate(p)){
+            throw new ApiException("brand/category already exist: "+p.getBrand()+"/"+p.getCategory());
         }
-        dao.insert(b);
+        dao.insert(p);
     }
 
     @Transactional
-    public boolean checkDuplicate(BrandPojo b){
-        BrandPojo b1 = dao.select(b.getBrand(), b.getCategory());
+    public boolean checkDuplicate(BrandPojo p){
+        BrandPojo b1 = dao.select(p.getBrand(), p.getCategory());
         if(b1!=null){
             return true;
         }
@@ -78,18 +78,18 @@ public class BrandService {
     }
 
     @Transactional(rollbackOn = ApiException.class)
-    public void update(int id,BrandPojo b) throws ApiException{
-        normalize(b);
-        if(checkDuplicate(b)){
-            throw new ApiException("brand/category already exist: "+b.getBrand()+"/"+b.getCategory());
+    public void update(int id,BrandPojo p) throws ApiException{
+        normalize(p);
+        if(checkDuplicate(p)){
+            throw new ApiException("brand/category already exist: "+p.getBrand()+"/"+p.getCategory());
         }
         BrandPojo b1 = getCheck(id);
-        b1.setBrand(b.getBrand());
-        b1.setCategory(b.getCategory());
+        b1.setBrand(p.getBrand());
+        b1.setCategory(p.getCategory());
         dao.update(b1);
     }
 
-    protected static void normalize(BrandPojo b){
-        b.setBrand(StringUtil.toLowerCase(b.getBrand()));
+    protected static void normalize(BrandPojo p){
+        p.setBrand(StringUtil.toLowerCase(p.getBrand()));
     }
 }
