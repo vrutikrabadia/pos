@@ -5,37 +5,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 public class BrandPojo {
     
     @Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
-    private String brand;
-    private String category;
+	@Getter @Setter private int id;
+    @Getter @Setter private String brand;
+    @Getter @Setter private String category;
 
     
-    public int getId() {
-        return id;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }    
+     
 }

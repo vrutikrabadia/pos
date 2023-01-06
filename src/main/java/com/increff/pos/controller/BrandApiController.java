@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.increff.pos.model.BrandData;
-import com.increff.pos.model.BrandForm;
+import com.increff.pos.model.data.BrandData;
+import com.increff.pos.model.form.BrandForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.BrandService;
@@ -34,11 +34,6 @@ public class BrandApiController {
         service.add(p);
     }
 
-    @ApiOperation(value = "Deletes brand/category by id")
-    @RequestMapping(path = "/api/brands/{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable int id){
-        service.delete(id);
-    }
 
     @ApiOperation(value = "Get brand/category by id")
     @RequestMapping(path = "/api/brands/{id}", method = RequestMethod.GET)

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.increff.pos.model.ProductData;
-import com.increff.pos.model.ProductForm;
+import com.increff.pos.model.data.ProductData;
+import com.increff.pos.model.form.ProductForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.service.ApiException;
@@ -38,12 +38,6 @@ public class ProductApiController {
     public void add(@RequestBody ProductForm form)throws ApiException{
         ProductPojo p = convert(form);
         service.add(p);
-    }
-
-    @ApiOperation(value = "Deletes product by id")
-    @RequestMapping(path = "/api/products/{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable int id)throws ApiException{
-        service.delete(id);
     }
 
     @ApiOperation(value = "Gets product by id")

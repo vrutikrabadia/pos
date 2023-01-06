@@ -31,10 +31,6 @@ public class ProductService {
         dao.insert(p);
     }
 
-    @Transactional
-    public void delete(int id){
-        dao.delete(id);
-    }
 
     @Transactional
     public ProductPojo get(int id) throws ApiException{
@@ -57,7 +53,7 @@ public class ProductService {
     
     @Transactional
     private ProductPojo getCheck(int id) throws ApiException{
-        ProductPojo p = dao.select(id);
+        ProductPojo p = dao.selectById(id);
         if(p==null){
             throw new ApiException("product does not exist with id: "+id);
         }
@@ -78,7 +74,7 @@ public class ProductService {
 
     @Transactional
     private boolean checkBarCode(String barCode){
-        ProductPojo p = dao.select(barCode);
+        ProductPojo p = dao.selectByBarCode(barCode);
         if(p==null){
             return false;
         }
