@@ -43,13 +43,13 @@ public class BrandService {
         dao.delete(id);
     }       
 
-    @Transactional(rollbackOn = ApiException.class)
+    @Transactional
     public BrandPojo get(int id) throws ApiException{
         return getCheck(id);
     }
 
     @Transactional
-    public BrandPojo getCheck(int id) throws ApiException{
+    private BrandPojo getCheck(int id) throws ApiException{
         BrandPojo b = dao.select(id);
         if(b==null){
             throw new ApiException("brand/category with given ID does not exist, id: "+id);
@@ -90,6 +90,6 @@ public class BrandService {
     }
 
     protected static void normalize(BrandPojo b){
-        b.setBrand(StringUtil.toLowerCase(b.getBrand().trim()));
+        b.setBrand(StringUtil.toLowerCase(b.getBrand()));
     }
 }
