@@ -2,8 +2,12 @@ package com.increff.pos.dao;
 
 import java.util.List;
 
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
@@ -12,12 +16,6 @@ import com.increff.pos.pojo.UserPojo;
 
 @Repository
 public class UserDao extends AbstractDao {
-
-	private static String delete_id = "delete from UserPojo p where id=:id";
-	private static String select_id = "select p from UserPojo p where id=:id";
-	private static String select_email = "select p from UserPojo p where email=:email";
-	private static String select_all = "select p from UserPojo p";
-
 	
 	@Transactional
 	public void insert(UserPojo p) {
@@ -25,26 +23,48 @@ public class UserDao extends AbstractDao {
 	}
 
 	public int delete(int id) {
-		Query query = em().createQuery(delete_id);
-		query.setParameter("id", id);
-		return query.executeUpdate();
+		CriteriaBuilder cb = em().getCriteriaBuilder();
+
+        CriteriaDelete<UserPojo> cq = cb.createCriteriaDelete(UserPojo.class);
+		Root<UserPojo> user = cq.from(UserPojo.class);
+		Predicate idPredicate = cb.equal(user.get("id"), id);
+
+		cq.where(idPredicate);
+		return em().createQuery(cq).executeUpdate();
 	}
 
 	public UserPojo select(int id) {
-		TypedQuery<UserPojo> query = getQuery(select_id, UserPojo.class);
-		query.setParameter("id", id);
-		return getSingle(query);
+		CriteriaBuilder cb = em().getCriteriaBuilder();
+
+        CriteriaQuery<UserPojo> cq = cb.createQuery(UserPojo.class);
+        Root<UserPojo> user = cq.from(UserPojo.class);
+        Predicate idPredicate = cb.equal(user.get("id"), id);
+        cq.where(idPredicate);
+
+        TypedQuery<UserPojo> query = em().createQuery(cq);
+        return getSingle(query);
+
 	}
 
 	public UserPojo select(String email) {
-		TypedQuery<UserPojo> query = getQuery(select_email, UserPojo.class);
-		query.setParameter("email", email);
-		return getSingle(query);
+		CriteriaBuilder cb = em().getCriteriaBuilder();
+
+        CriteriaQuery<UserPojo> cq = cb.createQuery(UserPojo.class);
+        Root<UserPojo> user = cq.from(UserPojo.class);
+        Predicate emailPredicate = cb.equal(user.get("email"), email);
+        cq.where(emailPredicate);
+
+        TypedQuery<UserPojo> query = em().createQuery(cq);
+        return getSingle(query);
 	}
 
 	public List<UserPojo> selectAll() {
-		TypedQuery<UserPojo> query = getQuery(select_all, UserPojo.class);
-		return query.getResultList();
+		CriteriaBuilder cb = em().getCriteriaBuilder();
+        CriteriaQuery<UserPojo> cq = cb.createQuery(UserPojo.class);
+        Root<UserPojo> user = cq.from(UserPojo.class);
+        CriteriaQuery<UserPojo> all = cq.select(user);
+        TypedQuery<UserPojo> allQuery = em().createQuery(all);
+        return allQuery.getResultList();
 	}
 
 	public void update(UserPojo p) {

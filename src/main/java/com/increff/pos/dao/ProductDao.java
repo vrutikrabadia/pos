@@ -4,8 +4,12 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+// import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.springframework.stereotype.Repository;
 
@@ -14,10 +18,6 @@ import com.increff.pos.pojo.ProductPojo;
 @Repository
 public class ProductDao extends AbstractDao{
     
-    private static String delete_id = "delete from ProductPojo p where id=:id";
-    private static String select_id = "select p from ProductPojo p where id=:id";
-    private static String select_all= "select p from ProductPojo p";
-    private static String select_barcode = "select p from ProductPojo p where barCode=:barCode";
 
     @PersistenceContext
     private EntityManager em;
@@ -26,27 +26,39 @@ public class ProductDao extends AbstractDao{
         em.persist(p);
     }
 
-    public void delete(int id){
-        Query query = em.createQuery(delete_id);
-        query.setParameter("id", id);
-        query.executeUpdate();
-    }
+    public ProductPojo selectById(int id){
+        CriteriaBuilder cb = em.getCriteriaBuilder();
 
-    public ProductPojo select(int id){
-        TypedQuery<ProductPojo> query = getQuery(select_id, ProductPojo.class);
-        query.setParameter("id", id);
+        CriteriaQuery<ProductPojo> cq = cb.createQuery(ProductPojo.class);
+        Root<ProductPojo> brandCat = cq.from(ProductPojo.class);
+        Predicate idPredicate = cb.equal(brandCat.get("id"), id);
+        cq.where(idPredicate);
+
+        TypedQuery<ProductPojo> query = em.createQuery(cq);
         return getSingle(query);
     }
 
     public List<ProductPojo> selectAll(){
-        TypedQuery<ProductPojo> query = getQuery(select_all, ProductPojo.class);
-        return query.getResultList();
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<ProductPojo> cq = cb.createQuery(ProductPojo.class);
+        Root<ProductPojo> productRoot = cq.from(ProductPojo.class);
+        CriteriaQuery<ProductPojo> all = cq.select(productRoot);
+        TypedQuery<ProductPojo> allQuery = em.createQuery(all);
+
+        return allQuery.getResultList();
     }
 
-    public ProductPojo select(String barCode){
-        TypedQuery<ProductPojo> query = getQuery(select_barcode, ProductPojo.class);
-        query.setParameter("barCode", barCode);
-        return getSingle(query); 
+    public ProductPojo selectByBarCode(String barCode){
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        CriteriaQuery<ProductPojo> cq = cb.createQuery(ProductPojo.class);
+        Root<ProductPojo> brandCat = cq.from(ProductPojo.class);
+        Predicate barCodePredicate = cb.equal(brandCat.get("barCode"), barCode);
+        cq.where(barCodePredicate);
+
+        TypedQuery<ProductPojo> query = em.createQuery(cq);
+        return getSingle(query);
     }
 
     public void update(ProductPojo p){
