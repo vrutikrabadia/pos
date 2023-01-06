@@ -49,7 +49,7 @@ public class BrandApiController {
 
 
     @ApiOperation(value = "Get all brand/category")
-    @RequestMapping(path = "/api/brand/", method = RequestMethod.GET)
+    @RequestMapping(path = "/api/brand", method = RequestMethod.GET)
     public List<BrandData> get() throws ApiException{
         List<BrandPojo> list = service.getAll();
         List<BrandData> list1 = new ArrayList<BrandData>();
