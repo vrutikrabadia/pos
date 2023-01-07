@@ -40,10 +40,14 @@ function getBrandList(){
 	   success: function(data) {
 	   		var brandSelect = $("#brand-select");
             var categorySelect  = $("#category-select");
+            var brandEditSelect = $("#brand-edit-select");
+            var categoryEditSelect  = $("#category-edit-select");
             
             for(var i in data){
                 brandSelect.append("<option value='"+data[i].brand+"'>"+data[i].brand+"</option>");
                 categorySelect.append("<option value='"+data[i].category+"'>"+data[i].category+"</option>");
+                brandEditSelect.append("<option value='"+data[i].brand+"'>"+data[i].brand+"</option>");
+                categoryEditSelect.append("<option value='"+data[i].category+"'>"+data[i].category+"</option>");
             }
 	   },
 	   error: handleAjaxError

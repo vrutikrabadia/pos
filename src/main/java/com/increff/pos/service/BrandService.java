@@ -76,6 +76,9 @@ public class BrandService {
     @Transactional(rollbackOn = ApiException.class)
     public void update(int id,BrandPojo p) throws ApiException{
         normalize(p);
+        if(StringUtil.isEmpty(p.getBrand()) || StringUtil.isEmpty(p.getCategory())){
+            throw new ApiException("Brand of category cannot be empty");
+        }
         if(checkDuplicate(p)){
             throw new ApiException("brand/category already exist: "+p.getBrand()+"/"+p.getCategory());
         }

@@ -68,6 +68,7 @@ public class ProductApiController {
 
     private ProductPojo convert(ProductForm f) throws ApiException{
         ProductPojo p = new ProductPojo();
+        p.setBarCode(f.getBarCode());
         p.setName(f.getName());
         p.setMrp(f.getMrp());
         BrandPojo bp = bservice.get(f.getBrand(), f.getCategory());

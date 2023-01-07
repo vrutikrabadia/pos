@@ -16,33 +16,40 @@
  <div class="row">
 	 <div class="col-12">
 			<form class="form-inline" id="product-form">
-			  <div class="form-group">
-			    <label for="inputBrand" class="col-sm-2 col-form-label">Brand</label>
-			    <div class="col-sm-10">
-			      <!-- <input type="text" class="form-control" name="brand" id="inputBrand" placeholder="enter brand"> -->
-                  <select placeholder="Select Brand" data-search="true" id="brand-select" name="brand">
 
-                  </select>
+                <div class="form-group">
+                    <label for="barCode" class="col-sm-2 col-form-label">BarCode</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" name="barCode" id="barCode" placeholder="enter barCode" maxlength="8" minlength="8">
+                    </div>
+                </div>
+			    <div class="form-group">
+			      <label for="inputBrand" class="col-sm-2 col-form-label">Brand</label>
+			      <div class="col-sm-10">
+			        <!-- <input type="text" class="form-control" name="brand" id="inputBrand" placeholder="enter brand"> -->
+                    <select placeholder="Select Brand" data-search="true" id="brand-select" name="brand">
+                        <option disabled selected value> -- select an option -- </option>
+                    </select>
+			      </div>
 			    </div>
-			  </div>
-			  <div class="form-group">
-			    <label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
-			    <div class="col-sm-10">
-			      <!-- <input type="text" class="form-control" name="category" id="inputCategory" placeholder="enter category"> -->
-                  <select placeholder="Select Brand" data-search="true" id="category-select" name="category">
-
-                  </select>
+			    <div class="form-group">
+			      <label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
+			      <div class="col-sm-10">
+			        <!-- <input type="text" class="form-control" name="category" id="inputCategory" placeholder="enter category"> -->
+                    <select placeholder="Select Brand" data-search="true" id="category-select" name="category">
+                        <option disabled selected value> -- select an option -- </option>
+                    </select>
+			      </div>
 			    </div>
-			  </div>
-              <div class="form-group">
-			    <label for="inputName" class="col-sm-2 col-form-label">Name</label>
-			    <div class="col-sm-10">
-			      <input type="text" class="form-control" name="name" id="inputName" placeholder="enter name">
+                <div class="form-group">
+			      <label for="inputName" class="col-sm-2 col-form-label">Name</label>
+			      <div class="col-sm-10">
+			        <input type="text" class="form-control" name="name" id="inputName" placeholder="enter name">
+			      </div>
 			    </div>
-			  </div>
-              <div class="form-group">
-			    <label for="inputMrp" class="col-sm-2 col-form-label">MRP</label>
-			    <div class="col-sm-10">
+                <div class="form-group">
+			      <label for="inputMrp" class="col-sm-2 col-form-label">MRP</label>
+			      <div class="col-sm-10">
 			      <input type="text" class="form-control" name="mrp" id="inputName" placeholder="enter mrp">
 			    </div>
 			  </div>
@@ -106,16 +113,29 @@
       </div>
       <div class="modal-body">
 			<form class="form-inline" id="product-edit-form">
+                <div class="form-group">
+                  <label for="inputBarCode" class="col-sm-2 col-form-label">BarCode</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="barCode" placeholder="enter barCode" minlength="8" maxlength="8">
+                  </div>
+                </div>
 			  <div class="form-group">
 			    <label for="inputBrand" class="col-sm-2 col-form-label">Brand</label>
 			    <div class="col-sm-10">
-			      <input type="text" class="form-control" name="brand" placeholder="enter brand">
+			      <!-- <input type="text" class="form-control" name="brand" placeholder="enter brand"> -->
+
+                  <select placeholder="Select Brand" data-search="true" id="brand-edit-select" name="brand">
+                    <option disabled selected value> -- select an option -- </option>
+                  </select>
 			    </div>
 			  </div>
 			  <div class="form-group">
 			    <label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
 			    <div class="col-sm-10">
-			      <input type="text" class="form-control" name="category" placeholder="enter category">
+			      <!-- <input type="text" class="form-control" name="category" placeholder="enter category"> -->
+                  <select placeholder="Select Category" data-search="true" id="category-edit-select" name="category">
+                    <option disabled selected value> -- select an option -- </option>
+                  </select>
 			    </div>
 			  </div>
               <div class="form-group">
