@@ -63,10 +63,10 @@ public class ProductService {
 
     @Transactional
     public String generateBarCode(){
-        String barCode = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
+        String barCode = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         while(checkBarCode(barCode)){
-            barCode = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
+            barCode = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
         }
 
         return barCode;
