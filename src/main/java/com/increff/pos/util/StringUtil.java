@@ -15,13 +15,14 @@ public class StringUtil {
 	}
 
 	public static void normaliseBrand(BrandPojo p){
-		p.setBrand(StringUtil.toLowerCase(p.getBrand()));
+		p.setBrand(toLowerCase(p.getBrand()));
+		p.setCategory(toLowerCase(p.getCategory()));
 	}
 
 
 	public static void normaliseProduct(ProductPojo p){
-		p.setName(StringUtil.toLowerCase(p.getName()));
-        p.setBarCode(StringUtil.toLowerCase(p.getBarCode()));
+		p.setName(toLowerCase(p.getName()));
+        p.setBarCode(toLowerCase(p.getBarCode()));
 	}
 
 	public static void normalizeUser(UserPojo p) {
