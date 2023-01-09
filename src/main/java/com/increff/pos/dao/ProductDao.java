@@ -63,7 +63,4 @@ public class ProductDao extends AbstractDao{
         return query.getResultList();
     }
 
-    public void update(ProductPojo p){
-
-    }
 }

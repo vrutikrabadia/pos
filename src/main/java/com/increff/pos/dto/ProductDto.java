@@ -18,7 +18,7 @@ import com.increff.pos.util.StringUtil;
 public class ProductDto {
     
     @Autowired
-    ProductService service;
+    private ProductService service;
 
     public void add(ProductForm form) throws ApiException{
         ProductPojo p = ConvertUtil.convertProductFormToPojo(form);
@@ -30,6 +30,14 @@ public class ProductDto {
         }
         if(StringUtil.isEmpty(p.getBarCode()) || p.getBarCode().length() != 8){
             throw new ApiException("Please provide a valid barcode(length 8)");
+        }
+
+        if(service.checkBarCode(0, p.getBarCode())){
+            throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
+        }
+
+        if(p.getMrp()<0){
+            throw new ApiException("MRP should be non negative");
         }
 
         service.add(p);
@@ -62,6 +70,15 @@ public class ProductDto {
         if(StringUtil.isEmpty(p.getBarCode()) || p.getBarCode().length() != 8){
             throw new ApiException("Please provide a valid barcode(length 8)");
         }
+
+        if(service.checkBarCode(id,p.getBarCode())){
+            throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
+        }
+
+        if(p.getMrp()<0){
+            throw new ApiException("MRP should be non negative");
+        }
+
         service.update(id, p);
     }
 

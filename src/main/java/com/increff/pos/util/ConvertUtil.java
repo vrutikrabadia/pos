@@ -6,27 +6,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.increff.pos.model.data.BrandData;
+import com.increff.pos.model.data.InventoryData;
 import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.data.UserData;
 import com.increff.pos.model.form.BrandForm;
+import com.increff.pos.model.form.InventoryForm;
 import com.increff.pos.model.form.ProductForm;
 import com.increff.pos.model.form.UserForm;
 import com.increff.pos.pojo.BrandPojo;
+import com.increff.pos.pojo.InventoryPojo;
 import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.pojo.UserPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.BrandService;
+import com.increff.pos.service.ProductService;
 
 @Component
 public class ConvertUtil {
     private static BrandService bService;
+    private static ProductService pService;
     
     @Autowired
     BrandService brandService;
+    @Autowired
+    ProductService productService;
 
     @PostConstruct
     private void init(){
         bService = this.brandService;
+        pService = this.productService;
     }
 
 	public static BrandPojo convertBrandFormToPojo(BrandForm f){
@@ -82,5 +90,23 @@ public class ConvertUtil {
 		p.setPassword(f.getPassword());
 		return p;
 	}
+
+    public static InventoryData convertInventoryPojoToData(InventoryPojo p) throws ApiException{
+        InventoryData d = new InventoryData();
+        d.setQuantity(p.getQuantity());
+        ProductPojo p1 = pService.get(p.getId());
+        d.setBarCode(p1.getBarCode());
+        return d;
+    }
+
+    public static InventoryPojo convertInventoryFormtoPojo(InventoryForm f) throws ApiException{
+        InventoryPojo p = new InventoryPojo();
+        p.setQuantity(f.getQuantity());
+
+        ProductPojo p1 = pService.get(f.getBarCode());
+        p.setId(p1.getId());
+
+        return p;
+    }
 
 }

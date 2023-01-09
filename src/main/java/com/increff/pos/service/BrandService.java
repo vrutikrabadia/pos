@@ -16,11 +16,9 @@ public class BrandService {
     @Autowired
     private BrandDao dao;
 
-    @Transactional(rollbackOn = ApiException.class)
-    public void add(BrandPojo p) throws ApiException{
-        if(checkDuplicate(p)){
-            throw new ApiException("brand/category already exist: "+p.getBrand()+"/"+p.getCategory());
-        }
+    @Transactional
+    public void add(BrandPojo p) {
+        
         dao.insert(p);
     }
 
@@ -75,9 +73,6 @@ public class BrandService {
 
     @Transactional(rollbackOn = ApiException.class)
     public void update(int id,BrandPojo p) throws ApiException{
-        if(checkDuplicate(p)){
-            throw new ApiException("brand/category already exist: "+p.getBrand()+"/"+p.getCategory());
-        }
         BrandPojo b1 = getCheck(id);
         b1.setBrand(p.getBrand());
         b1.setCategory(p.getCategory());

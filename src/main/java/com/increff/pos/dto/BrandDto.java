@@ -18,13 +18,16 @@ import com.increff.pos.util.StringUtil;
 public class BrandDto {
     
     @Autowired
-    BrandService service;
+    private BrandService service;
 
     public void add(BrandForm f) throws ApiException{
         BrandPojo p = ConvertUtil.convertBrandFormToPojo(f);
         StringUtil.normaliseBrand(p);
         if(StringUtil.isEmpty(p.getBrand()) || StringUtil.isEmpty(p.getCategory())){
             throw new ApiException("Brand or category cannot be empty");
+        }
+        if(service.checkDuplicate(p)){
+            throw new ApiException("brand/category already exist: "+p.getBrand()+"/"+p.getCategory());
         }
         service.add(p);
     }
@@ -56,6 +59,9 @@ public class BrandDto {
         StringUtil.normaliseBrand(p);
         if(StringUtil.isEmpty(p.getBrand()) || StringUtil.isEmpty(p.getCategory())){
             throw new ApiException("Brand of category cannot be empty");
+        }
+        if(service.checkDuplicate(p)){
+            throw new ApiException("brand/category already exist: "+p.getBrand()+"/"+p.getCategory());
         }
         service.update(id, p);
     }

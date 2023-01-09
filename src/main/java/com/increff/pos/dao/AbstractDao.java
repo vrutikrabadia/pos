@@ -25,8 +25,8 @@ public abstract class AbstractDao {
 		em.persist(p);
 	}
 
-	
+	public <T> void update(T p){
 
-
+    }
 
 }

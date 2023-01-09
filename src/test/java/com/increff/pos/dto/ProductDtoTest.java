@@ -153,6 +153,43 @@ public class ProductDtoTest extends AbstractUnitTest{
 
     }
 
+    @Test
+    public void duplicateBarCode() throws ApiException{
+        boolean thrown = false;
+
+        String brand  = "brand1";
+        String category = "category1";
+
+        BrandForm f = TestUtil.getBrandForm(brand, category);
+
+        bDto.add(f);
+
+        String barCode = "1a3t5tq8";
+        String name = "name1";
+        double mrp = 18.88;
+
+        ProductForm f1 = TestUtil.getProductForm(barCode, brand, category, name, mrp);
+        
+        dto.add(f1);
+    
+        
+        String barCode1 = "1a3t5tq8";
+        String name1 = "name2";
+        double mrp1 = 18.88;
+
+        ProductForm f2 = TestUtil.getProductForm(barCode1, brand, category, name1, mrp1);
+        
+        try{
+            dto.add(f2);
+        }
+        catch(ApiException e){
+            thrown = true;
+        }
+
+        assertTrue(thrown);
+        
+    }
+
 
 
     

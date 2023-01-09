@@ -25,6 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/ui/**")//
 				.and().authorizeRequests()//
 				.antMatchers("/api/about/**").permitAll()//
+				.antMatchers("/api/inventory/**").permitAll()
 				.antMatchers("/api/products/**").permitAll()
 				.antMatchers("/api/brands/**").permitAll()// For testing permits access to endpoint without authemtication
 				.antMatchers("/api/admin/**").hasAuthority("admin")//

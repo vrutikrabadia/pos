@@ -17,13 +17,8 @@ public class ProductService {
     @Autowired
     private ProductDao dao;
 
-    @Transactional(rollbackOn = ApiException.class)
-    public void add(ProductPojo p) throws ApiException{
-        
-        if(checkBarCode(p.getBarCode())){
-            throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
-        }
-
+    @Transactional
+    public void add(ProductPojo p){
         dao.insert(p);
     }
 
@@ -31,6 +26,18 @@ public class ProductService {
     @Transactional
     public ProductPojo get(int id) throws ApiException{
         return getCheck(id);
+    }
+
+    @Transactional 
+    public ProductPojo get(String barCode) throws ApiException{
+        ProductPojo p = new ProductPojo();
+        p.setBarCode(barCode);
+        List<ProductPojo> p1 = dao.select(p);
+        if(p1.isEmpty()){
+            throw new ApiException("Product with bar code does not exist");
+        }
+
+        return p1.get(0);
     }
 
     @Transactional
@@ -42,10 +49,6 @@ public class ProductService {
     public void update(int id, ProductPojo p) throws ApiException{
         ProductPojo p1 = getCheck(id);
 
-        if(checkBarCode(p.getBarCode())){
-            throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
-        }
-        
         p1.setBarCode(p.getBarCode());
         p1.setName(p.getName());
         p1.setBrandCat(p.getBrandCat());
@@ -53,7 +56,7 @@ public class ProductService {
     }
     
     @Transactional
-    private ProductPojo getCheck(int id) throws ApiException{
+    public ProductPojo getCheck(int id) throws ApiException{
         ProductPojo p1 = new ProductPojo();
         p1.setId(id); 
         List<ProductPojo> p = dao.select(p1);
@@ -64,11 +67,14 @@ public class ProductService {
     }
 
     @Transactional
-    private boolean checkBarCode(String barCode){
+    public boolean checkBarCode(int id, String barCode){
         ProductPojo p1 = new ProductPojo();
         p1.setBarCode(barCode); 
         List<ProductPojo> p = dao.select(p1);
         if(p.isEmpty()){
+            return false;
+        }
+        if(p.get(0).getId() == id){
             return false;
         }
         return true;
