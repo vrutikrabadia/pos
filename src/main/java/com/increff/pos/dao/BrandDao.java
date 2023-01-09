@@ -1,5 +1,6 @@
 package com.increff.pos.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -21,39 +22,41 @@ public class BrandDao extends AbstractDao{
     @PersistenceContext
     private EntityManager em;
 
-    
 
-
-    public BrandPojo select(int id){
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-
-        CriteriaQuery<BrandPojo> cq = cb.createQuery(BrandPojo.class);
-        Root<BrandPojo> brandCat = cq.from(BrandPojo.class);
-        Predicate idPredicate = cb.equal(brandCat.get("id"), id);
-        cq.where(idPredicate);
-
-        TypedQuery<BrandPojo> query = em.createQuery(cq);
-        return getSingle(query);
-
-    }
-
-
-    public BrandPojo select(String brand, String category){
+    public List<BrandPojo> select(BrandPojo p){
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
         CriteriaQuery<BrandPojo> cq = cb.createQuery(BrandPojo.class);
         Root<BrandPojo> brandCat = cq.from(BrandPojo.class);
-        Predicate brandPredicate = cb.equal(brandCat.get("brand"), brand);
-        Predicate categoryPredicate = cb.equal(brandCat.get("category"), category);
-        
-        cq.where(brandPredicate, categoryPredicate);
+
+        List<Predicate> preds = new ArrayList<Predicate>();
+
+        int id = p.getId();
+        String brand = p.getBrand();
+        String category = p.getCategory();
+
+        if(id != 0){
+            preds.add(cb.equal(brandCat.get("id"), id));
+        }
+        if(brand!=null){
+            preds.add(cb.equal(brandCat.get("brand"), brand));
+        }
+        if(category!=null){
+            preds.add(cb.equal(brandCat.get("category"), category));
+        }
+
+        for (Predicate pred : preds) {
+            cq.where(pred);
+        }
 
         TypedQuery<BrandPojo> query = em.createQuery(cq);
-        return getSingle(query);
+
+        return query.getResultList();
     }
 
-    public List<BrandPojo> select(){
+
+    public List<BrandPojo> selectAll(){
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<BrandPojo> cq = cb.createQuery(BrandPojo.class);

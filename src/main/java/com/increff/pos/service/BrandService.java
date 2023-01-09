@@ -26,8 +26,8 @@ public class BrandService {
 
     @Transactional
     public boolean checkDuplicate(BrandPojo p){
-        BrandPojo b1 = dao.select(p.getBrand(), p.getCategory());
-        if(b1!=null){
+        List<BrandPojo> b1 = dao.select(p);
+        if(b1.isEmpty()){
             return true;
         }
         return false;
@@ -41,16 +41,18 @@ public class BrandService {
 
     @Transactional
     private BrandPojo getCheck(int id) throws ApiException{
-        BrandPojo b = dao.select(id);
-        if(b==null){
+        BrandPojo p = new BrandPojo();
+        p.setId(id);
+        List<BrandPojo> b = dao.select(p);
+        if(b.isEmpty()){
             throw new ApiException("brand/category with given ID does not exist, id: "+id);
         }
-        return b;
+        return b.get(0);
     }
 
     @Transactional
     public List<BrandPojo> getAll(){
-        return dao.select();
+        return dao.selectAll();
     }
 
     
@@ -61,11 +63,14 @@ public class BrandService {
     
     @Transactional 
     public BrandPojo getcheck(String brand, String category) throws ApiException{
-        BrandPojo b = dao.select(brand, category);
-        if(b==null){
+        BrandPojo p = new BrandPojo();
+        p.setBrand(brand);
+        p.setCategory(category);
+        List<BrandPojo> b = dao.select(p);
+        if(b.isEmpty()){
             throw new ApiException("brand/category does not exist: "+brand+"/"+category);
         }
-        return b;
+        return b.get(0);
     }
 
     @Transactional(rollbackOn = ApiException.class)

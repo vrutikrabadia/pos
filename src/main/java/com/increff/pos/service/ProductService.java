@@ -54,17 +54,21 @@ public class ProductService {
     
     @Transactional
     private ProductPojo getCheck(int id) throws ApiException{
-        ProductPojo p = dao.selectById(id);
-        if(p==null){
+        ProductPojo p1 = new ProductPojo();
+        p1.setId(id); 
+        List<ProductPojo> p = dao.select(p1);
+        if(p.isEmpty()){
             throw new ApiException("product does not exist with id: "+id);
         }
-        return p;
+        return p.get(0);
     }
 
     @Transactional
     private boolean checkBarCode(String barCode){
-        ProductPojo p = dao.selectByBarCode(barCode);
-        if(p==null){
+        ProductPojo p1 = new ProductPojo();
+        p1.setBarCode(barCode); 
+        List<ProductPojo> p = dao.select(p1);
+        if(p.isEmpty()){
             return false;
         }
         return true;
