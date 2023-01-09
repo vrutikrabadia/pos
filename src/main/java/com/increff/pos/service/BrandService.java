@@ -26,9 +26,9 @@ public class BrandService {
     public boolean checkDuplicate(BrandPojo p){
         List<BrandPojo> b1 = dao.select(p);
         if(b1.isEmpty()){
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
     
 

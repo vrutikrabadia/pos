@@ -22,19 +22,21 @@ public class InventoryDto {
     private InventoryService service;
 
     @Autowired
-    ProductService pService;
+    private ProductService pService;
 
     public void add(InventoryForm f) throws ApiException{
         InventoryPojo p = ConvertUtil.convertInventoryFormtoPojo(f);
 
         ProductPojo p1 = pService.getCheck(p.getId());
+
+        if(p.getQuantity() < 0){
+            throw new ApiException("Quantity should be non negative");
+        }
         if(p1==null){
             throw new ApiException("Product does not exist");
         }
 
-        InventoryPojo p2 = service.getCheck(p.getId());
-        
-        if(p2!=null){
+        if(service.checkDuplicate(p.getId())){
             throw new ApiException("Inventory for the product already exist");
         }
 
@@ -61,9 +63,17 @@ public class InventoryDto {
     }
 
     public void update(InventoryForm f) throws ApiException{
+
         InventoryPojo p = ConvertUtil.convertInventoryFormtoPojo(f);
 
-        service.update(p.getId(), p);
+        if(p.getQuantity() < 0){
+            throw new ApiException("Quantity should be non negative");
+        }
+
+        InventoryPojo p2 = service.getCheck(p.getId());
+        p2.setQuantity(p.getQuantity());
+        
+        service.update(p.getId(), p2);
     }
 
 

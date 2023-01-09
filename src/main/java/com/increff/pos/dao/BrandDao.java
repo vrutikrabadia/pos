@@ -46,9 +46,7 @@ public class BrandDao extends AbstractDao{
             preds.add(cb.equal(brandCat.get("category"), category));
         }
 
-        for (Predicate pred : preds) {
-            cq.where(pred);
-        }
+        cq.where(cb.and(preds.toArray(Predicate[] ::new)));
 
         TypedQuery<BrandPojo> query = em.createQuery(cq);
 

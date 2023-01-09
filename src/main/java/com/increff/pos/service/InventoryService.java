@@ -26,6 +26,16 @@ public class InventoryService {
         return getCheck(id);
     } 
 
+
+    @Transactional
+    public boolean checkDuplicate(int id) throws ApiException{
+        InventoryPojo p = dao.selectById(id);
+        if(p == null){
+            return false;
+        }
+        return true;
+    }
+
     @Transactional
     public InventoryPojo getCheck(int id) throws ApiException{
         InventoryPojo p = dao.selectById(id);

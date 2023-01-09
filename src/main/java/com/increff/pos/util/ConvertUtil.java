@@ -102,7 +102,7 @@ public class ConvertUtil {
     public static InventoryPojo convertInventoryFormtoPojo(InventoryForm f) throws ApiException{
         InventoryPojo p = new InventoryPojo();
         p.setQuantity(f.getQuantity());
-
+        f.setBarCode(StringUtil.toLowerCase(f.getBarCode()));
         ProductPojo p1 = pService.get(f.getBarCode());
         p.setId(p1.getId());
 

@@ -22,9 +22,7 @@ public class BrandDtoTest extends AbstractUnitTest{
         String brand  = "brand1";
         String category = "category1";
         
-        BrandForm f = TestUtil.getBrandForm(brand, category);
-
-        dto.add(f);
+        TestUtil.addBrand(brand, category);
 
         List<BrandData> d = dto.getAll();
 
@@ -57,13 +55,9 @@ public class BrandDtoTest extends AbstractUnitTest{
 
     @Test
     public void testGetAll() throws ApiException{
-        BrandForm f1 = TestUtil.getBrandForm("brand1", "category1");
-        BrandForm f2 = TestUtil.getBrandForm("brand2", "category2");
-        BrandForm f3 = TestUtil.getBrandForm("brand3", "category3");
-
-        dto.add(f1);
-        dto.add(f2);
-        dto.add(f3);
+        TestUtil.addBrand("brand1", "category1");
+        TestUtil.addBrand("brand2", "category2");
+        TestUtil.addBrand("brand3", "category3");
 
         List<BrandData> d = dto.getAll();
 
@@ -73,11 +67,11 @@ public class BrandDtoTest extends AbstractUnitTest{
     @Test 
     public void testDupicateInsertion() throws ApiException{
         boolean thrown = false;
-        BrandForm f1 = TestUtil.getBrandForm("brand1", "category1");
-        dto.add(f1);
+        TestUtil.addBrand("brand1", "category1");
+        
 
         try{
-            dto.add(f1);
+            TestUtil.addBrand("brand1", "category1");
         }
         catch(ApiException e){
             thrown = true;
@@ -91,9 +85,7 @@ public class BrandDtoTest extends AbstractUnitTest{
         String brand  = "brand1";
         String category = "category1";
         
-        BrandForm f = TestUtil.getBrandForm(brand, category);
-
-        dto.add(f);
+        TestUtil.addBrand(brand, category);
 
         BrandData d = dto.get(brand, category);
 
@@ -101,8 +93,8 @@ public class BrandDtoTest extends AbstractUnitTest{
             assertTrue(false);
         }
         else{
-            assertEquals(d.getCategory(), f.getCategory());
-            assertEquals(d.getBrand(), f.getBrand());
+            assertEquals(d.getCategory(), category);
+            assertEquals(d.getBrand(), brand);
         }
         
     }
@@ -113,9 +105,7 @@ public class BrandDtoTest extends AbstractUnitTest{
         String brand  = "Brand1 ";
         String category = " caTegory1";
         
-        BrandForm f = TestUtil.getBrandForm(brand, category);
-
-        dto.add(f);
+        TestUtil.addBrand(brand, category);
 
         List<BrandData> d = dto.getAll();
 
