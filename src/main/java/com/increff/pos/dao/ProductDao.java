@@ -22,10 +22,6 @@ public class ProductDao extends AbstractDao{
     @PersistenceContext
     private EntityManager em;
 
-    public void insert(ProductPojo p){
-        em.persist(p);
-    }
-
     public ProductPojo selectById(int id){
         CriteriaBuilder cb = em.getCriteriaBuilder();
 

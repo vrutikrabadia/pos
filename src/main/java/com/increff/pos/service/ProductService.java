@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.increff.pos.dao.ProductDao;
 import com.increff.pos.pojo.ProductPojo;
-import com.increff.pos.util.StringUtil;
 
 @Service
 public class ProductService {
@@ -20,15 +19,7 @@ public class ProductService {
 
     @Transactional(rollbackOn = ApiException.class)
     public void add(ProductPojo p) throws ApiException{
-        normalize(p);
-        // p.setBarCode(generateBarCode());
-
-        if(StringUtil.isEmpty(p.getName())){
-            throw new ApiException("Product name cannot be empty");
-        }
-        if(StringUtil.isEmpty(p.getBarCode()) || p.getBarCode().length() != 8){
-            throw new ApiException("Please provide a valid barcode(length 8)");
-        }
+        
         if(checkBarCode(p.getBarCode())){
             throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
         }
@@ -49,15 +40,8 @@ public class ProductService {
 
     @Transactional(rollbackOn = ApiException.class)
     public void update(int id, ProductPojo p) throws ApiException{
-        normalize(p);
         ProductPojo p1 = getCheck(id);
 
-        if(StringUtil.isEmpty(p.getName())){
-            throw new ApiException("Product name cannot be empty");
-        }
-        if(StringUtil.isEmpty(p.getBarCode()) || p.getBarCode().length() != 8){
-            throw new ApiException("Please provide a valid barcode(length 8)");
-        }
         if(checkBarCode(p.getBarCode())){
             throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
         }
@@ -84,9 +68,5 @@ public class ProductService {
             return false;
         }
         return true;
-    }
-    protected static void normalize(ProductPojo p){
-        p.setName(StringUtil.toLowerCase(p.getName()));
-        p.setBarCode(StringUtil.toLowerCase(p.getBarCode()));
     }
 }

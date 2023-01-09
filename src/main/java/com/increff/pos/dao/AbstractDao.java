@@ -21,4 +21,12 @@ public abstract class AbstractDao {
 		return em;
 	}
 
+	public <T> void insert(T p){
+		em.persist(p);
+	}
+
+	
+
+
+
 }

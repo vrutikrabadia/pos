@@ -21,12 +21,10 @@ public class BrandDao extends AbstractDao{
     @PersistenceContext
     private EntityManager em;
 
-    public void insert(BrandPojo b){
-        em.persist(b);
-    }
+    
 
 
-    public BrandPojo selectById(int id){
+    public BrandPojo select(int id){
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
         CriteriaQuery<BrandPojo> cq = cb.createQuery(BrandPojo.class);
@@ -40,7 +38,7 @@ public class BrandDao extends AbstractDao{
     }
 
 
-    public BrandPojo selectByBrandCategory(String brand, String category){
+    public BrandPojo select(String brand, String category){
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
@@ -55,7 +53,7 @@ public class BrandDao extends AbstractDao{
         return getSingle(query);
     }
 
-    public List<BrandPojo> selectAll(){
+    public List<BrandPojo> select(){
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<BrandPojo> cq = cb.createQuery(BrandPojo.class);
