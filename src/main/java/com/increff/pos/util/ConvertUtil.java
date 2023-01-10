@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.increff.pos.model.data.BrandData;
 import com.increff.pos.model.data.InventoryData;
+import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.data.UserData;
 import com.increff.pos.model.form.BrandForm;
@@ -15,6 +16,7 @@ import com.increff.pos.model.form.ProductForm;
 import com.increff.pos.model.form.UserForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.InventoryPojo;
+import com.increff.pos.pojo.OrderPojo;
 import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.pojo.UserPojo;
 import com.increff.pos.service.ApiException;
@@ -107,6 +109,13 @@ public class ConvertUtil {
         p.setId(p1.getId());
 
         return p;
+    }
+
+    public static OrderData convertOrderPojoToData(OrderPojo p){
+        OrderData d = new OrderData();
+        d.setDateTime(p.getDateTime());
+        d.setId(p.getId());
+        return d;
     }
 
 }
