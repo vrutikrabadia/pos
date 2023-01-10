@@ -38,13 +38,13 @@ public class InventoryApiController {
     }
 
     @ApiOperation(value = "Get inventory ")
-    @RequestMapping(path="/api/inventory/", method = RequestMethod.GET)
+    @RequestMapping(path="/api/inventory", method = RequestMethod.GET)
     public List<InventoryData> getAll() throws ApiException{
         return dto.getAll();
     }
 
     @ApiOperation(value = "Update inventory by barCode")
-    @RequestMapping(path="/api/inventory/", method = RequestMethod.PUT)
+    @RequestMapping(path="/api/inventory", method = RequestMethod.PUT)
     public void update(@RequestBody InventoryForm f) throws ApiException{
         dto.update(f);
     }
