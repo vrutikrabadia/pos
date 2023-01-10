@@ -9,11 +9,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-public class OrderPojo {
+public class OrderItemsPojo {
     
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Getter @Setter private int id;
-    @Getter @Setter private String dateTime;
-    @Getter @Setter private boolean editable;
-}
+    @Getter @Setter private int orderId;
+    @Getter @Setter private int productId;
+    @Getter @Setter private int quantity;
+    @Getter @Setter private double sellingPrice;
+}    

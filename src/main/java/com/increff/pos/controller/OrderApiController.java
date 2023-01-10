@@ -48,4 +48,10 @@ public class OrderApiController {
     public OrderData put(@PathVariable int id, @RequestBody OrderForm form) throws ApiException{
         return dto.update(id, form);
     }
+
+    @ApiOperation(value = "Sets order non editable")
+    @RequestMapping(path="/api/orders/{id}/finalise", method = RequestMethod.PUT)
+    public void finaliseOrder(@PathVariable int id) throws ApiException{
+        dto.finaliseOrder(id);
+    }
 }

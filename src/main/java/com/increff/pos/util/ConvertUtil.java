@@ -8,14 +8,17 @@ import org.springframework.stereotype.Component;
 import com.increff.pos.model.data.BrandData;
 import com.increff.pos.model.data.InventoryData;
 import com.increff.pos.model.data.OrderData;
+import com.increff.pos.model.data.OrderItemsData;
 import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.data.UserData;
 import com.increff.pos.model.form.BrandForm;
 import com.increff.pos.model.form.InventoryForm;
+import com.increff.pos.model.form.OrderItemsForm;
 import com.increff.pos.model.form.ProductForm;
 import com.increff.pos.model.form.UserForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.InventoryPojo;
+import com.increff.pos.pojo.OrderItemsPojo;
 import com.increff.pos.pojo.OrderPojo;
 import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.pojo.UserPojo;
@@ -115,6 +118,28 @@ public class ConvertUtil {
         OrderData d = new OrderData();
         d.setDateTime(p.getDateTime());
         d.setId(p.getId());
+        return d;
+    }
+
+    public static OrderItemsPojo convertOrderItemsFormToPojo(OrderItemsForm f) throws ApiException{
+        OrderItemsPojo p = new OrderItemsPojo();
+        p.setQuantity(f.getQuantity());
+        p.setSellingPrice(f.getSellingPrice());
+        ProductPojo p1 = pService.get(f.getBarCode());
+        p.setProductId(p1.getId());
+
+        return p;
+    }
+
+    public static OrderItemsData convertOrderItemsPojoToData(OrderItemsPojo p) throws ApiException{
+        OrderItemsData d = new OrderItemsData();
+
+        d.setId(p.getId());
+        d.setOrderId(p.getOrderId());
+        d.setQuantity(p.getQuantity());
+        d.setSellingPrice(p.getSellingPrice());
+        ProductPojo p1 = pService.get(p.getProductId());
+        d.setBarCode(p1.getBarCode());
         return d;
     }
 

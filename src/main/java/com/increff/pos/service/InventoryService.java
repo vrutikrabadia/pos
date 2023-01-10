@@ -58,4 +58,27 @@ public class InventoryService {
 
         dao.update(p1);
     }
+
+    @Transactional(rollbackOn = ApiException.class)
+    public void reduceQuantity(int id, int quantity) throws ApiException{
+        InventoryPojo p = getCheck(id);
+
+        if(p.getQuantity() < quantity){
+            throw new ApiException("Insufficienf Inventory");
+        }
+
+        p.setQuantity(p.getQuantity()-quantity);
+
+        dao.update(p);
+    } 
+
+    @Transactional(rollbackOn = ApiException.class)
+    public void increaseQuantity(int id, int quantity) throws ApiException{
+        InventoryPojo p = getCheck(id);
+
+
+        p.setQuantity(p.getQuantity()+quantity);
+
+        dao.update(p);
+    } 
 }

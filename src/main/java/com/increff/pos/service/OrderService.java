@@ -27,6 +27,7 @@ public class OrderService {
         String strDate = dateFormat.format(date);  
         p.setDateTime(strDate);
         p.setId(dao.insert(p));
+        p.setEditable(true);
         return p;
     }
 
@@ -61,6 +62,16 @@ public class OrderService {
         dao.update(p1);
 
         return p1;
+    }
+
+    @Transactional
+    public void finaliseOrder(int id) throws ApiException{
+        OrderPojo p1 = getCheck(id);
+        
+        p1.setEditable(false);
+
+        dao.update(p1);
+
     }
 
     

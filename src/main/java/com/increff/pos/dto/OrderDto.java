@@ -43,4 +43,8 @@ public class OrderDto {
         return ConvertUtil.convertOrderPojoToData(service.update(id, null));
     }
 
+    public void finaliseOrder(int id) throws ApiException{
+        service.finaliseOrder(id);
+    }
+
 }
