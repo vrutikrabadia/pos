@@ -22,7 +22,7 @@ public class UserDao extends AbstractDao {
 		em().persist(p);
 	}
 
-	public int delete(int id) {
+	public Integer delete(Integer id) {
 		CriteriaBuilder cb = em().getCriteriaBuilder();
 
         CriteriaDelete<UserPojo> cq = cb.createCriteriaDelete(UserPojo.class);
@@ -33,7 +33,7 @@ public class UserDao extends AbstractDao {
 		return em().createQuery(cq).executeUpdate();
 	}
 
-	public UserPojo select(int id) {
+	public UserPojo select(Integer id) {
 		CriteriaBuilder cb = em().getCriteriaBuilder();
 
         CriteriaQuery<UserPojo> cq = cb.createQuery(UserPojo.class);

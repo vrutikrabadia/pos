@@ -32,9 +32,9 @@ public class InventoryApiController {
     }
 
     @ApiOperation(value = "Get inventory by id")
-    @RequestMapping(path="/api/inventory/{barCode}", method = RequestMethod.GET)
-    public InventoryData get(@PathVariable String barCode) throws ApiException{
-        return dto.get(barCode);
+    @RequestMapping(path="/api/inventory/{barcode}", method = RequestMethod.GET)
+    public InventoryData get(@PathVariable String barcode) throws ApiException{
+        return dto.get(barcode);
     }
 
     @ApiOperation(value = "Get inventory ")
@@ -43,7 +43,7 @@ public class InventoryApiController {
         return dto.getAll();
     }
 
-    @ApiOperation(value = "Update inventory by barCode")
+    @ApiOperation(value = "Update inventory by barcode")
     @RequestMapping(path="/api/inventory", method = RequestMethod.PUT)
     public void update(@RequestBody InventoryForm f) throws ApiException{
         dto.update(f);

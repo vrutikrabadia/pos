@@ -5,7 +5,9 @@ import com.increff.pos.model.form.OrderItemsForm;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public class OrderItemsData extends OrderItemsForm{
-    @Getter @Setter private int id;
-    @Getter @Setter private int orderId;
+    private Integer id;
+    private Integer orderId;
 }

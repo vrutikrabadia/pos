@@ -22,7 +22,7 @@ public class StringUtil {
 
 	public static void normaliseProduct(ProductPojo p){
 		p.setName(toLowerCase(p.getName()));
-        p.setBarCode(toLowerCase(p.getBarCode()));
+        p.setBarcode(toLowerCase(p.getBarcode()));
 	}
 
 	public static void normalizeUser(UserPojo p) {

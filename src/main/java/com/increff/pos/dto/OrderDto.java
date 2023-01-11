@@ -21,11 +21,11 @@ public class OrderDto {
 
     public OrderData add(OrderForm f){
         OrderPojo p = new OrderPojo();
-        return ConvertUtil.convertOrderPojoToData(service.add(p));
+        return ConvertUtil.objectMapper(service.add(p), OrderData.class);
     }
 
-    public OrderData get(int id) throws ApiException{
-        return ConvertUtil.convertOrderPojoToData(service.get(id));
+    public OrderData get(Integer id) throws ApiException{
+        return ConvertUtil.objectMapper(service.get(id), OrderData.class);
     }
 
     public List<OrderData> getAll(){
@@ -33,17 +33,17 @@ public class OrderDto {
         List<OrderPojo> list1 = service.getAll();
 
         for(OrderPojo p : list1){
-            list.add(ConvertUtil.convertOrderPojoToData(p));
+            list.add(ConvertUtil.objectMapper(p, OrderData.class));
         }
 
         return list;
     }
 
-    public OrderData update(int id, OrderForm f) throws ApiException{
-        return ConvertUtil.convertOrderPojoToData(service.update(id, null));
+    public OrderData update(Integer id, OrderForm f) throws ApiException{
+        return ConvertUtil.objectMapper(service.update(id, null), OrderData.class);
     }
 
-    public void finaliseOrder(int id) throws ApiException{
+    public void finaliseOrder(Integer id) throws ApiException{
         service.finaliseOrder(id);
     }
 

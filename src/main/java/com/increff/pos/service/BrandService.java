@@ -1,6 +1,7 @@
 package com.increff.pos.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.transaction.Transactional;
 
@@ -11,72 +12,60 @@ import com.increff.pos.dao.BrandDao;
 import com.increff.pos.pojo.BrandPojo;
 
 @Service
+@Transactional(rollbackOn = ApiException.class)
 public class BrandService {
     
     @Autowired
     private BrandDao dao;
 
-    @Transactional
+     
     public void add(BrandPojo p) {
-        
         dao.insert(p);
     }
 
-    @Transactional
     public boolean checkDuplicate(BrandPojo p){
-        List<BrandPojo> b1 = dao.select(p);
-        if(b1.isEmpty()){
+        BrandPojo b1 = dao.selectByBrandCategory(p.getBrand(), p.getCategory());
+        if(Objects.isNull(b1)){
             return false;
         }
         return true;
     }
     
-
-    @Transactional
-    public BrandPojo get(int id) throws ApiException{
+    public BrandPojo get(Integer id) throws ApiException{
         return getCheck(id);
     }
 
-    @Transactional
-    private BrandPojo getCheck(int id) throws ApiException{
-        BrandPojo p = new BrandPojo();
-        p.setId(id);
-        List<BrandPojo> b = dao.select(p);
-        if(b.isEmpty()){
+    private BrandPojo getCheck(Integer id) throws ApiException{
+        BrandPojo b = dao.selectById(id);
+        if(Objects.isNull(b)){
             throw new ApiException("brand/category with given ID does not exist, id: "+id);
         }
-        return b.get(0);
+        return b;
     }
 
-    @Transactional
+     
     public List<BrandPojo> getAll(){
         return dao.selectAll();
     }
 
-    
-    @Transactional(rollbackOn = ApiException.class)
     public BrandPojo get(String brand, String category) throws ApiException{
         return getcheck(brand, category);
     }
     
-    @Transactional 
+      
     public BrandPojo getcheck(String brand, String category) throws ApiException{
-        BrandPojo p = new BrandPojo();
-        p.setBrand(brand);
-        p.setCategory(category);
-        List<BrandPojo> b = dao.select(p);
-        if(b.isEmpty()){
+        BrandPojo pojo = dao.selectByBrandCategory(brand, category);
+        if(Objects.isNull(pojo)){
             throw new ApiException("brand/category does not exist: "+brand+"/"+category);
         }
-        return b.get(0);
+        return pojo;
     }
 
-    @Transactional(rollbackOn = ApiException.class)
-    public void update(int id,BrandPojo p) throws ApiException{
+     
+    public void update(Integer id,BrandPojo p) throws ApiException{
         BrandPojo b1 = getCheck(id);
         b1.setBrand(p.getBrand());
         b1.setCategory(p.getCategory());
-        dao.update(b1);
     }
 
 }

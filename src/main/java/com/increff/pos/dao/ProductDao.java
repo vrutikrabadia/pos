@@ -1,6 +1,5 @@
 package com.increff.pos.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -35,32 +34,31 @@ public class ProductDao extends AbstractDao{
         return allQuery.getResultList();
     }
 
-    public List<ProductPojo> select(ProductPojo p){
-
-        List<Predicate> preds = new ArrayList<Predicate>();
-
+    public ProductPojo selectById(Integer id){
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ProductPojo> cq = cb.createQuery(ProductPojo.class);
         Root<ProductPojo> productRoot = cq.from(ProductPojo.class);
 
-        String barCode = p.getBarCode();
-        int id = p.getId();
-
-        if(p!=null){
-            preds.add(cb.equal(productRoot.get("barCode"), barCode));
-        }
-
-        if(id!=0){
-            preds.add( cb.equal(productRoot.get("id"), id));
-        }
-
-        for (Predicate pred : preds) {
-            cq.where(pred);
-        }
+        Predicate iPredicate = cb.equal(productRoot.get("id"), id);
+        cq.where(iPredicate);
 
         TypedQuery<ProductPojo> query = em.createQuery(cq);
 
-        return query.getResultList();
+        return getSingle(query);
     }
+
+    public ProductPojo selectByBarcode(String barcode){
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<ProductPojo> cq = cb.createQuery(ProductPojo.class);
+        Root<ProductPojo> productRoot = cq.from(ProductPojo.class);
+
+        Predicate iPredicate = cb.equal(productRoot.get("barcode"), barcode);
+        cq.where(iPredicate);
+
+        TypedQuery<ProductPojo> query = em.createQuery(cq);
+
+        return getSingle(query);
+    }
+
 
 }

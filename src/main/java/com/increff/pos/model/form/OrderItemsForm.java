@@ -3,8 +3,10 @@ package com.increff.pos.model.form;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public class OrderItemsForm {
-    @Getter @Setter private String barCode;
-    @Getter @Setter private int quantity;
-    @Getter @Setter private double sellingPrice;
+    private String barcode;
+    private Integer quantity;
+    private double sellingPrice;
 }

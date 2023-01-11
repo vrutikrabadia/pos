@@ -21,7 +21,7 @@ public class BrandDto {
     private BrandService service;
 
     public void add(BrandForm f) throws ApiException{
-        BrandPojo p = ConvertUtil.convertBrandFormToPojo(f);
+        BrandPojo p = ConvertUtil.objectMapper(f, BrandPojo.class);
         StringUtil.normaliseBrand(p);
         if(StringUtil.isEmpty(p.getBrand()) || StringUtil.isEmpty(p.getCategory())){
             throw new ApiException("Brand or category cannot be empty");
@@ -32,16 +32,16 @@ public class BrandDto {
         service.add(p);
     }
 
-    public BrandData get(int id) throws ApiException{
+    public BrandData get(Integer id) throws ApiException{
         BrandPojo p = service.get(id);
-        return ConvertUtil.convertBrandPojoToData(p);
+        return ConvertUtil.objectMapper(p, BrandData.class);
     }
 
     public List<BrandData> getAll(){
         List<BrandPojo> list = service.getAll();
         List<BrandData> list1 = new ArrayList<BrandData>();
         for(BrandPojo p:list){
-            list1.add(ConvertUtil.convertBrandPojoToData(p));
+            list1.add(ConvertUtil.objectMapper(p, BrandData.class));
         }
 
         return list1;
@@ -51,11 +51,11 @@ public class BrandDto {
     public BrandData get(String brand, String category) throws ApiException{
         BrandPojo p = service.get(brand, category);
 
-        return ConvertUtil.convertBrandPojoToData(p);
+        return ConvertUtil.objectMapper(p, BrandData.class);
     }
 
-    public void update(int id, BrandForm f) throws ApiException{
-        BrandPojo p = ConvertUtil.convertBrandFormToPojo(f);
+    public void update(Integer id, BrandForm f) throws ApiException{
+        BrandPojo p = ConvertUtil.objectMapper(f, BrandPojo.class);
         StringUtil.normaliseBrand(p);
         if(StringUtil.isEmpty(p.getBrand()) || StringUtil.isEmpty(p.getCategory())){
             throw new ApiException("Brand of category cannot be empty");

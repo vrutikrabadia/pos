@@ -33,7 +33,7 @@ public class OrderApiController {
 
     @ApiOperation(value = "Gets Order by id")
     @RequestMapping(path="/api/orders/{id}", method = RequestMethod.GET)
-    public OrderData get(@PathVariable int id) throws ApiException{
+    public OrderData get(@PathVariable Integer id) throws ApiException{
         return dto.get(id);
     }
 
@@ -45,13 +45,13 @@ public class OrderApiController {
 
     @ApiOperation(value = "Updates Order by id")
     @RequestMapping(path="/api/orders/{id}", method = RequestMethod.PUT)
-    public OrderData put(@PathVariable int id, @RequestBody OrderForm form) throws ApiException{
+    public OrderData put(@PathVariable Integer id, @RequestBody OrderForm form) throws ApiException{
         return dto.update(id, form);
     }
 
     @ApiOperation(value = "Sets order non editable")
     @RequestMapping(path="/api/orders/{id}/finalise", method = RequestMethod.PUT)
-    public void finaliseOrder(@PathVariable int id) throws ApiException{
+    public void finaliseOrder(@PathVariable Integer id) throws ApiException{
         dto.finaliseOrder(id);
     }
 }

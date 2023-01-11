@@ -27,25 +27,25 @@ public class OrderItemsApiController {
 
     @ApiOperation(value="Adds Order Items")
     @RequestMapping(path="/api/orders/{id}/items", method = RequestMethod.POST)
-    public void add(@RequestBody List<OrderItemsForm> form, @PathVariable int orderId) throws ApiException{
+    public void add(@RequestBody List<OrderItemsForm> form, @PathVariable Integer orderId) throws ApiException{
         dto.add(orderId, form);
     }
 
     @ApiOperation(value="Get Order Items")
     @RequestMapping(path="/api/orders/items/{id}", method = RequestMethod.GET)
-    public OrderItemsData get(@PathVariable int id) throws ApiException{
+    public OrderItemsData get(@PathVariable Integer id) throws ApiException{
         return dto.getById(id);
     }
 
     @ApiOperation(value="Get Order Items by order id")
     @RequestMapping(path="/api/orders/{id}/items", method = RequestMethod.GET)
-    public List<OrderItemsData> getByOrderId(@PathVariable int id) throws ApiException{
+    public List<OrderItemsData> getByOrderId(@PathVariable Integer id) throws ApiException{
         return dto.getByOrderId(id);
     }
 
     @ApiOperation(value="Updates order item by item id")
     @RequestMapping(path="/api/orders/items/{id}", method = RequestMethod.PUT)
-    public void update(@PathVariable int id, @RequestBody OrderItemsForm f) throws ApiException{
+    public void update(@PathVariable Integer id, @RequestBody OrderItemsForm f) throws ApiException{
         dto.update(id, f);
     }
 }

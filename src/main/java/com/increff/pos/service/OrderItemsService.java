@@ -1,6 +1,5 @@
 package com.increff.pos.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -13,6 +12,7 @@ import com.increff.pos.pojo.OrderItemsPojo;
 import com.increff.pos.pojo.OrderPojo;
 
 @Service
+@Transactional(rollbackOn = ApiException.class)
 public class OrderItemsService {
     
     @Autowired
@@ -24,29 +24,30 @@ public class OrderItemsService {
     @Autowired
     private OrderService oService;
 
-    @Transactional(rollbackOn = ApiException.class)
-    public void add(int orderId,List<OrderItemsPojo> list) throws ApiException{
-        
+     
+    public OrderPojo add(List<OrderItemsPojo> list) throws ApiException{
+        OrderPojo order = oService.add(new OrderPojo());
         for(OrderItemsPojo p: list){
             iService.reduceQuantity(p.getProductId(), p.getQuantity());
-            p.setOrderId(orderId);
+            p.setOrderId(order.getId());
             dao.insert(p);
         }
 
+        return order;
     }
 
-    @Transactional
-    public OrderItemsPojo selectById(int id){
+     
+    public OrderItemsPojo selectById(Integer id){
         return dao.selectById(id);
     }
 
-    @Transactional
-    public List<OrderItemsPojo> selectByOrderId(int orderId){
+     
+    public List<OrderItemsPojo> selectByOrderId(Integer orderId){
         return dao.selectByOrderId(orderId);
     }
 
-    @Transactional(rollbackOn = ApiException.class)
-    public void update(int id, OrderItemsPojo p) throws ApiException{
+     
+    public void update(Integer id, OrderItemsPojo p) throws ApiException{
         
         
         OrderItemsPojo p1 = selectById(id);
@@ -72,7 +73,6 @@ public class OrderItemsService {
 
         p1.setQuantity(p.getQuantity());
         p1.setSellingPrice(p.getSellingPrice());
-        dao.update(p1);
     }
     
 }

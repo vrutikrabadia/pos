@@ -3,8 +3,10 @@ package com.increff.pos.model.data;
 import lombok.Getter;
 import lombok.Setter;
 
+@Setter
+@Getter
 public class AboutAppData {
 
-	@Getter @Setter private String name;
-	@Getter @Setter private String version;
+	private String name;
+	private String version;
 }

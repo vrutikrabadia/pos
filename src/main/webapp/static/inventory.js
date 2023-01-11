@@ -140,10 +140,10 @@ function displayInventoryList(data){
 	$tbody.empty();
 	for(var i in data){
 		var b = data[i];
-		var buttonHtml = ' <button onclick="displayEditInventory(\'' + b.barCode + '\')">edit</button>';
+		var buttonHtml = ' <button onclick="displayEditInventory(\'' + b.barcode + '\')">edit</button>';
 
 		var row = '<tr>'
-		+ '<td>' + b.barCode + '</td>'
+		+ '<td>' + b.barcode + '</td>'
 		+ '<td>'  + b.quantity + '</td>'
 		+ '<td>' + buttonHtml + '</td>'
 		+ '</tr>';
@@ -157,8 +157,8 @@ function paginate() {
 	$('.dataTables_length').addClass('bs-select');
 }
 
-function displayEditInventory(barCode){
-	var url = getInventoryUrl()+"/"+barCode;
+function displayEditInventory(barcode){
+	var url = getInventoryUrl()+"/"+barcode;
 	$.ajax({
 	   url: url,
 	   type: 'GET',
@@ -200,7 +200,7 @@ function displayUploadData(){
 }
 
 function displayInventory(data){
-	$("#inventory-edit-form input[name=barCode]").val(data.barCode);	
+	$("#inventory-edit-form input[name=barcode]").val(data.barcode);	
 	$("#inventory-edit-form input[name=quantity]").val(data.quantity);	
 	$('#edit-inventory-modal').modal('toggle');
 }

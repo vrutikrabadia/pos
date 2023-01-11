@@ -1,15 +1,24 @@
 package com.increff.pos.pojo;
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-public class InventoryPojo {
+@Table(name = "inventory")
+@Getter
+@Setter
+public class InventoryPojo extends AbstractPojo implements Serializable{
     
     @Id
-    @Getter @Setter private int id;
-    @Getter @Setter private int quantity;
+    @Column(name = "id", nullable = false)
+    private Integer id;
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
 }

@@ -9,13 +9,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class UserPojo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Getter @Setter private int id;
-	@Getter @Setter private String email;
-	@Getter @Setter private String password;
-	@Getter @Setter private String role;
+	private Integer id;
+	private String email;
+	private String password;
+	private String role;
 
 }

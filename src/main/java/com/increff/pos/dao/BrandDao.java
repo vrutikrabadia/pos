@@ -1,6 +1,5 @@
 package com.increff.pos.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -23,34 +22,31 @@ public class BrandDao extends AbstractDao{
     private EntityManager em;
 
 
-    public List<BrandPojo> select(BrandPojo p){
-
+    public BrandPojo selectById(Integer id){
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
         CriteriaQuery<BrandPojo> cq = cb.createQuery(BrandPojo.class);
         Root<BrandPojo> brandCat = cq.from(BrandPojo.class);
 
-        List<Predicate> preds = new ArrayList<Predicate>();
-
-        int id = p.getId();
-        String brand = p.getBrand();
-        String category = p.getCategory();
-
-        if(id != 0){
-            preds.add(cb.equal(brandCat.get("id"), id));
-        }
-        if(brand!=null){
-            preds.add(cb.equal(brandCat.get("brand"), brand));
-        }
-        if(category!=null){
-            preds.add(cb.equal(brandCat.get("category"), category));
-        }
-
-        cq.where(cb.and(preds.toArray(Predicate[] ::new)));
-
+        Predicate iPredicate = cb.equal(brandCat.get("id"), id);
+        cq.where(iPredicate);
         TypedQuery<BrandPojo> query = em.createQuery(cq);
 
-        return query.getResultList();
+        return getSingle(query);
+    }
+
+    public BrandPojo selectByBrandCategory(String brand, String category){
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        CriteriaQuery<BrandPojo> cq = cb.createQuery(BrandPojo.class);
+        Root<BrandPojo> brandCat = cq.from(BrandPojo.class);
+
+        Predicate bPredicate = cb.equal(brandCat.get("brand"), brand);
+        Predicate cPredicate = cb.equal(brandCat.get("category"), category);
+        cq.where(cb.and(bPredicate, cPredicate));
+        TypedQuery<BrandPojo> query = em.createQuery(cq);
+
+        return getSingle(query);
     }
 
 

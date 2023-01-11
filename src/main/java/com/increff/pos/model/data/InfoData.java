@@ -10,13 +10,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Component
+@Getter
+@Setter
 @Scope(value="session", proxyMode=ScopedProxyMode.TARGET_CLASS)
 public class InfoData implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Getter @Setter private String message;
-	@Getter @Setter private String email;
+	private String message;
+	private String email;
 
 	public InfoData() {
 		message = "No message";

@@ -1,6 +1,7 @@
 package com.increff.pos.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.transaction.Transactional;
 
@@ -11,70 +12,60 @@ import com.increff.pos.dao.ProductDao;
 import com.increff.pos.pojo.ProductPojo;
 
 @Service
+@Transactional(rollbackOn = ApiException.class)
 public class ProductService {
     
 
     @Autowired
     private ProductDao dao;
 
-    @Transactional
+     
     public void add(ProductPojo p){
         dao.insert(p);
     }
 
-
-    @Transactional
-    public ProductPojo get(int id) throws ApiException{
+    public ProductPojo get(Integer id) throws ApiException{
         return getCheck(id);
     }
 
-    @Transactional 
-    public ProductPojo get(String barCode) throws ApiException{
-        ProductPojo p = new ProductPojo();
-        p.setBarCode(barCode);
-        List<ProductPojo> p1 = dao.select(p);
-        if(p1.isEmpty()){
+      
+    public ProductPojo get(String barcode) throws ApiException{
+        ProductPojo p1 = dao.selectByBarcode(barcode);
+        if(Objects.isNull(p1)){
             throw new ApiException("Product with bar code does not exist");
         }
-
-        return p1.get(0);
+        return p1;
     }
 
-    @Transactional
     public List<ProductPojo> getAll(){
         return dao.selectAll();
     }
-
-    @Transactional(rollbackOn = ApiException.class)
-    public void update(int id, ProductPojo p) throws ApiException{
+ 
+    public void update(Integer id, ProductPojo p) throws ApiException{
         ProductPojo p1 = getCheck(id);
 
-        p1.setBarCode(p.getBarCode());
+        p1.setBarcode(p.getBarcode());
         p1.setName(p.getName());
         p1.setBrandCat(p.getBrandCat());
         p1.setMrp(p.getMrp());
     }
     
-    @Transactional
-    public ProductPojo getCheck(int id) throws ApiException{
-        ProductPojo p1 = new ProductPojo();
-        p1.setId(id); 
-        List<ProductPojo> p = dao.select(p1);
-        if(p.isEmpty()){
+     
+    public ProductPojo getCheck(Integer id) throws ApiException{
+        
+        ProductPojo p = dao.selectById(id);
+        if(Objects.isNull(p)){
             throw new ApiException("product does not exist with id: "+id);
         }
-        return p.get(0);
+        return p;
     }
 
-    @Transactional
-    public boolean checkBarCode(int id, String barCode){
-        ProductPojo p1 = new ProductPojo();
-        p1.setBarCode(barCode); 
-        List<ProductPojo> p = dao.select(p1);
-        if(p.isEmpty()){
+    public boolean checkBarCode(Integer id, String barcode){        
+        ProductPojo p = dao.selectByBarcode(barcode);
+        if(Objects.isNull(p)){
             return false;
         }
-        if(p.get(0).getId() == id){
+        if(p.getId() == id){
             return false;
         }
         return true;

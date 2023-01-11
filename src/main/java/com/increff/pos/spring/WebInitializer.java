@@ -7,7 +7,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
  * This class is a hook for <b>Servlet 3.0</b> specification, to initialize
  * Spring configuration without any <code>web.xml</code> configuration. Note
  * that {@link #getServletConfigClasses} method returns {@link SpringConfig},
- * which is the starting point for Spring configuration <br>
+ * which is the starting poInteger for Spring configuration <br>
  * <b>Note:</b> You can also implement the {@link WebApplicationInitializer }
  * interface for more control
  */

@@ -20,7 +20,7 @@ public class OrderItemsDao extends AbstractDao{
     @PersistenceContext
     private EntityManager em;
 
-    public OrderItemsPojo selectById(int id){
+    public OrderItemsPojo selectById(Integer id){
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<OrderItemsPojo> cq = cb.createQuery(OrderItemsPojo.class);
         Root<OrderItemsPojo> productRoot = cq.from(OrderItemsPojo.class);
@@ -32,7 +32,7 @@ public class OrderItemsDao extends AbstractDao{
         return getSingle(query);
     }
 
-    public List<OrderItemsPojo> selectByOrderId(int orderId){
+    public List<OrderItemsPojo> selectByOrderId(Integer orderId){
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<OrderItemsPojo> cq = cb.createQuery(OrderItemsPojo.class);
         Root<OrderItemsPojo> productRoot = cq.from(OrderItemsPojo.class);

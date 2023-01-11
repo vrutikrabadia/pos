@@ -20,7 +20,7 @@ public class OrderDao extends AbstractDao{
     @PersistenceContext
     private EntityManager em;
 
-    public int insert(OrderPojo p){
+    public Integer insert(OrderPojo p){
         em.persist(p);
         return p.getId();
     }
@@ -35,7 +35,7 @@ public class OrderDao extends AbstractDao{
         return allQuery.getResultList();
     }
 
-    public OrderPojo selectById(int id){
+    public OrderPojo selectById(Integer id){
         
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<OrderPojo> cq = cb.createQuery(OrderPojo.class);

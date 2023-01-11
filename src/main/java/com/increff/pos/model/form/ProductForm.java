@@ -3,11 +3,13 @@ package com.increff.pos.model.form;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public class ProductForm {
-    @Getter @Setter private String barCode;
-    @Getter @Setter private String brand;
-    @Getter @Setter private String category;
-    @Getter @Setter private String name;
-    @Getter @Setter private double mrp;
+    private String barcode;
+    private String brand;
+    private String category;
+    private String name;
+    private double mrp;
     
 }

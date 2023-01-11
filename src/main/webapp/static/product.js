@@ -172,7 +172,7 @@ function displayProductList(data){
 
 		var row = '<tr>'
 		+ '<td>' + b.id + '</td>'
-		+ '<td>'  + b.barCode + '</td>'
+		+ '<td>'  + b.barcode + '</td>'
 		+ '<td>' + b.brand + '</td>'
 		+ '<td>'  + b.category + '</td>'
 		+ '<td>'  + b.name + '</td>'

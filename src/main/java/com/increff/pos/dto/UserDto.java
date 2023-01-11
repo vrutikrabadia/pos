@@ -20,8 +20,8 @@ public class UserDto {
     @Autowired
     UserService service;
 
-    public void add(UserForm f) throws ApiException {
-        UserPojo p = ConvertUtil.convertUserFormToPojo(f);
+    public void add(UserForm form) throws ApiException {
+        UserPojo p = ConvertUtil.objectMapper(form, UserPojo.class);
         StringUtil.normalizeUser(p);
         service.add(p);
     }
@@ -29,19 +29,19 @@ public class UserDto {
     public UserData get(String email) throws ApiException {
         UserPojo p = service.get(email);
 
-        return ConvertUtil.convertUserPojoToData(p);
+        return ConvertUtil.objectMapper(p, UserData.class);
     }
 
     public List<UserData> getAll() {
         List<UserPojo> list = service.getAll();
         List<UserData> list2 = new ArrayList<UserData>();
         for (UserPojo p : list) {
-            list2.add(ConvertUtil.convertUserPojoToData(p));
+            list2.add(ConvertUtil.objectMapper(p, UserData.class));
         }
         return list2;
     }
 
-    public void delete(int id) {
+    public void delete(Integer id) {
         service.delete(id);
     }
 

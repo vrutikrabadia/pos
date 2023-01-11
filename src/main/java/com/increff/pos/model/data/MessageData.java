@@ -3,7 +3,9 @@ package com.increff.pos.model.data;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter 
+@Setter 
 public class MessageData {
 
-	@Getter @Setter private String message;
+	private String message;
 }

@@ -31,7 +31,7 @@ public class InventoryDao extends AbstractDao{
         return allQuery.getResultList();
     }
 
-    public InventoryPojo selectById(int id){
+    public InventoryPojo selectById(Integer id){
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<InventoryPojo> cq = cb.createQuery(InventoryPojo.class);

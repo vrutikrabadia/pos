@@ -5,7 +5,8 @@ import com.increff.pos.model.form.BrandForm;
 import lombok.Getter;
 import lombok.Setter;
 
-
+@Getter
+@Setter
 public class BrandData extends BrandForm{
-    @Getter @Setter private int id;
+    private Integer id;
 }
