@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.increff.pos.model.data.BrandData;
+import com.increff.pos.model.data.BrandSelectData;
 import com.increff.pos.model.form.BrandForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.service.ApiException;
@@ -39,14 +40,21 @@ public class BrandDto {
         return ConvertUtil.objectMapper(p, BrandData.class);
     }
 
-    public List<BrandData> getAll(Integer pageNo, Integer pageSize){
+    public BrandSelectData getAll(Integer pageNo, Integer pageSize, Integer draw){
         List<BrandPojo> list = service.getAll(pageNo, pageSize);
         List<BrandData> list1 = new ArrayList<BrandData>();
         for(BrandPojo p:list){
             list1.add(ConvertUtil.objectMapper(p, BrandData.class));
         }
+        
+        Integer totalEntries = service.getTotalEntries();
 
-        return list1;
+        BrandSelectData result = new BrandSelectData();
+        result.setData(list1);
+        result.setDraw(draw);
+        result.setRecordsFiltered(totalEntries);
+        result.setRecordsTotal(totalEntries);
+        return result;
 
     }
 

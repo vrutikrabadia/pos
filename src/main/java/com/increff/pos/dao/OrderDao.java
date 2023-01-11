@@ -1,7 +1,5 @@
 package com.increff.pos.dao;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,9 +13,6 @@ import com.increff.pos.pojo.OrderPojo;
 @Repository
 public class OrderDao extends AbstractDao{
     
-    @PersistenceContext
-    private EntityManager em;
-
     public Integer insert(OrderPojo p){
         em.persist(p);
         return p.getId();

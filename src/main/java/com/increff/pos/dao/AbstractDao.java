@@ -12,7 +12,7 @@ import javax.persistence.criteria.Root;
 public abstract class AbstractDao {
 	
 	@PersistenceContext
-	private EntityManager em;
+	protected EntityManager em;
 
 	protected <T> T getSingle(TypedQuery<T> query) {
 		return query.getResultList().stream().findFirst().orElse(null);
@@ -42,6 +42,17 @@ public abstract class AbstractDao {
         CriteriaQuery<T> all = cq.select(root);
         TypedQuery<T> allQuery = em.createQuery(all);
         return allQuery.setFirstResult(offset).setMaxResults(pageSize).getResultList();
+    }
+
+	public <T> Integer getTotalEntries(Class<T> pojoClass){
+
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+    	CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
+    	criteria.select(builder.count(criteria.from(pojoClass)));
+    	TypedQuery<Long> query = em.createQuery(criteria);
+
+    	return  Math.toIntExact(getSingle(query));
+
     }
 
 }

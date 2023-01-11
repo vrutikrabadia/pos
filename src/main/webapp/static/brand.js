@@ -19,7 +19,7 @@ function addBrand(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
-	   		getBrandList();  
+			$("#brand-table").DataTable().ajax.reload()
 	   },
 	   error: handleAjaxError
 	});
@@ -45,7 +45,7 @@ function updateBrand(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
-	   		getBrandList();   
+			$("#brand-table").DataTable().ajax.reload()
 	   },
 	   error: handleAjaxError
 	});
@@ -54,18 +54,6 @@ function updateBrand(event){
 }
 
 
-function getBrandList(){
-	var url = getBrandUrl() + "?pageNo=0&pageSize=10";
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	   		displayBrandList(data);  
-	   },
-	   error: handleAjaxError
-	});
-}
-
 function deleteBrand(id){
 	var url = getBrandUrl() + "/" + id;
 
@@ -73,7 +61,7 @@ function deleteBrand(id){
 	   url: url,
 	   type: 'DELETE',
 	   success: function(data) {
-	   		getBrandList();  
+			$("#brand-table").DataTable().ajax.reload()
 	   },
 	   error: handleAjaxError
 	});
@@ -134,30 +122,6 @@ function downloadErrors(){
 	writeFileData(errorData);
 }
 
-//UI DISPLAY METHODS
-
-function displayBrandList(data){
-	var $tbody = $('#brand-table').find('tbody');
-	$tbody.empty();
-	for(var i in data){
-		var b = data[i];
-		var buttonHtml = ' <button onclick="displayEditBrand(' + b.id + ')">edit</button>';
-
-		var row = '<tr>'
-		+ '<td>' + b.id + '</td>'
-		+ '<td>' + b.brand + '</td>'
-		+ '<td>'  + b.category + '</td>'
-		+ '<td>' + buttonHtml + '</td>'
-		+ '</tr>';
-        $tbody.append(row);
-	}
-	paginate();
-}
-
-function paginate() {
-	$('#brand-table').DataTable();
-	$('.dataTables_length').addClass('bs-select');
-}
 
 function displayEditBrand(id){
 	var url = getBrandUrl() + "/" + id;
@@ -211,15 +175,35 @@ function displayBrand(data){
 
 //INITIALIZATION CODE
 function init(){
+
+	$('#brand-table').DataTable( {
+		"processing": true,
+		"serverSide": true,
+		"lengthMenu": [2,5,10,20, 40, 60, 80, 100],
+		"pageLength":10,
+		"ajax": {url : getBrandUrl()},
+		"columns": [
+            { "data": "id" },
+            { "data": "brand" },
+            { "data": "category" },
+			{
+				"data":null,
+				"render":function(o){return '<button onclick="displayEditBrand(' + o.id + ')">edit</button>'}
+			}
+        ]
+	});
+
 	$('#add-brand').click(addBrand);
 	$('#update-brand').click(updateBrand);
-	$('#refresh-data').click(getBrandList);
+	$('#refresh-data').click($("#brand-table").DataTable().ajax.reload());
 	$('#upload-data').click(displayUploadData);
 	$('#process-data').click(processData);
 	$('#download-errors').click(downloadErrors);
-    $('#brandFile').on('change', updateFileName)
+    $('#brandFile').on('change', updateFileName);
+
+	
 }
 
 $(document).ready(init);
-$(document).ready(getBrandList);
+// $(document).ready(getBrandList);
 

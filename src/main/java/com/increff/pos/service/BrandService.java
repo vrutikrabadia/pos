@@ -49,6 +49,10 @@ public class BrandService {
         }
         return pojo;
     }
+
+    public Integer getTotalEntries(){
+        return dao.getTotalEntries(BrandPojo.class);
+    }
     
     private BrandPojo getCheck(Integer id) throws ApiException{
         BrandPojo b = dao.selectById(id);

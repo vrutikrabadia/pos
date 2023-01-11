@@ -1,6 +1,5 @@
 package com.increff.pos.controller;
 
-import java.util.List;
 
 import javax.validation.Valid;
 
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.BrandDto;
 import com.increff.pos.model.data.BrandData;
+import com.increff.pos.model.data.BrandSelectData;
 import com.increff.pos.model.form.BrandForm;
 import com.increff.pos.service.ApiException;
 
@@ -45,8 +45,8 @@ public class BrandApiController {
 
     @ApiOperation(value = "Get all brand/category")
     @RequestMapping(path = "/brands", method = RequestMethod.GET)
-    public List<BrandData> get(@RequestParam Integer pageNo, @RequestParam Integer pageSize) throws ApiException{
-        return dto.getAll(pageNo, pageSize);
+    public BrandSelectData get(@RequestParam Integer draw,@RequestParam Integer start, @RequestParam Integer length) throws ApiException{
+        return dto.getAll(start/length, length, draw);
     }
 
     @ApiOperation(value = "Get brand/category by brand/category")

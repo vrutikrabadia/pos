@@ -2,8 +2,6 @@ package com.increff.pos.dao;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -16,9 +14,6 @@ import com.increff.pos.pojo.OrderItemsPojo;
 
 @Repository
 public class OrderItemsDao extends AbstractDao{
-    
-    @PersistenceContext
-    private EntityManager em;
 
     public OrderItemsPojo selectById(Integer id){
         CriteriaBuilder cb = em.getCriteriaBuilder();
