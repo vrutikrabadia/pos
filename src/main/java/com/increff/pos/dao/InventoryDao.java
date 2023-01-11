@@ -1,6 +1,5 @@
 package com.increff.pos.dao;
 
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,16 +19,6 @@ public class InventoryDao extends AbstractDao{
     @PersistenceContext
     private EntityManager em;
 
-    public List<InventoryPojo> selectAll(){
-
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<InventoryPojo> cq = cb.createQuery(InventoryPojo.class);
-        Root<InventoryPojo> productRoot = cq.from(InventoryPojo.class);
-        CriteriaQuery<InventoryPojo> all = cq.select(productRoot);
-        TypedQuery<InventoryPojo> allQuery = em.createQuery(all);
-
-        return allQuery.getResultList();
-    }
 
     public InventoryPojo selectById(Integer id){
 

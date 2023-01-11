@@ -37,8 +37,9 @@ public class ProductService {
         return p1;
     }
 
-    public List<ProductPojo> getAll(){
-        return dao.selectAll();
+    public List<ProductPojo> getAll(Integer pageNo, Integer pageSize){
+        Integer offset = pageNo*pageSize;
+        return dao.selectAll(offset, pageSize, ProductPojo.class);
     }
  
     public void update(Integer id, ProductPojo p) throws ApiException{

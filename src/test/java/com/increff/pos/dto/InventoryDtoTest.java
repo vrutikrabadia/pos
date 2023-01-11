@@ -1,7 +1,7 @@
 package com.increff.pos.dto;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.add(f);
 
-        List<InventoryData> d = dto.getAll();
+        List<InventoryData> d = dto.getAll(0,1);
         
         assertEquals(d.get(0).getBarcode(), barcode);
         assertEquals(d.get(0).getQuantity(), quantity);
@@ -72,7 +72,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.add(f1);
 
-        List<InventoryData> d = dto.getAll();
+        List<InventoryData> d = dto.getAll(0,10);
 
         assertEquals(d.size(), 2);
 
@@ -102,13 +102,12 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.update(f);
 
-        List<InventoryData> d = dto.getAll();
+        List<InventoryData> d = dto.getAll(0,1);
         assertEquals(d.get(0).getQuantity(), updatedQuantity);
     }
 
     @Test
     public void testAddProductNotExist() throws ApiException{
-        boolean thrown = false;
         String barcode = "1a3t5tq8";
 
         Integer quantity = 5;
@@ -119,14 +118,13 @@ public class InventoryDtoTest extends AbstractUnitTest{
             dto.add(f);
         }
         catch(ApiException e){
-            thrown = true;
+            return;
         }
-        assertTrue(thrown);
+        fail();
     }
 
     @Test
     public void testAddInventoryExists() throws ApiException{
-        boolean thrown = false;
         String brand = "brand1";
         String category = "category1";
 
@@ -143,20 +141,19 @@ public class InventoryDtoTest extends AbstractUnitTest{
         InventoryForm f = TestUtil.getInventoryForm(barcode, quantity);
 
         dto.add(f);
+        dto.add(f);
+        List<InventoryData> d = dto.getAll(0,1);
+        
+        Integer finalQuantity = 10;
 
-        try{
-            dto.add(f);
-        }
-        catch(ApiException e){
-            thrown = true;
-        }
-        assertTrue(thrown);
+        assertEquals(d.get(0).getBarcode(), barcode);
+        assertEquals(d.get(0).getQuantity(), finalQuantity);
+
 
     }
 
     @Test
     public void testUpdateInventoryNotExist() throws ApiException{
-        boolean thrown = false;
         String barcode = "1a3t5tq8";
 
         Integer quantity = 5;
@@ -167,14 +164,13 @@ public class InventoryDtoTest extends AbstractUnitTest{
             dto.update(f);
         }
         catch(ApiException e){
-            thrown = true;
+            return;
         }
-        assertTrue(thrown);
+        fail();
     }
 
     @Test
     public void testAddNegativeQuantity() throws ApiException{
-        boolean thrown = false;
         String brand = "brand1";
         String category = "category1";
 
@@ -194,14 +190,13 @@ public class InventoryDtoTest extends AbstractUnitTest{
             dto.add(f);
         }
         catch(ApiException e){
-            thrown = true;
+            return;
         }
-        assertTrue(thrown);
+        fail();
     }
 
     @Test
     public void testUpdateNegativeQuantity() throws ApiException{
-        boolean thrown = false;
         String brand = "brand1";
         String category = "category1";
 
@@ -226,9 +221,9 @@ public class InventoryDtoTest extends AbstractUnitTest{
             dto.update(f);
         }
         catch(ApiException e){
-            thrown = true;
+            return;
         }
+        fail();
 
-        assertTrue(thrown);
     }
 }

@@ -15,6 +15,7 @@ import com.increff.pos.service.ApiException;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ConvertUtil;
+import com.increff.pos.util.ValidateUtil;
 
 @Component
 public class InventoryDto {
@@ -31,18 +32,24 @@ public class InventoryDto {
         InventoryPojo p = ConvertUtil.objectMapper(form, InventoryPojo.class);
         p.setId(p1.getId());
 
-        if(p.getQuantity() < 0){
-            throw new ApiException("Quantity should be non negative");
-        }
+        ValidateUtil.validateInventory(p);
+
         if(Objects.isNull(p1)){
             throw new ApiException("Product does not exist");
         }
 
-        if(service.checkDuplicate(p.getId())){
-            throw new ApiException("Inventory for the product already exist");
+        try{
+            service.getCheck(p.getId());
         }
+        catch(ApiException e){
+            service.add(p);
+            return;
+        }
+        
+        InventoryPojo iPojo = service.get(p.getId());
 
-        service.add(p);
+        service.increaseQuantity(iPojo.getId(), p.getQuantity());
+        
     }
 
     public InventoryData get(String barcode) throws ApiException{
@@ -55,9 +62,9 @@ public class InventoryDto {
         return d;
     }
 
-    public List<InventoryData> getAll() throws ApiException{
+    public List<InventoryData> getAll(Integer pageNo, Integer pageSize) throws ApiException{
         List<InventoryData> list = new ArrayList<InventoryData>();
-        List<InventoryPojo> list1 = service.getAll();
+        List<InventoryPojo> list1 = service.getAll(pageNo, pageSize);
         
         for(InventoryPojo p: list1){
             ProductPojo prodPojo = pService.get(p.getId());
@@ -75,9 +82,7 @@ public class InventoryDto {
         InventoryPojo p = ConvertUtil.objectMapper(form, InventoryPojo.class);
         p.setId(p1.getId());
 
-        if(p.getQuantity() < 0){
-            throw new ApiException("Quantity should be non negative");
-        }
+        ValidateUtil.validateInventory(p);
 
         InventoryPojo p2 = service.getCheck(p.getId());
         p2.setQuantity(p.getQuantity());

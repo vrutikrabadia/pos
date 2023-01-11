@@ -17,6 +17,7 @@ import com.increff.pos.service.UserService;
 import io.swagger.annotations.ApiOperation;
 
 @Controller
+@RequestMapping(path = "/site")
 public class InitApiController extends AbstractUiController {
 
 	@Autowired
@@ -25,14 +26,14 @@ public class InitApiController extends AbstractUiController {
 	private InfoData info;
 
 	@ApiOperation(value = "Initializes application")
-	@RequestMapping(path = "/site/init", method = RequestMethod.GET)
+	@RequestMapping(path = "/init", method = RequestMethod.GET)
 	public ModelAndView showPage(UserForm form) throws ApiException {
 		info.setMessage("");
 		return mav("init.html");
 	}
 
 	@ApiOperation(value = "Initializes application")
-	@RequestMapping(path = "/site/init", method = RequestMethod.POST)
+	@RequestMapping(path = "/init", method = RequestMethod.POST)
 	public ModelAndView initSite(UserForm form) throws ApiException {
 		List<UserPojo> list = service.getAll();
 		if (list.size() > 0) {

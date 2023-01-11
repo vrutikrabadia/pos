@@ -1,10 +1,8 @@
 package com.increff.pos.dao;
 
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-// import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -22,17 +20,6 @@ public class ProductDao extends AbstractDao{
     @PersistenceContext
     private EntityManager em;
 
-
-    public List<ProductPojo> selectAll(){
-
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<ProductPojo> cq = cb.createQuery(ProductPojo.class);
-        Root<ProductPojo> productRoot = cq.from(ProductPojo.class);
-        CriteriaQuery<ProductPojo> all = cq.select(productRoot);
-        TypedQuery<ProductPojo> allQuery = em.createQuery(all);
-
-        return allQuery.getResultList();
-    }
 
     public ProductPojo selectById(Integer id){
         CriteriaBuilder cb = em.getCriteriaBuilder();

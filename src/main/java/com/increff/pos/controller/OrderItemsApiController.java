@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.OrderItemsDto;
+import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.data.OrderItemsData;
 import com.increff.pos.model.form.OrderItemsForm;
 import com.increff.pos.service.ApiException;
@@ -19,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api
 @RestController
+@RequestMapping(path = "/api")
 public class OrderItemsApiController {
 
 
@@ -26,25 +28,25 @@ public class OrderItemsApiController {
     private OrderItemsDto dto;
 
     @ApiOperation(value="Adds Order Items")
-    @RequestMapping(path="/api/orders/{id}/items", method = RequestMethod.POST)
-    public void add(@RequestBody List<OrderItemsForm> form, @PathVariable Integer orderId) throws ApiException{
-        dto.add(orderId, form);
+    @RequestMapping(path="/orders/items", method = RequestMethod.POST)
+    public OrderData add(@RequestBody List<OrderItemsForm> form) throws ApiException{
+        return dto.add(form);
     }
 
     @ApiOperation(value="Get Order Items")
-    @RequestMapping(path="/api/orders/items/{id}", method = RequestMethod.GET)
+    @RequestMapping(path="/orders/items/{id}", method = RequestMethod.GET)
     public OrderItemsData get(@PathVariable Integer id) throws ApiException{
         return dto.getById(id);
     }
 
     @ApiOperation(value="Get Order Items by order id")
-    @RequestMapping(path="/api/orders/{id}/items", method = RequestMethod.GET)
+    @RequestMapping(path="/orders/{id}/items", method = RequestMethod.GET)
     public List<OrderItemsData> getByOrderId(@PathVariable Integer id) throws ApiException{
         return dto.getByOrderId(id);
     }
 
     @ApiOperation(value="Updates order item by item id")
-    @RequestMapping(path="/api/orders/items/{id}", method = RequestMethod.PUT)
+    @RequestMapping(path="/orders/items/{id}", method = RequestMethod.PUT)
     public void update(@PathVariable Integer id, @RequestBody OrderItemsForm f) throws ApiException{
         dto.update(id, f);
     }

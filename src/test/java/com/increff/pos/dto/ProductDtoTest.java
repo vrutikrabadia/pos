@@ -1,7 +1,7 @@
 package com.increff.pos.dto;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         String barcodeNormalised = "1a3t5tq8";
         String nameNormalised = "name1";
 
-        List<ProductData> d = dto.getAll();
+        List<ProductData> d = dto.getAll(0,1);
 
         assertEquals(d.get(0).getBarcode(), barcodeNormalised);
         assertEquals(d.get(0).getBrand(), brand);
@@ -48,7 +48,6 @@ public class ProductDtoTest extends AbstractUnitTest{
 
     @Test
     public void testAddProductWithouBrandAndCategory() throws ApiException{
-        boolean thrown = false;
         
         String barcode = "1A3T5tq8";
         String name = "naMe1";
@@ -59,10 +58,9 @@ public class ProductDtoTest extends AbstractUnitTest{
         }
 
         catch(ApiException e){
-            thrown = true;
+            return;
         }
-
-        assertTrue(thrown);
+        fail();
     }
 
     @Test
@@ -85,7 +83,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         
         dto.add(f1);
 
-        List<ProductData> d = dto.getAll();
+        List<ProductData> d = dto.getAll(0,1);
 
         String barcode1 = "1a3t5tq7";
         String name1 = "name2";
@@ -99,7 +97,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         dto.update(d.get(0).getId(), f1);
 
-        d = dto.getAll();
+        d = dto.getAll(0,1);
 
         assertEquals(d.get(0).getBarcode(), barcode1);
         assertEquals(d.get(0).getBrand(), brand1);
@@ -131,7 +129,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         TestUtil.addProduct(barcode1, brand, category, name1, mrp1);
 
-        List<ProductData> d = dto.getAll();
+        List<ProductData> d = dto.getAll(0,10);
 
 
         assertEquals(d.size(), 2);
@@ -140,7 +138,6 @@ public class ProductDtoTest extends AbstractUnitTest{
 
     @Test
     public void duplicateBarCode() throws ApiException{
-        boolean thrown = false;
 
         String brand  = "brand1";
         String category = "category1";
@@ -163,17 +160,14 @@ public class ProductDtoTest extends AbstractUnitTest{
             TestUtil.addProduct(barcode1, brand, category, name1, mrp1);
         }
         catch(ApiException e){
-            thrown = true;
+            return;
         }
-
-        assertTrue(thrown);
+        fail();
         
     }
 
     @Test
     public void testAddNegativeMrp() throws ApiException{
-        boolean thrown = false;
-        
         String brand = "brand1";
         String category = "category1";
 
@@ -187,15 +181,13 @@ public class ProductDtoTest extends AbstractUnitTest{
             TestUtil.addProduct(barcode, brand, category, name, mrp);
         }
         catch(ApiException e){
-            thrown = true;
+            return;
         }
-
-        assertTrue(thrown);;
+        fail();
     }
 
     @Test
     public void testUpdateNegativeMrp() throws ApiException{
-        boolean thrown = false;
 
         String brand  = "brand1";
         String category = "category1";
@@ -215,7 +207,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         
         dto.add(f1);
 
-        List<ProductData> d = dto.getAll();
+        List<ProductData> d = dto.getAll(0,1);
 
         String barcode1 = "1a3t5tq7";
         String name1 = "name2";
@@ -231,11 +223,9 @@ public class ProductDtoTest extends AbstractUnitTest{
             dto.update(d.get(0).getId(), f1);
         }
         catch(ApiException e){
-            thrown = true;
+            return;
         }
-
-        assertTrue(thrown);
-
+        fail();
     }
 
     

@@ -33,7 +33,7 @@ function addProduct(event){
 }
 
 function getBrandList(){
-	var url = getBrandUrl();
+	var url = getBrandUrl()+ "?pageNo=0&pageSize=10";
 	$.ajax({
 	   url: url,
 	   type: 'GET',
@@ -82,7 +82,7 @@ function updateProduct(event){
 
 
 function getProductList(){
-	var url = getProductUrl();
+	var url = getProductUrl()+ "?pageNo=0&pageSize=10";
 	$.ajax({
 	   url: url,
 	   type: 'GET',

@@ -22,37 +22,26 @@ public class BrandService {
     public void add(BrandPojo p) {
         dao.insert(p);
     }
-
-    public boolean checkDuplicate(BrandPojo p){
-        BrandPojo b1 = dao.selectByBrandCategory(p.getBrand(), p.getCategory());
-        if(Objects.isNull(b1)){
-            return false;
-        }
-        return true;
-    }
     
     public BrandPojo get(Integer id) throws ApiException{
         return getCheck(id);
     }
 
-    private BrandPojo getCheck(Integer id) throws ApiException{
-        BrandPojo b = dao.selectById(id);
-        if(Objects.isNull(b)){
-            throw new ApiException("brand/category with given ID does not exist, id: "+id);
-        }
-        return b;
-    }
-
-     
-    public List<BrandPojo> getAll(){
-        return dao.selectAll();
+    public List<BrandPojo> getAll(Integer pageNo, Integer pageSize){
+        Integer offset = pageNo*pageSize;
+        return dao.selectAll(offset, pageSize, BrandPojo.class);
     }
 
     public BrandPojo get(String brand, String category) throws ApiException{
         return getcheck(brand, category);
     }
+
+    public void update(Integer id,BrandPojo p) throws ApiException{
+        BrandPojo b1 = getCheck(id);
+        b1.setBrand(p.getBrand());
+        b1.setCategory(p.getCategory());
+    }
     
-      
     public BrandPojo getcheck(String brand, String category) throws ApiException{
         BrandPojo pojo = dao.selectByBrandCategory(brand, category);
         if(Objects.isNull(pojo)){
@@ -60,12 +49,12 @@ public class BrandService {
         }
         return pojo;
     }
-
-     
-    public void update(Integer id,BrandPojo p) throws ApiException{
-        BrandPojo b1 = getCheck(id);
-        b1.setBrand(p.getBrand());
-        b1.setCategory(p.getCategory());
+    
+    private BrandPojo getCheck(Integer id) throws ApiException{
+        BrandPojo b = dao.selectById(id);
+        if(Objects.isNull(b)){
+            throw new ApiException("brand/category with given ID does not exist, id: "+id);
+        }
+        return b;
     }
-
 }

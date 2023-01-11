@@ -19,25 +19,26 @@ import io.swagger.annotations.ApiOperation;
 
 @Api
 @RestController
+@RequestMapping(path = "/api")
 public class AdminApiController {
 
 	@Autowired
 	private UserDto dto;
 
 	@ApiOperation(value = "Adds a user")
-	@RequestMapping(path = "/api/admin/user", method = RequestMethod.POST)
+	@RequestMapping(path = "/admin/user", method = RequestMethod.POST)
 	public void addUser(@RequestBody UserForm form) throws ApiException {
 		dto.add(form);
 	}
 
 	@ApiOperation(value = "Deletes a user")
-	@RequestMapping(path = "/api/admin/user/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(path = "/admin/user/{id}", method = RequestMethod.DELETE)
 	public void deleteUser(@PathVariable Integer id) {
 		dto.delete(id);
 	}
 
 	@ApiOperation(value = "Gets list of all users")
-	@RequestMapping(path = "/api/admin/user", method = RequestMethod.GET)
+	@RequestMapping(path = "/admin/user", method = RequestMethod.GET)
 	public List<UserData> getAllUser() {
 		return dto.getAll();
 	}

@@ -1,10 +1,8 @@
 package com.increff.pos.dao;
 
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-// import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -47,17 +45,6 @@ public class BrandDao extends AbstractDao{
         TypedQuery<BrandPojo> query = em.createQuery(cq);
 
         return getSingle(query);
-    }
-
-
-    public List<BrandPojo> selectAll(){
-
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<BrandPojo> cq = cb.createQuery(BrandPojo.class);
-        Root<BrandPojo> brandCat = cq.from(BrandPojo.class);
-        CriteriaQuery<BrandPojo> all = cq.select(brandCat);
-        TypedQuery<BrandPojo> allQuery = em.createQuery(all);
-        return allQuery.getResultList();
     }
 
 }

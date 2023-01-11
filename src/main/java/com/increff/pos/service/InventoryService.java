@@ -25,25 +25,11 @@ public class InventoryService {
     public InventoryPojo get(Integer id) throws ApiException{
         return getCheck(id);
     } 
-
-    public boolean checkDuplicate(Integer id) throws ApiException{
-        InventoryPojo p = dao.selectById(id);
-        if(p == null){
-            return false;
-        }
-        return true;
-    }
-
-    public InventoryPojo getCheck(Integer id) throws ApiException{
-        InventoryPojo p = dao.selectById(id);
-        if(p == null){
-            throw new ApiException("Inventory does not exist for thr product");
-        }
-        return p;
-    }
+    
      
-    public List<InventoryPojo> getAll(){
-        return dao.selectAll();
+    public List<InventoryPojo> getAll(Integer pageNo, Integer pageSize){
+        Integer offset = pageNo*pageSize;
+        return dao.selectAll(offset, pageSize, InventoryPojo.class);
     }
 
     public void update(Integer id, InventoryPojo p) throws ApiException{
@@ -51,6 +37,14 @@ public class InventoryService {
         p1.setQuantity(p.getQuantity());
     }
 
+    
+    public InventoryPojo getCheck(Integer id) throws ApiException{
+        InventoryPojo p = dao.selectById(id);
+        if(p == null){
+            throw new ApiException("Inventory does not exist for thr product");
+        }
+        return p;
+    }
      
     public void reduceQuantity(Integer id, Integer quantity) throws ApiException{
         InventoryPojo p = getCheck(id);

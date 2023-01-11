@@ -1,7 +1,5 @@
 package com.increff.pos.dao;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -23,16 +21,6 @@ public class OrderDao extends AbstractDao{
     public Integer insert(OrderPojo p){
         em.persist(p);
         return p.getId();
-    }
-
-    public List<OrderPojo> selectAll(){
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<OrderPojo> cq = cb.createQuery(OrderPojo.class);
-        Root<OrderPojo> productRoot = cq.from(OrderPojo.class);
-        CriteriaQuery<OrderPojo> all = cq.select(productRoot);
-        TypedQuery<OrderPojo> allQuery = em.createQuery(all);
-
-        return allQuery.getResultList();
     }
 
     public OrderPojo selectById(Integer id){

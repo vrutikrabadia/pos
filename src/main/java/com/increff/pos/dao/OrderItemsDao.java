@@ -44,16 +44,5 @@ public class OrderItemsDao extends AbstractDao{
         return query.getResultList();
     }
 
-    public List<OrderItemsPojo> selectAll(){
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<OrderItemsPojo> cq = cb.createQuery(OrderItemsPojo.class);
-        Root<OrderItemsPojo> productRoot = cq.from(OrderItemsPojo.class);
-        CriteriaQuery<OrderItemsPojo> all = cq.select(productRoot);
-        TypedQuery<OrderItemsPojo> allQuery = em.createQuery(all);
-
-        return allQuery.getResultList();
-    }
-
-
     
 }

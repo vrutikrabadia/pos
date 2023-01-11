@@ -56,18 +56,16 @@ public class OrderItemsService {
             throw new ApiException("Mismatch in product barcode provided");
         }
 
-        OrderPojo op = oService.get(p1.getOrderId());
+        OrderPojo op = oService.update(p1.getOrderId(), null);
 
         if(!op.isEditable()){
             throw new ApiException("Order is no longer editable");
         }
 
         if(p1.getQuantity() > p.getQuantity()){
-            //increase quantity in inventory
             iService.increaseQuantity(p1.getProductId(), p1.getQuantity()-p.getQuantity());
         }
         else if(p1.getQuantity() < p.getQuantity()){
-            //decrease quantity in inventory
             iService.reduceQuantity(p1.getProductId(), p.getQuantity()-p1.getQuantity());
         }
 

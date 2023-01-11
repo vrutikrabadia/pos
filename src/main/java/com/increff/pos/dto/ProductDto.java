@@ -15,6 +15,7 @@ import com.increff.pos.service.BrandService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ConvertUtil;
 import com.increff.pos.util.StringUtil;
+import com.increff.pos.util.ValidateUtil;
 
 @Component
 public class ProductDto {
@@ -25,27 +26,17 @@ public class ProductDto {
     private BrandService bService;
 
     public void add(ProductForm form) throws ApiException {
-
         BrandPojo brandP = bService.get(form.getBrand(), form.getCategory());
 
         ProductPojo p = ConvertUtil.objectMapper(form, ProductPojo.class);
         p.setBrandCat(brandP.getId());
-
+        
         StringUtil.normaliseProduct(p);
-
-        if (StringUtil.isEmpty(p.getName())) {
-            throw new ApiException("Product name cannot be empty");
-        }
-        if (StringUtil.isEmpty(p.getBarcode()) || p.getBarcode().length() != 8) {
-            throw new ApiException("Please provide a valid barcode(length 8)");
-        }
+        
+        ValidateUtil.validateProduct(p);
 
         if (service.checkBarCode(0, p.getBarcode())) {
             throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
-        }
-
-        if (p.getMrp() < 0) {
-            throw new ApiException("MRP should be non negative");
         }
 
         service.add(p);
@@ -63,8 +54,8 @@ public class ProductDto {
         return pData;
     }
 
-    public List<ProductData> getAll() throws ApiException {
-        List<ProductPojo> list = service.getAll();
+    public List<ProductData> getAll(Integer pageNo, Integer pageSize) throws ApiException {
+        List<ProductPojo> list = service.getAll(pageNo, pageSize);
         List<ProductData> list1 = new ArrayList<ProductData>();
         for (ProductPojo p : list) {
 
@@ -81,7 +72,7 @@ public class ProductDto {
     }
 
     public void update(Integer id, ProductForm form) throws ApiException {
-        
+
         BrandPojo brandP = bService.get(form.getBrand(), form.getCategory());
 
         ProductPojo p = ConvertUtil.objectMapper(form, ProductPojo.class);
@@ -89,19 +80,10 @@ public class ProductDto {
 
         StringUtil.normaliseProduct(p);
 
-        if (StringUtil.isEmpty(p.getName())) {
-            throw new ApiException("Product name cannot be empty");
-        }
-        if (StringUtil.isEmpty(p.getBarcode()) || p.getBarcode().length() != 8) {
-            throw new ApiException("Please provide a valid barcode(length 8)");
-        }
+        ValidateUtil.validateProduct(p);
 
         if (service.checkBarCode(id, p.getBarcode())) {
             throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
-        }
-
-        if (p.getMrp() < 0) {
-            throw new ApiException("MRP should be non negative");
         }
 
         service.update(id, p);

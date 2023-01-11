@@ -55,7 +55,7 @@ function updateBrand(event){
 
 
 function getBrandList(){
-	var url = getBrandUrl();
+	var url = getBrandUrl() + "?pageNo=0&pageSize=10";
 	$.ajax({
 	   url: url,
 	   type: 'GET',

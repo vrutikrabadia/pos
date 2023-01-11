@@ -1,5 +1,7 @@
 package com.increff.pos.dto;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,11 +12,13 @@ import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.data.OrderItemsData;
 import com.increff.pos.model.form.OrderItemsForm;
 import com.increff.pos.pojo.OrderItemsPojo;
+import com.increff.pos.pojo.OrderPojo;
 import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.OrderItemsService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ConvertUtil;
+import com.increff.pos.util.ValidateUtil;
 
 @Component
 public class OrderItemsDto {
@@ -25,7 +29,7 @@ public class OrderItemsDto {
     @Autowired
     private ProductService pService;
 
-    public OrderData add(Integer orderId,List<OrderItemsForm> list) throws ApiException{
+    public OrderData add(List<OrderItemsForm> list) throws ApiException{
         List<OrderItemsPojo> list1 = new ArrayList<OrderItemsPojo>();
 
         for(OrderItemsForm f: list){
@@ -35,16 +39,18 @@ public class OrderItemsDto {
 
             p.setProductId(product.getId());
 
-            if(p.getQuantity() < 1){
-                throw new ApiException("minimum quantity 1 required for order");
-            }
-            if(p.getSellingPrice() < 1){
-                throw new ApiException("selling price should be non negative");
-            }
+            ValidateUtil.validateOrderItem(p);
             list1.add(p);
         }
 
-        return ConvertUtil.objectMapper(service.add(list1), OrderData.class);
+        OrderPojo order = service.add(list1);
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");  
+        String strDate = dateFormat.format(order.getUpdated());  
+        OrderData data = ConvertUtil.objectMapper(order, OrderData.class);
+        data.setUpdated(strDate);
+
+        return data;
 
     }
 
@@ -75,6 +81,9 @@ public class OrderItemsDto {
 
     public void update(Integer id, OrderItemsForm f) throws ApiException{
         OrderItemsPojo p = ConvertUtil.objectMapper(f, OrderItemsPojo.class);
+        
+        ValidateUtil.validateOrderItem(p);
+        
         ProductPojo product = pService.get(f.getBarcode());
         p.setProductId(product.getId());
 

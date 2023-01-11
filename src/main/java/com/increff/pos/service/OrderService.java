@@ -39,8 +39,10 @@ public class OrderService {
     }
 
      
-    public List<OrderPojo> getAll(){
-        return dao.selectAll();
+    public List<OrderPojo> getAll(Integer pageNo, Integer pageSize){  
+        Integer offset = pageNo*pageSize;
+        return dao.selectAll(offset, pageSize, OrderPojo.class);
+   
     }
 
     public OrderPojo update(Integer id,OrderPojo p) throws ApiException{

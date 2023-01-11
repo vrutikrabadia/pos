@@ -13,6 +13,7 @@ import com.increff.pos.service.ApiException;
 import com.increff.pos.service.BrandService;
 import com.increff.pos.util.ConvertUtil;
 import com.increff.pos.util.StringUtil;
+import com.increff.pos.util.ValidateUtil;
 
 @Component
 public class BrandDto {
@@ -23,13 +24,14 @@ public class BrandDto {
     public void add(BrandForm f) throws ApiException{
         BrandPojo p = ConvertUtil.objectMapper(f, BrandPojo.class);
         StringUtil.normaliseBrand(p);
-        if(StringUtil.isEmpty(p.getBrand()) || StringUtil.isEmpty(p.getCategory())){
-            throw new ApiException("Brand or category cannot be empty");
+        ValidateUtil.validateBrand(p);
+
+        try{
+            service.getcheck(f.getBrand(), f.getCategory());
         }
-        if(service.checkDuplicate(p)){
-            throw new ApiException("brand/category already exist: "+p.getBrand()+"/"+p.getCategory());
+        catch(ApiException e){
+            service.add(p);
         }
-        service.add(p);
     }
 
     public BrandData get(Integer id) throws ApiException{
@@ -37,8 +39,8 @@ public class BrandDto {
         return ConvertUtil.objectMapper(p, BrandData.class);
     }
 
-    public List<BrandData> getAll(){
-        List<BrandPojo> list = service.getAll();
+    public List<BrandData> getAll(Integer pageNo, Integer pageSize){
+        List<BrandPojo> list = service.getAll(pageNo, pageSize);
         List<BrandData> list1 = new ArrayList<BrandData>();
         for(BrandPojo p:list){
             list1.add(ConvertUtil.objectMapper(p, BrandData.class));
@@ -57,12 +59,7 @@ public class BrandDto {
     public void update(Integer id, BrandForm f) throws ApiException{
         BrandPojo p = ConvertUtil.objectMapper(f, BrandPojo.class);
         StringUtil.normaliseBrand(p);
-        if(StringUtil.isEmpty(p.getBrand()) || StringUtil.isEmpty(p.getCategory())){
-            throw new ApiException("Brand of category cannot be empty");
-        }
-        if(service.checkDuplicate(p)){
-            throw new ApiException("brand/category already exist: "+p.getBrand()+"/"+p.getCategory());
-        }
+        ValidateUtil.validateBrand(p);
         service.update(id, p);
     }
 

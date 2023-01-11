@@ -54,7 +54,7 @@ function updateInventory(event){
 
 
 function getInventoryList(){
-	var url = getInventoryUrl();
+	var url = getInventoryUrl()+ "?pageNo=0&pageSize=10";
 	$.ajax({
 	   url: url,
 	   type: 'GET',

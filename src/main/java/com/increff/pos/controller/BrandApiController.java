@@ -2,11 +2,14 @@ package com.increff.pos.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.BrandDto;
@@ -19,6 +22,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api
 @RestController
+@RequestMapping(path = "/api")
 public class BrandApiController {
     
 
@@ -26,33 +30,33 @@ public class BrandApiController {
     private BrandDto dto;
 
     @ApiOperation(value = "Adds brand/category")
-    @RequestMapping(path = "/api/brands", method = RequestMethod.POST)
-    public void add(@RequestBody BrandForm form) throws ApiException{
+    @RequestMapping(path = "/brands", method = RequestMethod.POST)
+    public void add(@Valid @RequestBody BrandForm form) throws ApiException{
         dto.add(form);
     }
 
 
     @ApiOperation(value = "Get brand/category by id")
-    @RequestMapping(path = "/api/brands/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/brands/{id}", method = RequestMethod.GET)
     public BrandData get(@PathVariable Integer id) throws ApiException{
         return dto.get(id);
     }
 
 
     @ApiOperation(value = "Get all brand/category")
-    @RequestMapping(path = "/api/brands", method = RequestMethod.GET)
-    public List<BrandData> get() throws ApiException{
-        return dto.getAll();
+    @RequestMapping(path = "/brands", method = RequestMethod.GET)
+    public List<BrandData> get(@RequestParam Integer pageNo, @RequestParam Integer pageSize) throws ApiException{
+        return dto.getAll(pageNo, pageSize);
     }
 
     @ApiOperation(value = "Get brand/category by brand/category")
-    @RequestMapping(path = "/api/brands/{brand}/{category}", method = RequestMethod.GET)
+    @RequestMapping(path = "/brands/{brand}/categories/{category}", method = RequestMethod.GET)
     public BrandData get(@PathVariable String brand, @PathVariable String category) throws ApiException{
         return dto.get(brand, category);
     }
 
     @ApiOperation(value = "Update brand/category by id")
-    @RequestMapping(path = "/api/brands/{id}", method = RequestMethod.PUT)
+    @RequestMapping(path = "/brands/{id}", method = RequestMethod.PUT)
     public void update(@PathVariable Integer id, @RequestBody BrandForm form) throws ApiException{
         dto.update(id, form);
     }
