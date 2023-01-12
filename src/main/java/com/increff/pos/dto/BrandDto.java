@@ -6,9 +6,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.increff.pos.model.data.BrandBulkData;
 import com.increff.pos.model.data.BrandData;
 import com.increff.pos.model.data.BrandSelectData;
 import com.increff.pos.model.form.BrandForm;
+import com.increff.pos.pojo.BrandBulkPojo;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.BrandService;
@@ -38,6 +40,38 @@ public class BrandDto {
         throw new ApiException("Brand and category already exists");
 
     }
+
+    public List<BrandBulkData> bulkAdd(List<BrandForm> list){
+        List<BrandBulkData> errorList = new ArrayList<BrandBulkData>();
+
+        List<BrandPojo> pojoList = new ArrayList<BrandPojo>();
+
+        for(BrandForm form: list){
+            BrandPojo pojo = ConvertUtil.objectMapper(form, BrandPojo.class);
+
+            try{
+                ValidateUtil.validateBrand(pojo);
+            }
+            catch(ApiException e){
+                BrandBulkData error = new BrandBulkData();
+                error = ConvertUtil.objectMapper(pojo, BrandBulkData.class);
+                error.setError(e.getMessage());
+                errorList.add(error);
+                continue;
+            }
+            pojoList.add(pojo);
+        }
+
+        List<BrandBulkPojo> serviceErrors = service.bulkAdd(pojoList);
+        
+        for(BrandBulkPojo error: serviceErrors){
+            errorList.add(ConvertUtil.objectMapper(error, BrandBulkData.class));
+        }
+
+
+        return errorList;
+    }
+
 
     public BrandData get(Integer id) throws ApiException{
         BrandPojo p = service.get(id);

@@ -1,5 +1,6 @@
 package com.increff.pos.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.increff.pos.dao.BrandDao;
+import com.increff.pos.pojo.BrandBulkPojo;
 import com.increff.pos.pojo.BrandPojo;
+import com.increff.pos.util.ConvertUtil;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
@@ -21,6 +24,27 @@ public class BrandService {
      
     public void add(BrandPojo p) {
         dao.insert(p);
+    }
+
+    public List<BrandBulkPojo> bulkAdd(List<BrandPojo> list){
+        List<BrandBulkPojo> errorList = new ArrayList<BrandBulkPojo>();
+    
+        for(BrandPojo brand: list){
+            try{
+                getcheck(brand.getBrand(), brand.getCategory());
+            }
+            catch(ApiException e){
+                add(brand);
+                continue;
+            }
+            BrandBulkPojo error = new BrandBulkPojo();
+            error = ConvertUtil.objectMapper(brand, BrandBulkPojo.class);
+            error.setError("Brand and category already exists");
+
+            errorList.add(error);
+        }
+    
+        return errorList;
     }
     
     public BrandPojo get(Integer id) throws ApiException{

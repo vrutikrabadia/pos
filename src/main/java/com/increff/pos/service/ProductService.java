@@ -1,5 +1,6 @@
 package com.increff.pos.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.increff.pos.dao.ProductDao;
+import com.increff.pos.pojo.ProductBulkPojo;
 import com.increff.pos.pojo.ProductPojo;
+import com.increff.pos.util.ConvertUtil;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
@@ -22,6 +25,23 @@ public class ProductService {
      
     public void add(ProductPojo p){
         dao.insert(p);
+    }
+
+    public List<ProductBulkPojo> bulkAdd(List<ProductPojo> list){
+        List<ProductBulkPojo> errorList = new ArrayList<ProductBulkPojo>();
+
+        for(ProductPojo prod: list){
+            if(checkBarCode(0, prod.getBarcode())){
+                ProductBulkPojo error = new ProductBulkPojo();
+                error = ConvertUtil.objectMapper(prod, ProductBulkPojo.class);
+                error.setError("DUPLICATE BARCODE: Product with barcode already exists.");
+                errorList.add(error);
+                continue;
+            }
+            add(prod);
+        }
+
+        return errorList;
     }
 
     public ProductPojo get(Integer id) throws ApiException{

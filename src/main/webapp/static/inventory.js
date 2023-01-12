@@ -53,18 +53,6 @@ function updateInventory(event){
 }
 
 
-// function getInventoryList(){
-// 	var url = getInventoryUrl()+ "?pageNo=0&pageSize=10";
-// 	$.ajax({
-// 	   url: url,
-// 	   type: 'GET',
-// 	   success: function(data) {
-// 	   		displayInventoryList(data);  
-// 	   },
-// 	   error: handleAjaxError
-// 	});
-// }
-
 function deleteInventory(id){
 	var url = getInventoryUrl() + "/" + id;
 
@@ -96,36 +84,23 @@ function readFileDataCallback(results){
 
 function uploadRows(){
 	//Update progress
-	updateUploadDialog();
-	//If everything processed then return
-	if(processCount==fileData.length){
-		return;
-	}
-	
-	//Process next row
-	var row = fileData[processCount];
-	processCount++;
-	
-	var json = JSON.stringify(row);
-	var url = getInventoryUrl();
+	var url = getInventoryUrl() + "/bulkAdd";
 
-	//Make ajax call
 	$.ajax({
-	   url: url,
-	   type: 'POST',
-	   data: json,
-	   headers: {
-       	'Content-Type': 'application/json'
-       },	   
-	   success: function(response) {
-	   		uploadRows();  
-	   },
-	   error: function(response){
-	   		row.error=response.responseText
-	   		errorData.push(row);
-	   		uploadRows();
-	   }
-	});
+		url: url,
+		type: 'POST',
+		data: JSON.stringify(fileData),
+		headers: {
+			'Content-Type': 'application/json'
+		},	   
+		success: function(response) {
+			console.log(response);
+			errorData = response;
+			processCount = fileData.length;	 
+			
+			updateUploadDialog();
+		}
+	 });
 
 }
 
@@ -135,27 +110,6 @@ function downloadErrors(){
 
 //UI DISPLAY METHODS
 
-// function displayInventoryList(data){
-// 	var $tbody = $('#inventory-table').find('tbody');
-// 	$tbody.empty();
-// 	for(var i in data){
-// 		var b = data[i];
-// 		var buttonHtml = ' <button onclick="displayEditInventory(\'' + b.barcode + '\')">edit</button>';
-
-// 		var row = '<tr>'
-// 		+ '<td>' + b.barcode + '</td>'
-// 		+ '<td>'  + b.quantity + '</td>'
-// 		+ '<td>' + buttonHtml + '</td>'
-// 		+ '</tr>';
-//         $tbody.append(row);
-// 	}
-// 	paginate();
-// }
-
-// function paginate() {
-// 	$('#inventory-table').DataTable();
-// 	$('.dataTables_length').addClass('bs-select');
-// }
 
 function displayEditInventory(barcode){
 	var url = getInventoryUrl()+"/"+barcode;
@@ -236,5 +190,4 @@ function init(){
 }
 
 $(document).ready(init);
-// $(document).ready(getInventoryList);
 

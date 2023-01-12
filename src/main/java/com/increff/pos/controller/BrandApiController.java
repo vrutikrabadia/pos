@@ -1,6 +1,6 @@
 package com.increff.pos.controller;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.BrandDto;
+import com.increff.pos.model.data.BrandBulkData;
 import com.increff.pos.model.data.BrandData;
 import com.increff.pos.model.data.BrandSelectData;
 import com.increff.pos.model.form.BrandForm;
@@ -19,11 +20,7 @@ import com.increff.pos.service.ApiException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 
 @Api
 @RestController
@@ -49,6 +46,13 @@ public class BrandApiController {
         // }
         dto.add(form);
     }
+
+    @ApiOperation(value = "Adds brand/category in bulk")
+    @RequestMapping(path = "/brands/bulkAdd", method = RequestMethod.POST)
+    public List<BrandBulkData> bulkAdd( @RequestBody List<BrandForm> form) throws ApiException {
+        return dto.bulkAdd(form);
+    }
+
 
     @ApiOperation(value = "Get brand/category by id")
     @RequestMapping(path = "/brands/{id}", method = RequestMethod.GET)

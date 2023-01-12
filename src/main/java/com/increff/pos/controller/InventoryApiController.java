@@ -1,5 +1,7 @@
 package com.increff.pos.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.InventoryDto;
+import com.increff.pos.model.data.InventoryBulkData;
 import com.increff.pos.model.data.InventoryData;
 import com.increff.pos.model.data.InventorySelectData;
 import com.increff.pos.model.form.InventoryForm;
@@ -30,6 +33,12 @@ public class InventoryApiController {
     @RequestMapping(path="/inventory", method = RequestMethod.POST)
     public void add(@RequestBody InventoryForm form) throws ApiException{
         dto.add(form);
+    }
+
+    @ApiOperation(value="Adds Inventory Bulk")
+    @RequestMapping(path="/inventory/bulkAdd", method = RequestMethod.POST)
+    public List<InventoryBulkData> bulkAdd(@RequestBody List<InventoryForm> list) throws ApiException{
+        return dto.bulkAdd(list);
     }
 
     @ApiOperation(value = "Get inventory by id")

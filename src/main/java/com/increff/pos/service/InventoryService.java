@@ -22,6 +22,26 @@ public class InventoryService {
         dao.insert(p);
     }
 
+
+    public void bulkAdd(List<InventoryPojo> list){
+        for(InventoryPojo inv: list){
+            try{
+                getCheck(inv.getId());
+            }
+            catch(ApiException e){
+                add(inv);
+                continue;
+            }
+
+            try{
+                increaseQuantity(inv.getId(), inv.getQuantity());
+            }
+            catch(ApiException e){
+                continue;
+            }
+        }
+    }
+
     public InventoryPojo get(Integer id) throws ApiException{
         return getCheck(id);
     } 
