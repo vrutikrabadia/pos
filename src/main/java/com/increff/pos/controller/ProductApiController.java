@@ -1,7 +1,5 @@
 package com.increff.pos.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.ProductDto;
 import com.increff.pos.model.data.ProductData;
+import com.increff.pos.model.data.ProductSelectData;
 import com.increff.pos.model.form.ProductForm;
 import com.increff.pos.service.ApiException;
 
@@ -43,8 +42,8 @@ public class ProductApiController {
 
     @ApiOperation(value = "Gets all products")
     @RequestMapping(path = "/products", method = RequestMethod.GET)
-    public List<ProductData> getAll(@RequestParam Integer pageNo, @RequestParam Integer pageSize) throws ApiException{
-        return dto.getAll(pageNo, pageSize);
+    public ProductSelectData getAll(@RequestParam Integer draw,@RequestParam Integer start, @RequestParam Integer length) throws ApiException{
+        return dto.getAll(start/length, length, draw);
     }
 
     @ApiOperation(value = "Update product by id")

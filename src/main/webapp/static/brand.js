@@ -124,11 +124,13 @@ function downloadErrors(){
 
 
 function displayEditBrand(id){
+	console.log("here1")
 	var url = getBrandUrl() + "/" + id;
 	$.ajax({
 	   url: url,
 	   type: 'GET',
 	   success: function(data) {
+		console.log("here2");
 	   		displayBrand(data);   
 	   },
 	   error: handleAjaxError
@@ -166,8 +168,9 @@ function displayUploadData(){
 }
 
 function displayBrand(data){
-	$("#brand-edit-form input[name=name]").val(data.name);	
-	$("#brand-edit-form input[name=age]").val(data.age);	
+	console.log("here");
+	$("#brand-edit-form input[name=brand]").val(data.brand);	
+	$("#brand-edit-form input[name=category]").val(data.category);	
 	$("#brand-edit-form input[name=id]").val(data.id);	
 	$('#edit-brand-modal').modal('toggle');
 }
@@ -179,6 +182,7 @@ function init(){
 	$('#brand-table').DataTable( {
 		"processing": true,
 		"serverSide": true,
+		"searching": false,
 		"lengthMenu": [2,5,10,20, 40, 60, 80, 100],
 		"pageLength":10,
 		"ajax": {url : getBrandUrl()},
@@ -205,5 +209,4 @@ function init(){
 }
 
 $(document).ready(init);
-// $(document).ready(getBrandList);
 

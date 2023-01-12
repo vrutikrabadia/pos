@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.increff.pos.model.data.ProductData;
+import com.increff.pos.model.data.ProductSelectData;
 import com.increff.pos.model.form.ProductForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.ProductPojo;
@@ -54,7 +55,7 @@ public class ProductDto {
         return pData;
     }
 
-    public List<ProductData> getAll(Integer pageNo, Integer pageSize) throws ApiException {
+    public ProductSelectData getAll(Integer pageNo, Integer pageSize, Integer draw) throws ApiException {
         List<ProductPojo> list = service.getAll(pageNo, pageSize);
         List<ProductData> list1 = new ArrayList<ProductData>();
         for (ProductPojo p : list) {
@@ -68,7 +69,13 @@ public class ProductDto {
             list1.add(pData);
         }
 
-        return list1;
+        ProductSelectData result = new ProductSelectData();
+        result.setData(list1);
+        result.setDraw(draw);
+        Integer totalRecords = service.getTotalEntries();
+        result.setRecordsFiltered(totalRecords);
+        result.setRecordsTotal(totalRecords);
+        return result;
     }
 
     public void update(Integer id, ProductForm form) throws ApiException {

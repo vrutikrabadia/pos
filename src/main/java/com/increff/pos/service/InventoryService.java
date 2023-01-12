@@ -59,4 +59,8 @@ public class InventoryService {
         InventoryPojo p = getCheck(id);
         p.setQuantity(p.getQuantity()+quantity);
     } 
+
+    public Integer getTotalEntries(){
+        return dao.getTotalEntries(InventoryPojo.class);
+    }
 }

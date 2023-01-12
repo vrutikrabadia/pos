@@ -1,7 +1,5 @@
 package com.increff.pos.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.InventoryDto;
 import com.increff.pos.model.data.InventoryData;
+import com.increff.pos.model.data.InventorySelectData;
 import com.increff.pos.model.form.InventoryForm;
 import com.increff.pos.service.ApiException;
 
@@ -41,8 +40,8 @@ public class InventoryApiController {
 
     @ApiOperation(value = "Get inventory ")
     @RequestMapping(path="/inventory", method = RequestMethod.GET)
-    public List<InventoryData> getAll(@RequestParam Integer pageNo, @RequestParam Integer pageSize) throws ApiException{
-        return dto.getAll(pageNo, pageSize);
+    public InventorySelectData getAll(@RequestParam Integer draw,@RequestParam Integer start, @RequestParam Integer length) throws ApiException{
+        return dto.getAll(start/length, length, draw);
     }
 
     @ApiOperation(value = "Update inventory by barcode")

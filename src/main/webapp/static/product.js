@@ -24,7 +24,7 @@ function addProduct(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
-	   		getProductList();  
+		$("#product-table").DataTable().ajax.reload() 
 	   },
 	   error: handleAjaxError
 	});
@@ -33,11 +33,12 @@ function addProduct(event){
 }
 
 function getBrandList(){
-	var url = getBrandUrl()+ "?pageNo=0&pageSize=10";
+	var url = getBrandUrl()+ "?draw=1&start=0&length=100";
 	$.ajax({
 	   url: url,
 	   type: 'GET',
 	   success: function(data) {
+		data = data.data;
 	   		var brandSelect = $("#brand-select");
             var categorySelect  = $("#category-select");
             var brandEditSelect = $("#brand-edit-select");
@@ -72,7 +73,7 @@ function updateProduct(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
-	   		getProductList();   
+		$("#product-table").DataTable().ajax.reload()   
 	   },
 	   error: handleAjaxError
 	});
@@ -81,17 +82,7 @@ function updateProduct(event){
 }
 
 
-function getProductList(){
-	var url = getProductUrl()+ "?pageNo=0&pageSize=10";
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	   		displayProductList(data);  
-	   },
-	   error: handleAjaxError
-	});
-}
+
 
 function deleteProduct(id){
 	var url = getProductUrl() + "/" + id;
@@ -100,7 +91,7 @@ function deleteProduct(id){
 	   url: url,
 	   type: 'DELETE',
 	   success: function(data) {
-	   		getProductList();  
+		$("#product-table").DataTable().ajax.reload()  
 	   },
 	   error: handleAjaxError
 	});
@@ -161,27 +152,7 @@ function downloadErrors(){
 	writeFileData(errorData);
 }
 
-//UI DISPLAY METHODS
 
-function displayProductList(data){
-	var $tbody = $('#product-table').find('tbody');
-	$tbody.empty();
-	for(var i in data){
-		var b = data[i];
-		var buttonHtml = ' <button onclick="displayEditProduct(' + b.id + ')">edit</button>';
-
-		var row = '<tr>'
-		+ '<td>' + b.id + '</td>'
-		+ '<td>'  + b.barcode + '</td>'
-		+ '<td>' + b.brand + '</td>'
-		+ '<td>'  + b.category + '</td>'
-		+ '<td>'  + b.name + '</td>'
-		+ '<td>'  + b.mrp + '</td>'
-		+ '<td>' + buttonHtml + '</td>'
-		+ '</tr>';
-        $tbody.append(row);
-	}
-}
 
 function displayEditProduct(id){
 	var url = getProductUrl() + "/" + id;
@@ -226,8 +197,11 @@ function displayUploadData(){
 }
 
 function displayProduct(data){
+	$("#product-edit-form input[name=barcode]").val(data.barcode);	
+	$("#product-edit-form input[name=brand]").val(data.brand);	
+	$("#product-edit-form input[name=category]").val(data.category);		
 	$("#product-edit-form input[name=name]").val(data.name);	
-	$("#product-edit-form input[name=age]").val(data.age);	
+	$("#product-edit-form input[name=mrp]").val(data.mrp);			
 	$("#product-edit-form input[name=id]").val(data.id);	
 	$('#edit-product-modal').modal('toggle');
 }
@@ -235,10 +209,30 @@ function displayProduct(data){
 
 //INITIALIZATION CODE
 function init(){
+	$('#product-table').DataTable( {
+		"processing": true,
+		"serverSide": true,
+		"searching": false,
+		"lengthMenu": [2,5,10,20, 40, 60, 80, 100],
+		"pageLength":10,
+		"ajax": {url : getProductUrl()},
+		"columns": [
+            { "data": "id" },
+            { "data": "barcode" },
+            { "data": "brand" },
+            { "data": "category" },
+            { "data": "name" },
+            { "data": "mrp" },
+			{
+				"data":null,
+				"render":function(o){return '<button onclick="displayEditProduct(' + o.id + ')">edit</button>'}
+			}
+        ]
+	});
     getBrandList();
 	$('#add-product').click(addProduct);
 	$('#update-product').click(updateProduct);
-	$('#refresh-data').click(getProductList);
+	$('#refresh-data').click($("#product-table").DataTable().ajax.reload());
 	$('#upload-data').click(displayUploadData);
 	$('#process-data').click(processData);
 	$('#download-errors').click(downloadErrors);
@@ -246,5 +240,4 @@ function init(){
 }
 
 $(document).ready(init);
-$(document).ready(getProductList);
 

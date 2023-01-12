@@ -37,7 +37,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         String barcodeNormalised = "1a3t5tq8";
         String nameNormalised = "name1";
 
-        List<ProductData> d = dto.getAll(0,1);
+        List<ProductData> d = dto.getAll(0,1,1).getData();
 
         assertEquals(d.get(0).getBarcode(), barcodeNormalised);
         assertEquals(d.get(0).getBrand(), brand);
@@ -83,7 +83,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         
         dto.add(f1);
 
-        List<ProductData> d = dto.getAll(0,1);
+        List<ProductData> d = dto.getAll(0,1,1).getData();
 
         String barcode1 = "1a3t5tq7";
         String name1 = "name2";
@@ -97,7 +97,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         dto.update(d.get(0).getId(), f1);
 
-        d = dto.getAll(0,1);
+        d = dto.getAll(0,1,1).getData();
 
         assertEquals(d.get(0).getBarcode(), barcode1);
         assertEquals(d.get(0).getBrand(), brand1);
@@ -129,7 +129,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         TestUtil.addProduct(barcode1, brand, category, name1, mrp1);
 
-        List<ProductData> d = dto.getAll(0,10);
+        List<ProductData> d = dto.getAll(0,10,1).getData();
 
 
         assertEquals(d.size(), 2);
@@ -207,7 +207,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         
         dto.add(f1);
 
-        List<ProductData> d = dto.getAll(0,1);
+        List<ProductData> d = dto.getAll(0,1, 1).getData();
 
         String barcode1 = "1a3t5tq7";
         String name1 = "name2";

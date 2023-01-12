@@ -36,6 +36,10 @@ public class OrderItemsService {
         return order;
     }
 
+    public void add(OrderItemsPojo item){
+        dao.insert(item);
+    }
+
      
     public OrderItemsPojo selectById(Integer id){
         return dao.selectById(id);

@@ -3,6 +3,7 @@ package com.increff.pos.model.form;
 
 
 
+import javax.persistence.Entity;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -11,6 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Entity
 public class BrandForm {
     @NotNull(message = "Brand Cannot be empty")
     @NotBlank(message = "Brand Cannot be empty")

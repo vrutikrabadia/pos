@@ -32,7 +32,11 @@ public class BrandDto {
         }
         catch(ApiException e){
             service.add(p);
+            return;
         }
+
+        throw new ApiException("Brand and category already exists");
+
     }
 
     public BrandData get(Integer id) throws ApiException{

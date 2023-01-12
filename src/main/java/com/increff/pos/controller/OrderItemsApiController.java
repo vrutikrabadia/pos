@@ -33,6 +33,12 @@ public class OrderItemsApiController {
         return dto.add(form);
     }
 
+    @ApiOperation(value="Adds Order Items to exisiting order")
+    @RequestMapping(path="/orders/{id}/items", method = RequestMethod.PUT)
+    public void add(@PathVariable Integer id,@RequestBody OrderItemsForm form) throws ApiException{
+        dto.addToExisitingOrder(id,form);
+    }
+
     @ApiOperation(value="Get Order Items")
     @RequestMapping(path="/orders/items/{id}", method = RequestMethod.GET)
     public OrderItemsData get(@PathVariable Integer id) throws ApiException{

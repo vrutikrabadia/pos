@@ -60,6 +60,10 @@ public class ProductService {
         }
         return p;
     }
+    
+    public Integer getTotalEntries(){
+        return dao.getTotalEntries(ProductPojo.class);
+    }
 
     public boolean checkBarCode(Integer id, String barcode){        
         ProductPojo p = dao.selectByBarcode(barcode);

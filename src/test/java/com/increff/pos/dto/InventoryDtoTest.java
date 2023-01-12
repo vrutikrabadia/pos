@@ -36,7 +36,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.add(f);
 
-        List<InventoryData> d = dto.getAll(0,1);
+        List<InventoryData> d = dto.getAll(0,1,1).getData();
         
         assertEquals(d.get(0).getBarcode(), barcode);
         assertEquals(d.get(0).getQuantity(), quantity);
@@ -72,7 +72,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.add(f1);
 
-        List<InventoryData> d = dto.getAll(0,10);
+        List<InventoryData> d = dto.getAll(0,10,1).getData();
 
         assertEquals(d.size(), 2);
 
@@ -102,7 +102,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.update(f);
 
-        List<InventoryData> d = dto.getAll(0,1);
+        List<InventoryData> d = dto.getAll(0,1,1).getData();
         assertEquals(d.get(0).getQuantity(), updatedQuantity);
     }
 
@@ -142,7 +142,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.add(f);
         dto.add(f);
-        List<InventoryData> d = dto.getAll(0,1);
+        List<InventoryData> d = dto.getAll(0,1, 1).getData();
         
         Integer finalQuantity = 10;
 

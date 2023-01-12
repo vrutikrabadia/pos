@@ -25,7 +25,7 @@ public class BrandDtoTest extends AbstractUnitTest{
         
         TestUtil.addBrand(brand, category);
 
-        List<BrandData> d = dto.getAll(0,1);
+        List<BrandData> d = dto.getAll(0,1,1).getData();
 
         assertEquals(d.get(0).getBrand(), brand);
         assertEquals(d.get(0).getCategory(), category);
@@ -43,11 +43,11 @@ public class BrandDtoTest extends AbstractUnitTest{
         f.setCategory("category2");
         f.setBrand("brand2");
 
-        List<BrandData> d = dto.getAll(0,1);
+        List<BrandData> d = dto.getAll(0,1,1).getData();
 
         dto.update(d.get(0).getId(), f);
 
-        d = dto.getAll(0,1);
+        d = dto.getAll(0,1,1).getData();
 
         assertEquals(d.get(0).getBrand(), "brand2");
         assertEquals(d.get(0).getCategory(), "category2");
@@ -60,7 +60,7 @@ public class BrandDtoTest extends AbstractUnitTest{
         TestUtil.addBrand("brand2", "category2");
         TestUtil.addBrand("brand3", "category3");
 
-        List<BrandData> d = dto.getAll(0,5);
+        List<BrandData> d = dto.getAll(0,5,1).getData();
 
         assertEquals(d.size(), 3);
     }
@@ -74,9 +74,9 @@ public class BrandDtoTest extends AbstractUnitTest{
             TestUtil.addBrand("brand1", "category1");
         }
         catch(ApiException e){
-            fail();
+            return;
         }
-        
+        fail();        
     }
 
     @Test
@@ -107,7 +107,7 @@ public class BrandDtoTest extends AbstractUnitTest{
         
         TestUtil.addBrand(brand, category);
 
-        List<BrandData> d = dto.getAll(0,1);
+        List<BrandData> d = dto.getAll(0,1,1).getData();
 
         assertEquals(d.get(0).getBrand(), "brand1");
         assertEquals(d.get(0).getCategory(), "category1");

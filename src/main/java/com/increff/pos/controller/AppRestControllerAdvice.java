@@ -1,5 +1,9 @@
 package com.increff.pos.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.validation.ConstraintViolationException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -7,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 
 import com.increff.pos.model.data.MessageData;
 import com.increff.pos.service.ApiException;
@@ -31,14 +36,29 @@ public class AppRestControllerAdvice {
 		return data;
 	}
 
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public MessageData handleMethodArgumentNotValidException( MethodArgumentNotValidException error )
-	{
-		BindingResult err = error.getBindingResult();
-	    MessageData data = new MessageData();
-		
-		data.setMessage(ExceptionUtil.getValidationMessage(err));
-		return data;
-	}
+	// @ExceptionHandler(MethodArgumentNotValidException.class)
+	// @ResponseStatus(HttpStatus.BAD_REQUEST)
+	// public MessageData handleMethodArgumentNotValidException(MethodArgumentNotValidException error) {
+	// 	BindingResult err = error.getBindingResult();
+	// 	MessageData data = new MessageData();
+
+	// 	data.setMessage(ExceptionUtil.getValidationMessage(err));
+	// 	return data;
+	// }
+
+	// @ExceptionHandler(ConstraintViolationException.class)
+	// @ResponseStatus(HttpStatus.BAD_REQUEST)
+	// public final MessageData handleConstraintViolation(
+	// 		ConstraintViolationException ex,
+	// 		WebRequest request) {
+	// 	List<String> details = ex.getConstraintViolations()
+	// 			.parallelStream()
+	// 			.map(e -> e.getMessage())
+	// 			.collect(Collectors.toList());
+
+	// 	MessageData data = new MessageData();
+
+	// 	data.setMessage("details");
+	// 	return data;
+	// }
 }

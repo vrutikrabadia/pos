@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.increff.pos.model.data.InventoryData;
+import com.increff.pos.model.data.InventorySelectData;
 import com.increff.pos.model.form.InventoryForm;
 import com.increff.pos.pojo.InventoryPojo;
 import com.increff.pos.pojo.ProductPojo;
@@ -62,7 +63,7 @@ public class InventoryDto {
         return d;
     }
 
-    public List<InventoryData> getAll(Integer pageNo, Integer pageSize) throws ApiException{
+    public InventorySelectData getAll(Integer pageNo, Integer pageSize, Integer draw) throws ApiException{
         List<InventoryData> list = new ArrayList<InventoryData>();
         List<InventoryPojo> list1 = service.getAll(pageNo, pageSize);
         
@@ -73,7 +74,13 @@ public class InventoryDto {
             list.add(iData);
         }
 
-        return list;
+        InventorySelectData result = new InventorySelectData();
+        result.setData(list);
+        result.setDraw(draw);
+        Integer totalEntries = service.getTotalEntries();
+        result.setRecordsFiltered(totalEntries);
+        result.setRecordsTotal(totalEntries);
+        return result;
     }
 
     public void update(InventoryForm form) throws ApiException{
