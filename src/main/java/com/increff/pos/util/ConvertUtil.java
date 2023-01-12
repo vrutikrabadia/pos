@@ -1,6 +1,9 @@
 package com.increff.pos.util;
 
 
+import java.util.Calendar;
+import java.util.Date;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -12,5 +15,15 @@ public class ConvertUtil<T> {
     	R newObject = mapper.convertValue(object, destinClass);
         return newObject;
     }
+
+    public static Date getDateWithoutTimeUsingCalendar() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+	
+		return calendar.getTime();
+	}
 
 }

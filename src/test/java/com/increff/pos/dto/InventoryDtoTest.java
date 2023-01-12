@@ -26,7 +26,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         String barcode = "1a3t5tq8";
         String name = "name1";
-        double mrp = 18.88;
+        Double mrp = 18.88;
 
         TestUtil.addProduct(barcode, brand, category, name, mrp);
 
@@ -52,7 +52,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         String barcode = "1a3t5tq8";
         String name = "name1";
-        double mrp = 18.88;
+        Double mrp = 18.88;
 
         TestUtil.addProduct(barcode, brand, category, name, mrp);
 
@@ -64,7 +64,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         String barcode1 = "1a3t5tq5";
         String name1 = "name1";
-        double mrp1 = 18.88;
+        Double mrp1 = 18.88;
 
         TestUtil.addProduct(barcode1, brand, category, name1, mrp1);
 
@@ -87,7 +87,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         String barcode = "1a3t5tq8";
         String name = "name1";
-        double mrp = 18.88;
+        Double mrp = 18.88;
 
         TestUtil.addProduct(barcode, brand, category, name, mrp);
 
@@ -132,7 +132,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         String barcode = "1a3t5tq8";
         String name = "name1";
-        double mrp = 18.88;
+        Double mrp = 18.88;
 
         TestUtil.addProduct(barcode, brand, category, name, mrp);
 
@@ -178,7 +178,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         String barcode = "1a3t5tq8";
         String name = "name1";
-        double mrp = 18.88;
+        Double mrp = 18.88;
 
         TestUtil.addProduct(barcode, brand, category, name, mrp);
 
@@ -204,7 +204,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         String barcode = "1a3t5tq8";
         String name = "name1";
-        double mrp = 18.88;
+        Double mrp = 18.88;
 
         TestUtil.addProduct(barcode, brand, category, name, mrp);
 

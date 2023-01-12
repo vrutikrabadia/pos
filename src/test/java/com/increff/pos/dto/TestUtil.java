@@ -36,7 +36,7 @@ public class TestUtil {
         return f;
     }
 
-    public static ProductForm getProductForm(String barcode, String brand, String category, String name, double mrp){
+    public static ProductForm getProductForm(String barcode, String brand, String category, String name, Double mrp){
         ProductForm f = new ProductForm();
         f.setBarcode(barcode);
         f.setBrand(brand);
@@ -60,7 +60,7 @@ public class TestUtil {
         bDto.add(f);
     }
 
-    public static void addProduct(String barcode, String brand, String category, String name, double mrp) throws ApiException {
+    public static void addProduct(String barcode, String brand, String category, String name, Double mrp) throws ApiException {
         ProductForm f1 = TestUtil.getProductForm(barcode, brand, category, name, mrp);
         pDto.add(f1);
     }

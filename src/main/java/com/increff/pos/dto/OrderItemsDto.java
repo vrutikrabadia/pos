@@ -3,7 +3,9 @@ package com.increff.pos.dto;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,7 +38,16 @@ public class OrderItemsDto {
     public OrderData add(List<OrderItemsForm> list) throws ApiException {
         List<OrderItemsPojo> list1 = new ArrayList<OrderItemsPojo>();
 
+        Set<String> barcodeSet = new HashSet<String> (); 
+
         for (OrderItemsForm f : list) {
+            if(barcodeSet.contains(f.getBarcode())){
+                throw new ApiException("Duplicate products in the order");
+            }
+
+            barcodeSet.add(f.getBarcode());
+
+            
             OrderItemsPojo p = ConvertUtil.objectMapper(f, OrderItemsPojo.class);
 
             ProductPojo product = pService.get(f.getBarcode());

@@ -9,6 +9,6 @@ public class ProductBulkPojo {
     private String barcode;
     private Integer brandCat;
     private String name;
-    private double mrp;
+    private Double mrp;
     private String error;
 }

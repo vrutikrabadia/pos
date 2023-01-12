@@ -10,6 +10,6 @@ public class ProductBulkData {
     private String brand;
     private String category;
     private String name;
-    private double mrp;
+    private Double mrp;
     private String error;    
 }

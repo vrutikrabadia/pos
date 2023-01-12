@@ -8,5 +8,5 @@ import lombok.Setter;
 public class OrderItemsForm {
     private String barcode;
     private Integer quantity;
-    private double sellingPrice;
+    private Double sellingPrice;
 }

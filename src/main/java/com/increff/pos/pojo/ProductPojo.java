@@ -31,5 +31,5 @@ public class ProductPojo extends AbstractPojo implements Serializable{
     @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "mrp", nullable = false)
-    private double mrp;
+    private Double mrp;
 }

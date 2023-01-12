@@ -30,7 +30,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         String barcode = "1A3T5tq8";
         String name = "naMe1";
-        double mrp = 18.88;
+        Double mrp = 18.88;
 
         TestUtil.addProduct(barcode, brand, category, name, mrp);
 
@@ -51,7 +51,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         
         String barcode = "1A3T5tq8";
         String name = "naMe1";
-        double mrp = 18.88;
+        Double mrp = 18.88;
 
         try{
             TestUtil.addProduct(barcode, name, barcode, name, mrp);
@@ -77,7 +77,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         String barcode = "1a3t5tq8";
         String name = "name1";
-        double mrp = 18.88;
+        Double mrp = 18.88;
 
         ProductForm f1 = TestUtil.getProductForm(barcode, brand, category, name, mrp);
         
@@ -87,7 +87,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         String barcode1 = "1a3t5tq7";
         String name1 = "name2";
-        double mrp1 = 25.36;
+        Double mrp1 = 25.36;
 
         f1.setBrand(brand1);
         f1.setCategory(category1);
@@ -118,14 +118,14 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         String barcode = "1a3t5tq8";
         String name = "name1";
-        double mrp = 18.88;
+        Double mrp = 18.88;
 
         TestUtil.addProduct(barcode, brand, category, name, mrp);
     
     
         String barcode1 = "1a3t5tq5";
         String name1 = "name2";
-        double mrp1 = 18.88;
+        Double mrp1 = 18.88;
 
         TestUtil.addProduct(barcode1, brand, category, name1, mrp1);
 
@@ -146,14 +146,14 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         String barcode = "1a3t5tq8";
         String name = "name1";
-        double mrp = 18.88;
+        Double mrp = 18.88;
 
         TestUtil.addProduct(barcode, brand, category, name, mrp);
     
         
         String barcode1 = "1a3t5tq8";
         String name1 = "name2";
-        double mrp1 = 18.88;
+        Double mrp1 = 18.88;
 
         
         try{
@@ -175,7 +175,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         String barcode = "1A3T5tq8";
         String name = "naMe1";
-        double mrp = -18.88;
+        Double mrp = -18.88;
 
         try{
             TestUtil.addProduct(barcode, brand, category, name, mrp);
@@ -201,7 +201,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         String barcode = "1a3t5tq8";
         String name = "name1";
-        double mrp = 18.88;
+        Double mrp = 18.88;
 
         ProductForm f1 = TestUtil.getProductForm(barcode, brand, category, name, mrp);
         
@@ -211,7 +211,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         String barcode1 = "1a3t5tq7";
         String name1 = "name2";
-        double mrp1 = -25.36;
+        Double mrp1 = -25.36;
 
         f1.setBrand(brand1);
         f1.setCategory(category1);

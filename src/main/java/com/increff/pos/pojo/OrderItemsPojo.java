@@ -31,5 +31,5 @@ public class OrderItemsPojo extends AbstractPojo implements Serializable {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
     @Column(name = "selling_price", nullable = false)
-    private double sellingPrice;
+    private Double sellingPrice;
 }    

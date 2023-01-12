@@ -1,9 +1,12 @@
 package com.increff.pos.util;
 
+import java.util.Objects;
+
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.InventoryPojo;
 import com.increff.pos.pojo.OrderItemsPojo;
 import com.increff.pos.pojo.ProductPojo;
+import com.increff.pos.pojo.SchedulerPojo;
 import com.increff.pos.service.ApiException;
 
 public class ValidateUtil {
@@ -40,6 +43,18 @@ public class ValidateUtil {
         }
         if(p.getSellingPrice() < 0){
             throw new ApiException("selling price should be non negative");
+        }
+    }
+
+    public static void validateScheduler(SchedulerPojo p) throws ApiException{
+        if(Objects.isNull(p.getDate())){
+            throw new ApiException("Date cannot be null");
+        }
+        if(Objects.isNull(p.getItemsCount()) || p.getItemsCount() < 1){
+            throw new ApiException("Items count should be posiitve quantity");
+        }
+        if(Objects.isNull(p.getTotalRevenue()) || p.getTotalRevenue() < 0){
+            throw new ApiException("Revenue should be non negative quantity");
         }
     }
 }
