@@ -97,11 +97,16 @@ function uploadRows(){
 			'Content-Type': 'application/json'
 		},	   
 		success: function(response) {
-			console.log(response);
-			errorData = response;
+			
+		},
+		error: function(error){
+			console.log(error);
+			errorData = JSON.parse(JSON.parse(error.responseText).message);
+			console.log(errorData);
 			processCount = fileData.length;	 
 			
 			updateUploadDialog();
+			return;
 		}
 	 });
 

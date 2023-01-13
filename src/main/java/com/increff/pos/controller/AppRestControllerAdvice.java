@@ -6,16 +6,12 @@ import java.util.stream.Collectors;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 
 import com.increff.pos.model.data.MessageData;
 import com.increff.pos.service.ApiException;
-import com.increff.pos.util.ExceptionUtil;
 
 @RestControllerAdvice
 public class AppRestControllerAdvice {
@@ -36,29 +32,17 @@ public class AppRestControllerAdvice {
 		return data;
 	}
 
-	// @ExceptionHandler(MethodArgumentNotValidException.class)
-	// @ResponseStatus(HttpStatus.BAD_REQUEST)
-	// public MessageData handleMethodArgumentNotValidException(MethodArgumentNotValidException error) {
-	// 	BindingResult err = error.getBindingResult();
-	// 	MessageData data = new MessageData();
+	@ExceptionHandler(ConstraintViolationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public final MessageData handleConstraintViolation(ConstraintViolationException ex) {
+		List<String> details = ex.getConstraintViolations()
+				.parallelStream()
+				.map(e -> e.getMessage())
+				.collect(Collectors.toList());
 
-	// 	data.setMessage(ExceptionUtil.getValidationMessage(err));
-	// 	return data;
-	// }
+		MessageData data = new MessageData();
 
-	// @ExceptionHandler(ConstraintViolationException.class)
-	// @ResponseStatus(HttpStatus.BAD_REQUEST)
-	// public final MessageData handleConstraintViolation(
-	// 		ConstraintViolationException ex,
-	// 		WebRequest request) {
-	// 	List<String> details = ex.getConstraintViolations()
-	// 			.parallelStream()
-	// 			.map(e -> e.getMessage())
-	// 			.collect(Collectors.toList());
-
-	// 	MessageData data = new MessageData();
-
-	// 	data.setMessage("details");
-	// 	return data;
-	// }
+		data.setMessage(details.toString());
+		return data;
+	}
 }

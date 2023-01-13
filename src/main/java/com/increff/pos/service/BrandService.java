@@ -1,18 +1,17 @@
 package com.increff.pos.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import javax.transaction.Transactional;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.increff.pos.dao.BrandDao;
-import com.increff.pos.pojo.BrandBulkPojo;
 import com.increff.pos.pojo.BrandPojo;
-import com.increff.pos.util.ConvertUtil;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
@@ -26,9 +25,9 @@ public class BrandService {
         dao.insert(p);
     }
 
-    public List<BrandBulkPojo> bulkAdd(List<BrandPojo> list){
-        List<BrandBulkPojo> errorList = new ArrayList<BrandBulkPojo>();
-    
+    public void bulkAdd(List<BrandPojo> list) throws ApiException{
+        JSONArray errorList1 = new JSONArray();
+        
         for(BrandPojo brand: list){
             try{
                 getcheck(brand.getBrand(), brand.getCategory());
@@ -37,14 +36,17 @@ public class BrandService {
                 add(brand);
                 continue;
             }
-            BrandBulkPojo error = new BrandBulkPojo();
-            error = ConvertUtil.objectMapper(brand, BrandBulkPojo.class);
-            error.setError("Brand and category already exists");
-
-            errorList.add(error);
+            JSONObject error1 = new JSONObject();
+            error1.put("brand", brand.getBrand());
+            error1.put("category", brand.getCategory());
+            error1.put("error", "Brand and category already exists");
+            errorList1.put(error1);
         }
-    
-        return errorList;
+
+        if(errorList1.length() > 0){
+            throw new ApiException(errorList1.toString());
+        }
+
     }
     
     public BrandPojo get(Integer id) throws ApiException{

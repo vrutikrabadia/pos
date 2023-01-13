@@ -3,7 +3,6 @@ package com.increff.pos.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.BrandDto;
-import com.increff.pos.model.data.BrandBulkData;
 import com.increff.pos.model.data.BrandData;
 import com.increff.pos.model.data.BrandSelectData;
 import com.increff.pos.model.form.BrandForm;
@@ -20,11 +18,9 @@ import com.increff.pos.service.ApiException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import jakarta.validation.Valid;
 
 @Api
 @RestController
-@Validated
 @RequestMapping(path = "/api")
 public class BrandApiController {
 
@@ -33,26 +29,17 @@ public class BrandApiController {
 
     @ApiOperation(value = "Adds brand/category")
     @RequestMapping(path = "/brands", method = RequestMethod.POST)
-    public void add(@Valid @RequestBody BrandForm form) throws ApiException {
-
-        // ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-        // Validator validator = validatorFactory.getValidator();
-
-        // // sets
-
-        // Set<ConstraintViolation<BrandForm>> violations = validator.validate(form);
-        // if(violations.size() > 0){
-        //     throw new ApiException("Form invalid");
-        // }
+    public void add(@RequestBody BrandForm form) throws ApiException {
         dto.add(form);
     }
 
     @ApiOperation(value = "Adds brand/category in bulk")
     @RequestMapping(path = "/brands/bulkAdd", method = RequestMethod.POST)
-    public List<BrandBulkData> bulkAdd( @RequestBody List<BrandForm> form) throws ApiException {
-        return dto.bulkAdd(form);
-    }
+    public void bulkAdd(@RequestBody List<BrandForm> form) throws ApiException {
 
+        
+        dto.bulkAdd(form);
+    }
 
     @ApiOperation(value = "Get brand/category by id")
     @RequestMapping(path = "/brands/{id}", method = RequestMethod.GET)

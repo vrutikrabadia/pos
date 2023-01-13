@@ -1,8 +1,14 @@
 package com.increff.pos.util;
 
 import java.util.Objects;
+import java.util.Set;
 
-import com.increff.pos.pojo.BrandPojo;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
 import com.increff.pos.pojo.InventoryPojo;
 import com.increff.pos.pojo.OrderItemsPojo;
 import com.increff.pos.pojo.ProductPojo;
@@ -11,11 +17,16 @@ import com.increff.pos.service.ApiException;
 
 public class ValidateUtil {
     
-    public static void validateBrand(BrandPojo p) throws ApiException{
-        if(StringUtil.isEmpty(p.getBrand()) || StringUtil.isEmpty(p.getCategory())){
-            throw new ApiException("Brand or category cannot be empty");
+    public static <T> void validateForms(T form){
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<T>> violations = validator.validate(form);
+        System.out.println(violations.size());
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
         }
     }
+    
 
     public static void validateProduct(ProductPojo p) throws ApiException{
         if (StringUtil.isEmpty(p.getName())) {
