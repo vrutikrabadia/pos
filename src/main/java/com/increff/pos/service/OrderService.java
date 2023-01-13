@@ -45,6 +45,10 @@ public class OrderService {
    
     }
 
+    public Integer getTotalEntries(){
+        return dao.getTotalEntries(OrderPojo.class);
+    }
+
     public OrderPojo update(Integer id,OrderPojo p) throws ApiException{
         OrderPojo p1 = getCheck(id);
         return p1;

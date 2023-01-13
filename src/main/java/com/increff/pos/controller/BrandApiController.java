@@ -34,7 +34,7 @@ public class BrandApiController {
     }
 
     @ApiOperation(value = "Adds brand/category in bulk")
-    @RequestMapping(path = "/brands/bulkAdd", method = RequestMethod.POST)
+    @RequestMapping(path = "/brands/bulk-add", method = RequestMethod.POST)
     public void bulkAdd(@RequestBody List<BrandForm> form) throws ApiException {
 
         

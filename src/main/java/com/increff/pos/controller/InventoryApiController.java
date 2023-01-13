@@ -36,7 +36,7 @@ public class InventoryApiController {
     }
 
     @ApiOperation(value="Adds Inventory Bulk")
-    @RequestMapping(path="/inventory/bulkAdd", method = RequestMethod.POST)
+    @RequestMapping(path="/inventory/bulk-add", method = RequestMethod.POST)
     public List<InventoryBulkData> bulkAdd(@RequestBody List<InventoryForm> list) throws ApiException{
         return dto.bulkAdd(list);
     }

@@ -4,11 +4,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.increff.pos.model.data.OrderData;
+import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.OrderForm;
 import com.increff.pos.pojo.OrderPojo;
 import com.increff.pos.service.ApiException;
@@ -42,10 +44,19 @@ public class OrderDto {
         return data;
     }
 
-    public List<OrderData> getAll(Integer pageNo, Integer pageSize){
+    public SelectData<OrderData> getAll(Integer start, Integer length, Integer draw, Optional<String> searchValue){
         List<OrderData> list = new ArrayList<OrderData>();
-        List<OrderPojo> list1 = service.getAll(pageNo, pageSize);
-
+        List<OrderPojo> list1 = new ArrayList<OrderPojo>();
+        if(searchValue.isPresent() && !searchValue.get().isBlank()){
+            try{
+                list1.add(service.get(Integer.valueOf(searchValue.get())));
+            } catch(ApiException e){
+                list1 = service.getAll(start/length, length);
+            }
+        }
+        else{
+            list1 = service.getAll(start/length, length);
+        }
         DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");  
         
         
@@ -57,7 +68,14 @@ public class OrderDto {
             list.add(data);
         }
 
-        return list;
+
+        SelectData<OrderData> result = new SelectData<OrderData>();
+        result.setData(list);
+        result.setDraw(draw);
+        Integer totalEntries = service.getTotalEntries();
+        result.setRecordsFiltered(totalEntries);
+        result.setRecordsTotal(totalEntries);
+        return result;
     }
 
     public OrderData update(Integer id, OrderForm f) throws ApiException{

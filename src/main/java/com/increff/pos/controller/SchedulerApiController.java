@@ -28,19 +28,19 @@ public class SchedulerApiController {
 
     
     @ApiOperation(value = "Adds entry to scheduler")
-    @RequestMapping(path = "/schedulers", method = RequestMethod.POST)
+    @RequestMapping(path = "/day-sales", method = RequestMethod.POST)
     public void add(@RequestBody SchedulerForm form) throws ApiException {
         dto.add(form);
     }
 
     @ApiOperation(value = "Get entries in date range")
-    @RequestMapping(path = "/schedulers/dateRange", method = RequestMethod.GET)
+    @RequestMapping(path = "/day-sales/dateRange", method = RequestMethod.GET)
     public SchedulerSelectData getInDateRange(@RequestParam String startDate, @RequestParam String endDate, @RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length) throws ApiException {
         return dto.getInDateRange(startDate, endDate, start/length, length,draw);
     }
 
     @ApiOperation(value = "Get all entries")
-    @RequestMapping(path = "/schedulers/", method = RequestMethod.GET)
+    @RequestMapping(path = "/day-sales/", method = RequestMethod.GET)
     public SchedulerSelectData get(@RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length) throws ApiException {
         return dto.getAll(start/length, length, draw);
     }

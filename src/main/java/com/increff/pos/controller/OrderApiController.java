@@ -1,6 +1,6 @@
 package com.increff.pos.controller;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.OrderDto;
 import com.increff.pos.model.data.OrderData;
+import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.OrderForm;
 import com.increff.pos.service.ApiException;
 
@@ -41,8 +42,9 @@ public class OrderApiController {
 
     @ApiOperation(value = "Gets All orders")
     @RequestMapping(path="/orders", method = RequestMethod.GET)
-    public List<OrderData> getAll(@RequestParam Integer pageNo, @RequestParam Integer pageSize) throws ApiException{
-        return dto.getAll(pageNo, pageSize);
+    public SelectData<OrderData> getAll(@RequestParam(defaultValue="1") Integer draw, @RequestParam(defaultValue="0") Integer start, @RequestParam(defaultValue="20") Integer length, @RequestParam(value="search[value]") Optional<String> searchValue) throws ApiException{
+        
+        return dto.getAll(start, length, draw, searchValue);
     }
 
     @ApiOperation(value = "Updates Order by id")
