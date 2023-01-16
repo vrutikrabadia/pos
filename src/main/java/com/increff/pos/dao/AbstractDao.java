@@ -1,5 +1,6 @@
 package com.increff.pos.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -7,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 public abstract class AbstractDao {
@@ -53,6 +55,22 @@ public abstract class AbstractDao {
 
     	return  Math.toIntExact(getSingle(query));
 
+    }
+
+	public <T> List<T> selectQueryString(Integer offset, Integer pageSize,String queryString, List<String> columns, Class<T> pojoClass){
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        CriteriaQuery<T> cq = cb.createQuery(pojoClass);
+        Root<T> brandCat = cq.from(pojoClass);
+
+        List<Predicate> preds = new ArrayList<>();
+        for(String col: columns){
+            preds.add(cb.like(brandCat.get(col), queryString +"%"));
+        }
+        cq.where(cb.or(preds.toArray(new Predicate[] {})));
+       	TypedQuery<T> query = em.createQuery(cq);
+
+        return query.setFirstResult(offset).setMaxResults(pageSize).getResultList();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.increff.pos.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,9 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.ProductDto;
-import com.increff.pos.model.data.ProductBulkData;
 import com.increff.pos.model.data.ProductData;
-import com.increff.pos.model.data.ProductSelectData;
+import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.ProductForm;
 import com.increff.pos.service.ApiException;
 
@@ -39,8 +39,8 @@ public class ProductApiController {
 
     @ApiOperation(value = "Adds products in bulk")
     @RequestMapping(path = "/products/bulk-add", method = RequestMethod.POST)
-    public List<ProductBulkData> bulkAdddd(@RequestBody List<ProductForm> list)throws ApiException{
-        return dto.bulkAdd(list);
+    public void bulkAdddd(@RequestBody List<ProductForm> list)throws ApiException{
+        dto.bulkAdd(list);
     }
 
     @ApiOperation(value = "Gets product by id")
@@ -51,8 +51,8 @@ public class ProductApiController {
 
     @ApiOperation(value = "Gets all products")
     @RequestMapping(path = "/products", method = RequestMethod.GET)
-    public ProductSelectData getAll(@RequestParam Integer draw,@RequestParam Integer start, @RequestParam Integer length) throws ApiException{
-        return dto.getAll(start/length, length, draw);
+    public SelectData<ProductData> getAll(@RequestParam(defaultValue="1") Integer draw, @RequestParam(defaultValue="0") Integer start, @RequestParam(defaultValue="20") Integer length, @RequestParam(value="search[value]") Optional<String> searchValue) throws ApiException{
+        return dto.getAll(start, length, draw, searchValue);
     }
 
     @ApiOperation(value = "Update product by id")

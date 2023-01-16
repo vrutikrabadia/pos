@@ -1,6 +1,7 @@
 package com.increff.pos.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,9 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.InventoryDto;
-import com.increff.pos.model.data.InventoryBulkData;
 import com.increff.pos.model.data.InventoryData;
-import com.increff.pos.model.data.InventorySelectData;
+import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.InventoryForm;
 import com.increff.pos.service.ApiException;
 
@@ -37,8 +37,8 @@ public class InventoryApiController {
 
     @ApiOperation(value="Adds Inventory Bulk")
     @RequestMapping(path="/inventory/bulk-add", method = RequestMethod.POST)
-    public List<InventoryBulkData> bulkAdd(@RequestBody List<InventoryForm> list) throws ApiException{
-        return dto.bulkAdd(list);
+    public void bulkAdd(@RequestBody List<InventoryForm> list) throws ApiException{
+        dto.bulkAdd(list);
     }
 
     @ApiOperation(value = "Get inventory by id")
@@ -49,8 +49,8 @@ public class InventoryApiController {
 
     @ApiOperation(value = "Get inventory ")
     @RequestMapping(path="/inventory", method = RequestMethod.GET)
-    public InventorySelectData getAll(@RequestParam Integer draw,@RequestParam Integer start, @RequestParam Integer length) throws ApiException{
-        return dto.getAll(start/length, length, draw);
+    public SelectData<InventoryData> getAll(@RequestParam Integer draw,@RequestParam Integer start, @RequestParam Integer length, @RequestParam(value="search[value]") Optional<String> searchValue) throws ApiException{
+        return dto.getAll(start, length, draw, searchValue);
     }
 
     @ApiOperation(value = "Update inventory by barcode")

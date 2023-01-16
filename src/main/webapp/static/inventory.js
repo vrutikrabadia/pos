@@ -84,7 +84,7 @@ function readFileDataCallback(results){
 
 function uploadRows(){
 	//Update progress
-	var url = getInventoryUrl() + "/bulkAdd";
+	var url = getInventoryUrl() + "/bulk-add";
 
 	$.ajax({
 		url: url,
@@ -94,11 +94,19 @@ function uploadRows(){
 			'Content-Type': 'application/json'
 		},	   
 		success: function(response) {
-			console.log(response);
-			errorData = response;
+			processCount = fileData.length;
+			
+			updateUploadDialog();
+			return;	 
+		},
+		error: function(error){
+			console.log(error);
+			errorData = JSON.parse(JSON.parse(error.responseText).message);
+			console.log(errorData);
 			processCount = fileData.length;	 
 			
 			updateUploadDialog();
+			return;
 		}
 	 });
 
@@ -164,9 +172,9 @@ function displayInventory(data){
 function init(){
 
 	$('#inventory-table').DataTable( {
+		"ordering": false,
 		"processing": true,
 		"serverSide": true,
-		"searching": false,
 		"lengthMenu": [2,5,10,20, 40, 60, 80, 100],
 		"pageLength":10,
 		"ajax": {url : getInventoryUrl()},

@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.validation.ConstraintViolationException;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,9 @@ import com.increff.pos.service.ApiException;
 public class InventoryDtoTest extends AbstractUnitTest{
     
     @Autowired
-    InventoryDto dto;
+    private InventoryDto dto;
+
+    private Optional<String> empty = Optional.empty();
 
     @Test
     public void testAddAndGet() throws ApiException{
@@ -36,7 +41,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.add(f);
 
-        List<InventoryData> d = dto.getAll(0,1,1).getData();
+        List<InventoryData> d = dto.getAll(0,1,1,empty).getData();
         
         assertEquals(d.get(0).getBarcode(), barcode);
         assertEquals(d.get(0).getQuantity(), quantity);
@@ -72,7 +77,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.add(f1);
 
-        List<InventoryData> d = dto.getAll(0,10,1).getData();
+        List<InventoryData> d = dto.getAll(0,10,1,empty).getData();
 
         assertEquals(d.size(), 2);
 
@@ -102,7 +107,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.update(f);
 
-        List<InventoryData> d = dto.getAll(0,1,1).getData();
+        List<InventoryData> d = dto.getAll(0,1,1,empty).getData();
         assertEquals(d.get(0).getQuantity(), updatedQuantity);
     }
 
@@ -142,7 +147,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.add(f);
         dto.add(f);
-        List<InventoryData> d = dto.getAll(0,1, 1).getData();
+        List<InventoryData> d = dto.getAll(0,1, 1, empty).getData();
         
         Integer finalQuantity = 10;
 
@@ -189,7 +194,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
         try{
             dto.add(f);
         }
-        catch(ApiException e){
+        catch(ConstraintViolationException e){
             return;
         }
         fail();
@@ -220,7 +225,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
         try{
             dto.update(f);
         }
-        catch(ApiException e){
+        catch(ConstraintViolationException e){
             return;
         }
         fail();

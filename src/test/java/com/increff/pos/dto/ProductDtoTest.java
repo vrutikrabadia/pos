@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.validation.ConstraintViolationException;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +19,9 @@ public class ProductDtoTest extends AbstractUnitTest{
     
     
     @Autowired
-    ProductDto dto;
-    @Autowired
-    BrandDto bDto;
+    private ProductDto dto;
+
+    private Optional<String> empty = Optional.empty();
 
 
     @Test
@@ -37,7 +40,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         String barcodeNormalised = "1a3t5tq8";
         String nameNormalised = "name1";
 
-        List<ProductData> d = dto.getAll(0,1,1).getData();
+        List<ProductData> d = dto.getAll(0,1,1,empty).getData();
 
         assertEquals(d.get(0).getBarcode(), barcodeNormalised);
         assertEquals(d.get(0).getBrand(), brand);
@@ -83,7 +86,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         
         dto.add(f1);
 
-        List<ProductData> d = dto.getAll(0,1,1).getData();
+        List<ProductData> d = dto.getAll(0,1,1,empty).getData();
 
         String barcode1 = "1a3t5tq7";
         String name1 = "name2";
@@ -97,7 +100,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         dto.update(d.get(0).getId(), f1);
 
-        d = dto.getAll(0,1,1).getData();
+        d = dto.getAll(0,1,1, empty).getData();
 
         assertEquals(d.get(0).getBarcode(), barcode1);
         assertEquals(d.get(0).getBrand(), brand1);
@@ -129,7 +132,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         TestUtil.addProduct(barcode1, brand, category, name1, mrp1);
 
-        List<ProductData> d = dto.getAll(0,10,1).getData();
+        List<ProductData> d = dto.getAll(0,10,1,empty).getData();
 
 
         assertEquals(d.size(), 2);
@@ -180,7 +183,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         try{
             TestUtil.addProduct(barcode, brand, category, name, mrp);
         }
-        catch(ApiException e){
+        catch(ConstraintViolationException e){
             return;
         }
         fail();
@@ -207,7 +210,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         
         dto.add(f1);
 
-        List<ProductData> d = dto.getAll(0,1, 1).getData();
+        List<ProductData> d = dto.getAll(0,1, 1, empty).getData();
 
         String barcode1 = "1a3t5tq7";
         String name1 = "name2";
@@ -222,7 +225,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         try{
             dto.update(d.get(0).getId(), f1);
         }
-        catch(ApiException e){
+        catch(ConstraintViolationException e){
             return;
         }
         fail();

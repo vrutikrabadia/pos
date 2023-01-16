@@ -7,8 +7,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -97,14 +95,4 @@ public class ControllerConfig extends WebMvcConfigurerAdapter {
 		return Jackson2ObjectMapperBuilder.json().featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS) // ISODate
 				.modules(javaTimeModule).build();
 	}
-
-	// @Bean
-	// public javax.validation.Validator localValidatorFactoryBean() {
-	// 	return new LocalValidatorFactoryBean();
-	// }
-
-	// @Bean
-	// public MethodValidationPostProcessor methodValidationPostProcessor() {
-	// 	return new MethodValidationPostProcessor();
-	// }
 }

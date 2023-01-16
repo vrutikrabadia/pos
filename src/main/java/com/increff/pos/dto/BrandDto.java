@@ -2,6 +2,7 @@ package com.increff.pos.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.ConstraintViolationException;
 
@@ -10,8 +11,9 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.google.gson.GsonBuilder;
 import com.increff.pos.model.data.BrandData;
-import com.increff.pos.model.data.BrandSelectData;
+import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.BrandForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.service.ApiException;
@@ -44,7 +46,7 @@ public class BrandDto {
     }
 
     public void bulkAdd(List<BrandForm> list) throws ApiException {
-        JSONArray errorList1 = new JSONArray();
+        JSONArray errorList = new JSONArray();
 
         List<BrandPojo> pojoList = new ArrayList<BrandPojo>();
 
@@ -52,31 +54,25 @@ public class BrandDto {
             try {
                 ValidateUtil.validateForms(form);
             } catch (ConstraintViolationException e) {
-                JSONObject error1 = new JSONObject();
-                error1.put("brand", form.getBrand());
-                error1.put("category", form.getCategory());
-                error1.put("error", ExceptionUtil.getValidationMessage(e));
-                errorList1.put(error1);
+                JSONObject error = new JSONObject(new GsonBuilder()
+                        .excludeFieldsWithoutExposeAnnotation()
+                        .create()
+                        .toJson(form));
+                error.put("error", ExceptionUtil.getValidationMessage(e));
+                errorList.put(error);
                 continue;
             }
             BrandPojo pojo = ConvertUtil.objectMapper(form, BrandPojo.class);
             pojoList.add(pojo);
         }
 
-        
-        try{
-            service.bulkAdd(pojoList);
-        }
-        catch(ApiException e){
-            JSONArray serviceErrors1 = new JSONArray(e.getMessage());
-            errorList1.putAll(serviceErrors1);
+        JSONArray serviceErrors = service.bulkAdd(pojoList);
+        errorList.putAll(serviceErrors);
 
+        if (!errorList.isEmpty()) {
+            throw new ApiException(errorList.toString());
         }
 
-        if(!errorList1.isEmpty()){
-            throw new ApiException(errorList1.toString());
-        }
-        
     }
 
     public BrandData get(Integer id) throws ApiException {
@@ -84,16 +80,26 @@ public class BrandDto {
         return ConvertUtil.objectMapper(p, BrandData.class);
     }
 
-    public BrandSelectData getAll(Integer pageNo, Integer pageSize, Integer draw) {
-        List<BrandPojo> list = service.getAll(pageNo, pageSize);
+    public SelectData<BrandData> getAll(Integer start, Integer length, Integer draw, Optional<String> searchValue) {
+        
+        List<BrandPojo> list = new ArrayList<BrandPojo>();
         List<BrandData> list1 = new ArrayList<BrandData>();
+        
+    
+        if(searchValue.isPresent() && !searchValue.get().isBlank()){
+            list = service.searchQueryString(start/length, length,searchValue.get());
+        }
+        else{
+            list = service.getAll(start/length, length);
+        }
+
         for (BrandPojo p : list) {
             list1.add(ConvertUtil.objectMapper(p, BrandData.class));
         }
 
         Integer totalEntries = service.getTotalEntries();
 
-        BrandSelectData result = new BrandSelectData();
+        SelectData<BrandData> result = new SelectData<BrandData>();
         result.setData(list1);
         result.setDraw(draw);
         result.setRecordsFiltered(totalEntries);

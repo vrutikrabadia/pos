@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.increff.pos.model.data.SchedulerData;
-import com.increff.pos.model.data.SchedulerSelectData;
+import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.SchedulerForm;
 import com.increff.pos.pojo.SchedulerPojo;
 import com.increff.pos.service.ApiException;
@@ -26,17 +26,17 @@ public class SchedulerDto {
 
 
     public void add(SchedulerForm form) throws ApiException{
+        ValidateUtil.validateForms(form);
         
         SchedulerPojo pojo = ConvertUtil.objectMapper(form, SchedulerPojo.class);
            
-        ValidateUtil.validateScheduler(pojo);
 
         service.add(pojo);
     }
 
-    public SchedulerSelectData getAll(Integer offset, Integer pageSize, Integer draw){
+    public SelectData<SchedulerData> getAll(Integer start, Integer length, Integer draw){
         List<SchedulerData> dataList = new ArrayList<SchedulerData>();
-        List<SchedulerPojo> pojoList = service.getAll(offset, pageSize);
+        List<SchedulerPojo> pojoList = service.getAll(start/length, length);
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");  
     
         for(SchedulerPojo pojo: pojoList){
@@ -47,7 +47,7 @@ public class SchedulerDto {
             dataList.add(data);
         }
 
-        SchedulerSelectData result = new SchedulerSelectData();
+        SelectData<SchedulerData> result = new SelectData<SchedulerData>();
         result.setData(dataList);
         Integer totalEntries = service.getTotalEntries();
         result.setRecordsFiltered(totalEntries);
@@ -56,7 +56,7 @@ public class SchedulerDto {
         return result;
     }
 
-    public SchedulerSelectData getInDateRange(String startDate, String endDate, Integer offset, Integer pageSize, Integer draw) throws ApiException{
+    public SelectData<SchedulerData> getInDateRange(String startDate, String endDate, Integer start, Integer length, Integer draw) throws ApiException{
         List<SchedulerData> dataList = new ArrayList<SchedulerData>();
 
         Date sDate;
@@ -73,7 +73,7 @@ public class SchedulerDto {
         if(sDate.compareTo(eDate)>0){
             throw new ApiException("start date should be less than end date");
         }
-        List<SchedulerPojo> pojoList = service.getByDateRange(sDate, eDate,offset, pageSize);
+        List<SchedulerPojo> pojoList = service.getByDateRange(sDate, eDate,start/length, length);
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");  
         
         for(SchedulerPojo pojo: pojoList){
@@ -85,7 +85,7 @@ public class SchedulerDto {
             
         }
 
-        SchedulerSelectData result = new SchedulerSelectData();
+        SelectData<SchedulerData> result = new SelectData<SchedulerData>();
         result.setData(dataList);
         Integer totalEntries = service.getTotalEntriesinDateRange(sDate, eDate);
         result.setRecordsFiltered(totalEntries);

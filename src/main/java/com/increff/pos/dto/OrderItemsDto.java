@@ -7,6 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.ConstraintViolationException;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +25,7 @@ import com.increff.pos.service.OrderItemsService;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ConvertUtil;
+import com.increff.pos.util.ExceptionUtil;
 import com.increff.pos.util.ValidateUtil;
 
 @Component
@@ -37,27 +42,58 @@ public class OrderItemsDto {
 
     public OrderData add(List<OrderItemsForm> list) throws ApiException {
         List<OrderItemsPojo> list1 = new ArrayList<OrderItemsPojo>();
-
+        JSONArray errorList = new JSONArray();
         Set<String> barcodeSet = new HashSet<String> (); 
 
         for (OrderItemsForm f : list) {
+            try{
+                ValidateUtil.validateForms(f);
+            }
+            catch(ConstraintViolationException e){
+                JSONObject error = new JSONObject();
+                error.put("barcode", f.getBarcode());
+                error.put("quantity", f.getQuantity());
+                error.put("quantity", f.getSellingPrice());
+                error.put("error", ExceptionUtil.getValidationMessage(e));
+                errorList.put(error);
+                
+            }
+
             if(barcodeSet.contains(f.getBarcode())){
-                throw new ApiException("Duplicate products in the order");
+                JSONObject error = new JSONObject();
+                error.put("barcode", f.getBarcode());
+                error.put("quantity", f.getQuantity());
+                error.put("quantity", f.getSellingPrice());
+                error.put("error", "Duplicate products in the order");
+                errorList.put(error);
             }
 
             barcodeSet.add(f.getBarcode());
 
-            
+
             OrderItemsPojo p = ConvertUtil.objectMapper(f, OrderItemsPojo.class);
 
-            ProductPojo product = pService.get(f.getBarcode());
-
+            
+            ProductPojo product = new ProductPojo();
+            try{
+                product = pService.get(f.getBarcode());
+            }
+            catch(ApiException e){
+                JSONObject error = new JSONObject();
+                error.put("barcode", f.getBarcode());
+                error.put("quantity", f.getQuantity());
+                error.put("quantity", f.getSellingPrice());
+                error.put("error", e.getMessage());
+                errorList.put(error);
+            }
             p.setProductId(product.getId());
 
-            ValidateUtil.validateOrderItem(p);
             list1.add(p);
         }
 
+        if(errorList.length() > 0){
+            throw new ApiException(errorList.toString());
+        }
         OrderPojo order = service.add(list1);
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
@@ -109,9 +145,10 @@ public class OrderItemsDto {
     }
 
     public void update(Integer id, OrderItemsForm f) throws ApiException {
+        ValidateUtil.validateForms(f);
+
         OrderItemsPojo p = ConvertUtil.objectMapper(f, OrderItemsPojo.class);
 
-        ValidateUtil.validateOrderItem(p);
 
         ProductPojo product = pService.get(f.getBarcode());
         p.setProductId(product.getId());

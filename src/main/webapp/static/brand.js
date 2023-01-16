@@ -87,7 +87,7 @@ function uploadRows(){
 	//Upload progress
 
 
-	var url = getBrandUrl() + "/bulkAdd";
+	var url = getBrandUrl() + "/bulk-add";
 
 	$.ajax({
 		url: url,
@@ -97,7 +97,10 @@ function uploadRows(){
 			'Content-Type': 'application/json'
 		},	   
 		success: function(response) {
+			processCount = fileData.length;
 			
+			updateUploadDialog();
+			return;	 
 		},
 		error: function(error){
 			console.log(error);
@@ -174,9 +177,9 @@ function displayBrand(data){
 function init(){
 
 	$('#brand-table').DataTable( {
+        "ordering": false,
 		"processing": true,
 		"serverSide": true,
-		"searching": false,
 		"lengthMenu": [2,5,10,20, 40, 60, 80, 100],
 		"pageLength":10,
 		"ajax": {url : getBrandUrl()},

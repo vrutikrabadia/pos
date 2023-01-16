@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
+import java.util.Optional;
+
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,9 @@ import com.increff.pos.service.ApiException;
 public class BrandDtoTest extends AbstractUnitTest{
 
     @Autowired 
-    BrandDto dto;
+    private BrandDto dto;
+    private Optional<String> empty = Optional.empty();
+
 
     @Test
     public void testAddAndGet() throws ApiException{
@@ -25,7 +29,7 @@ public class BrandDtoTest extends AbstractUnitTest{
         
         TestUtil.addBrand(brand, category);
 
-        List<BrandData> d = dto.getAll(0,1,1).getData();
+        List<BrandData> d = dto.getAll(0,1,1,empty).getData();
 
         assertEquals(d.get(0).getBrand(), brand);
         assertEquals(d.get(0).getCategory(), category);
@@ -43,11 +47,13 @@ public class BrandDtoTest extends AbstractUnitTest{
         f.setCategory("category2");
         f.setBrand("brand2");
 
-        List<BrandData> d = dto.getAll(0,1,1).getData();
+        
+        Optional<String> empty = Optional.empty();
+        List<BrandData> d = dto.getAll(0,1,1, empty).getData();
 
         dto.update(d.get(0).getId(), f);
 
-        d = dto.getAll(0,1,1).getData();
+        d = dto.getAll(0,1,1, empty).getData();
 
         assertEquals(d.get(0).getBrand(), "brand2");
         assertEquals(d.get(0).getCategory(), "category2");
@@ -60,7 +66,7 @@ public class BrandDtoTest extends AbstractUnitTest{
         TestUtil.addBrand("brand2", "category2");
         TestUtil.addBrand("brand3", "category3");
 
-        List<BrandData> d = dto.getAll(0,5,1).getData();
+        List<BrandData> d = dto.getAll(0,5,1,empty).getData();
 
         assertEquals(d.size(), 3);
     }
@@ -107,7 +113,7 @@ public class BrandDtoTest extends AbstractUnitTest{
         
         TestUtil.addBrand(brand, category);
 
-        List<BrandData> d = dto.getAll(0,1,1).getData();
+        List<BrandData> d = dto.getAll(0,1,1,empty).getData();
 
         assertEquals(d.get(0).getBrand(), "brand1");
         assertEquals(d.get(0).getCategory(), "category1");

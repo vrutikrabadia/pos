@@ -1,6 +1,7 @@
 package com.increff.pos.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.BrandDto;
 import com.increff.pos.model.data.BrandData;
-import com.increff.pos.model.data.BrandSelectData;
+import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.BrandForm;
 import com.increff.pos.service.ApiException;
 
@@ -36,8 +37,6 @@ public class BrandApiController {
     @ApiOperation(value = "Adds brand/category in bulk")
     @RequestMapping(path = "/brands/bulk-add", method = RequestMethod.POST)
     public void bulkAdd(@RequestBody List<BrandForm> form) throws ApiException {
-
-        
         dto.bulkAdd(form);
     }
 
@@ -49,9 +48,9 @@ public class BrandApiController {
 
     @ApiOperation(value = "Get all brand/category")
     @RequestMapping(path = "/brands", method = RequestMethod.GET)
-    public BrandSelectData get(@RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length)
+    public SelectData<BrandData> get(@RequestParam(defaultValue="1") Integer draw, @RequestParam(defaultValue="0") Integer start, @RequestParam(defaultValue="20") Integer length, @RequestParam(value="search[value]") Optional<String> searchValue)
             throws ApiException {
-        return dto.getAll(start / length, length, draw);
+        return dto.getAll(start, length, draw, searchValue);
     }
 
     @ApiOperation(value = "Get brand/category by brand/category")

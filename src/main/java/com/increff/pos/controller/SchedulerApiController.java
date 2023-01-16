@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.SchedulerDto;
-import com.increff.pos.model.data.SchedulerSelectData;
+import com.increff.pos.model.data.SchedulerData;
+import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.SchedulerForm;
 import com.increff.pos.service.ApiException;
 
@@ -35,14 +36,14 @@ public class SchedulerApiController {
 
     @ApiOperation(value = "Get entries in date range")
     @RequestMapping(path = "/day-sales/dateRange", method = RequestMethod.GET)
-    public SchedulerSelectData getInDateRange(@RequestParam String startDate, @RequestParam String endDate, @RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length) throws ApiException {
-        return dto.getInDateRange(startDate, endDate, start/length, length,draw);
+    public SelectData<SchedulerData> getInDateRange(@RequestParam String startDate, @RequestParam String endDate, @RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length) throws ApiException {
+        return dto.getInDateRange(startDate, endDate, start, length,draw);
     }
 
     @ApiOperation(value = "Get all entries")
     @RequestMapping(path = "/day-sales/", method = RequestMethod.GET)
-    public SchedulerSelectData get(@RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length) throws ApiException {
-        return dto.getAll(start/length, length, draw);
+    public SelectData<SchedulerData> get(@RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length) throws ApiException {
+        return dto.getAll(start, length, draw);
     }
 
 }

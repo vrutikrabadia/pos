@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
+import javax.validation.ConstraintViolationException;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.increff.pos.model.data.InventoryBulkData;
+import com.google.gson.GsonBuilder;
 import com.increff.pos.model.data.InventoryData;
-import com.increff.pos.model.data.InventorySelectData;
+import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.InventoryForm;
 import com.increff.pos.pojo.InventoryPojo;
 import com.increff.pos.pojo.ProductPojo;
@@ -18,6 +23,7 @@ import com.increff.pos.service.ApiException;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ConvertUtil;
+import com.increff.pos.util.ExceptionUtil;
 import com.increff.pos.util.ValidateUtil;
 
 @Component
@@ -31,6 +37,8 @@ public class InventoryDto {
 
     public void add(InventoryForm form) throws ApiException {
 
+        ValidateUtil.validateForms(form);
+
         ProductPojo p1 = pService.get(form.getBarcode());
         InventoryPojo p = ConvertUtil.objectMapper(form, InventoryPojo.class);
 
@@ -39,8 +47,6 @@ public class InventoryDto {
         }
 
         p.setId(p1.getId());
-
-        ValidateUtil.validateInventory(p);
 
         try {
             service.getCheck(p.getId());
@@ -53,13 +59,27 @@ public class InventoryDto {
 
     }
 
-    public List<InventoryBulkData> bulkAdd(List<InventoryForm> list) {
-        List<InventoryBulkData> errorList = new ArrayList<InventoryBulkData>();
+    public void bulkAdd(List<InventoryForm> list) throws ApiException{
+        JSONArray errorList = new JSONArray();
         List<InventoryPojo> pojoList = new ArrayList<InventoryPojo>();
 
         HashMap<String, Integer> barcodeToId = new HashMap<String, Integer>();
 
         for (InventoryForm form : list) {
+
+            try {
+                ValidateUtil.validateForms(form);
+                ;
+            } catch (ConstraintViolationException e) {
+                JSONObject error = new JSONObject(new GsonBuilder()
+                        .excludeFieldsWithoutExposeAnnotation()
+                        .create()
+                        .toJson(form));
+                error.put("error", ExceptionUtil.getValidationMessage(e));
+                errorList.put(error);
+                continue;
+            }
+
             InventoryPojo pojo = ConvertUtil.objectMapper(form, InventoryPojo.class);
 
             if (barcodeToId.containsKey(form.getBarcode())) {
@@ -71,10 +91,12 @@ public class InventoryDto {
                 try {
                     product = pService.get(form.getBarcode());
                 } catch (ApiException e) {
-                    InventoryBulkData error = new InventoryBulkData();
-                    error = ConvertUtil.objectMapper(form, InventoryBulkData.class);
-                    error.setError(e.getMessage());
-                    errorList.add(error);
+                    JSONObject error = new JSONObject(new GsonBuilder()
+                            .excludeFieldsWithoutExposeAnnotation()
+                            .create()
+                            .toJson(form));
+                    error.put("error", "Brand and category does not exist");
+                    errorList.put(error);
                     continue;
                 } finally {
                     barcodeToId.put(product.getBarcode(), product.getId());
@@ -82,21 +104,14 @@ public class InventoryDto {
                 }
             }
 
-            try {
-                ValidateUtil.validateInventory(pojo);
-            } catch (ApiException e) {
-                InventoryBulkData error = new InventoryBulkData();
-                error = ConvertUtil.objectMapper(form, InventoryBulkData.class);
-                error.setError(e.getMessage());
-                errorList.add(error);
-                continue;
-            }
             pojoList.add(pojo);
         }
 
         service.bulkAdd(pojoList);
 
-        return errorList;
+        if (!errorList.isEmpty()) {
+            throw new ApiException(errorList.toString());
+        }
     }
 
     public InventoryData get(String barcode) throws ApiException {
@@ -109,9 +124,30 @@ public class InventoryDto {
         return d;
     }
 
-    public InventorySelectData getAll(Integer pageNo, Integer pageSize, Integer draw) throws ApiException {
+    public SelectData<InventoryData> getAll(Integer start, Integer length, Integer draw, Optional<String> searchValue) throws ApiException {
         List<InventoryData> list = new ArrayList<InventoryData>();
-        List<InventoryPojo> list1 = service.getAll(pageNo, pageSize);
+        List<InventoryPojo> list1 = new ArrayList<InventoryPojo>();
+
+
+        if(searchValue.isPresent() && !searchValue.get().isBlank()){
+
+            Integer totalProds = pService.getTotalEntries();
+            List<ProductPojo> pList = pService.getByQueryString(0, totalProds, searchValue.get());
+            
+            for(ProductPojo prod: pList){
+                InventoryPojo inv = new InventoryPojo();
+                try{
+                    inv = service.get(prod.getId());
+                }
+                catch(ApiException e){
+                    continue;
+                }
+                list1.add(inv);
+            }
+        }
+        else{
+            list1 = service.getAll(start / length, length);
+        }
 
         for (InventoryPojo p : list1) {
             ProductPojo prodPojo = pService.get(p.getId());
@@ -120,7 +156,7 @@ public class InventoryDto {
             list.add(iData);
         }
 
-        InventorySelectData result = new InventorySelectData();
+        SelectData<InventoryData> result = new SelectData<InventoryData>();
         result.setData(list);
         result.setDraw(draw);
         Integer totalEntries = service.getTotalEntries();
@@ -130,12 +166,11 @@ public class InventoryDto {
     }
 
     public void update(InventoryForm form) throws ApiException {
+        ValidateUtil.validateForms(form);
 
         ProductPojo p1 = pService.get(form.getBarcode());
         InventoryPojo p = ConvertUtil.objectMapper(form, InventoryPojo.class);
         p.setId(p1.getId());
-
-        ValidateUtil.validateInventory(p);
 
         InventoryPojo p2 = service.getCheck(p.getId());
         p2.setQuantity(p.getQuantity());

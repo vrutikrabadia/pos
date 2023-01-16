@@ -1,6 +1,8 @@
 package com.increff.pos.dao;
 
 
+import java.util.List;
+
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -39,6 +41,19 @@ public class ProductDao extends AbstractDao{
         TypedQuery<ProductPojo> query = em.createQuery(cq);
 
         return getSingle(query);
+    }
+
+    public List<ProductPojo> selectByBrandCat(Integer brandCat){
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<ProductPojo> cq = cb.createQuery(ProductPojo.class);
+        Root<ProductPojo> productRoot = cq.from(ProductPojo.class);
+
+        Predicate bPredicate = cb.equal(productRoot.get("brandCat"), brandCat);
+        cq.where(bPredicate);
+
+        TypedQuery<ProductPojo> query = em.createQuery(cq);
+
+        return query.getResultList();
     }
 
 

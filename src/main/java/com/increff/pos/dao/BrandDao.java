@@ -1,5 +1,6 @@
 package com.increff.pos.dao;
 
+
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -39,5 +40,7 @@ public class BrandDao extends AbstractDao{
 
         return getSingle(query);
     }
+
+    
 
 }

@@ -4,21 +4,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
+import javax.validation.ConstraintViolationException;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.increff.pos.model.data.ProductBulkData;
+import com.google.gson.GsonBuilder;
 import com.increff.pos.model.data.ProductData;
-import com.increff.pos.model.data.ProductSelectData;
+import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.ProductForm;
 import com.increff.pos.pojo.BrandPojo;
-import com.increff.pos.pojo.ProductBulkPojo;
 import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.BrandService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ConvertUtil;
+import com.increff.pos.util.ExceptionUtil;
 import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
 
@@ -31,14 +36,14 @@ public class ProductDto {
     private BrandService bService;
 
     public void add(ProductForm form) throws ApiException {
+        ValidateUtil.validateForms(form);
+
         BrandPojo brandP = bService.get(form.getBrand(), form.getCategory());
 
         ProductPojo p = ConvertUtil.objectMapper(form, ProductPojo.class);
         p.setBrandCat(brandP.getId());
-        
+
         StringUtil.normaliseProduct(p);
-        
-        ValidateUtil.validateProduct(p);
 
         if (service.checkBarCode(0, p.getBarcode())) {
             throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
@@ -47,66 +52,75 @@ public class ProductDto {
         service.add(p);
     }
 
-    public List<ProductBulkData> bulkAdd(List<ProductForm> list){
-        List<ProductBulkData> errorList = new ArrayList<ProductBulkData>();
+    public void bulkAdd(List<ProductForm> list) throws ApiException {
+        JSONArray errorList = new JSONArray();
         List<ProductPojo> pojoList = new ArrayList<ProductPojo>();
-        
+
         HashMap<String, Integer> brandCatMap = new HashMap<String, Integer>();
         HashMap<Integer, List<String>> idToBrandCat = new HashMap<Integer, List<String>>();
-        
-        for(ProductForm form: list){
-            ProductPojo pojo = ConvertUtil.objectMapper(form, ProductPojo.class);
 
-            if(brandCatMap.containsKey(form.getBrand()+form.getCategory())){
-                pojo.setBrandCat(brandCatMap.get(form.getBrand()+form.getCategory()));
+        for (ProductForm form : list) {
+            try {
+                ValidateUtil.validateForms(form);
+
+            } catch (ConstraintViolationException e) {
+                JSONObject error = new JSONObject(new GsonBuilder()
+                        .excludeFieldsWithoutExposeAnnotation()
+                        .create()
+                        .toJson(form));
+                error.put("error", ExceptionUtil.getValidationMessage(e));
+                errorList.put(error);
+                continue;
             }
 
-            else{
-                BrandPojo brandP = new BrandPojo();  
-                try{
+            ProductPojo pojo = ConvertUtil.objectMapper(form, ProductPojo.class);
+
+            if (brandCatMap.containsKey(form.getBrand() + form.getCategory())) {
+                pojo.setBrandCat(brandCatMap.get(form.getBrand() + form.getCategory()));
+            }
+
+            else {
+                BrandPojo brandP = new BrandPojo();
+                try {
                     brandP = bService.get(form.getBrand(), form.getCategory());
-                }
-                catch(ApiException e){
-                    ProductBulkData error = new ProductBulkData();
-                    error = ConvertUtil.objectMapper(form, ProductBulkData.class);
-                    error.setError(e.getMessage());
-                    errorList.add(error);
+                } catch (ApiException e) {
+                    JSONObject error = new JSONObject(new GsonBuilder()
+                            .excludeFieldsWithoutExposeAnnotation()
+                            .create()
+                            .toJson(form));
+                    error.put("error", "Brand and category does not exist");
+                    errorList.put(error);
                     continue;
-                }
-                finally{
-                    brandCatMap.put(brandP.getBrand()+brandP.getCategory(), brandP.getId());
+                } finally {
+                    brandCatMap.put(brandP.getBrand() + brandP.getCategory(), brandP.getId());
                     idToBrandCat.put(brandP.getId(), Arrays.asList(brandP.getBrand(), brandP.getCategory()));
                     pojo.setBrandCat(brandP.getId());
                 }
             }
 
             StringUtil.normaliseProduct(pojo);
-            try{
-                ValidateUtil.validateProduct(pojo);
-            }
-            catch(ApiException e){
-                ProductBulkData error = new ProductBulkData();
-                error = ConvertUtil.objectMapper(form, ProductBulkData.class);
-                error.setError(e.getMessage());
-                errorList.add(error);
-                continue;
-            }
 
             pojoList.add(pojo);
-            
+
+        }
+        System.out.println(pojoList.size());
+
+        JSONArray serviceErrors = service.bulkAdd(pojoList);
+        
+        for(int i=0; i<serviceErrors.length(); i++){
+            JSONObject obj = serviceErrors.getJSONObject(i);
+            List<String> brandCat = idToBrandCat.get(obj.get("brandCat"));
+            obj.put("brand", brandCat.get(0));
+            obj.put("category", brandCat.get(1));
+            obj.remove("brandCat");
+
         }
 
-        List<ProductBulkPojo> serviceError = service.bulkAdd(pojoList);
+        errorList.putAll(serviceErrors);
 
-        for(ProductBulkPojo error: serviceError){
-            ProductBulkData errorData = ConvertUtil.objectMapper(error, ProductBulkData.class);
-            List<String> brandCat = idToBrandCat.get(error.getBrandCat());
-            errorData.setBrand(brandCat.get(0));
-            errorData.setCategory(brandCat.get(1));
-            errorList.add(errorData);
+        if (!errorList.isEmpty()) {
+            throw new ApiException(errorList.toString());
         }
-
-        return errorList;
 
     }
 
@@ -122,9 +136,25 @@ public class ProductDto {
         return pData;
     }
 
-    public ProductSelectData getAll(Integer pageNo, Integer pageSize, Integer draw) throws ApiException {
-        List<ProductPojo> list = service.getAll(pageNo, pageSize);
+    public SelectData<ProductData> getAll(Integer start, Integer length, Integer draw, Optional<String> searchValue) throws ApiException {
+        List<ProductPojo> list = new ArrayList<ProductPojo>();
         List<ProductData> list1 = new ArrayList<ProductData>();
+
+        if(searchValue.isPresent() && !searchValue.get().isBlank()){
+            Integer brandSize = bService.getTotalEntries();
+            
+            list = service.getByQueryString(start/length, length, searchValue.get());
+            
+            List<BrandPojo> bList = bService.searchQueryString(0, brandSize, searchValue.get());
+
+            for(BrandPojo bPojo: bList){
+                list.addAll(service.getByBrandCat(bPojo.getId()));
+            }
+        }
+        else{
+            list = service.getAll(start / length, length);
+        }
+
         for (ProductPojo p : list) {
 
             BrandPojo brandP = bService.get(p.getBrandCat());
@@ -136,7 +166,7 @@ public class ProductDto {
             list1.add(pData);
         }
 
-        ProductSelectData result = new ProductSelectData();
+        SelectData<ProductData> result = new SelectData<ProductData>();
         result.setData(list1);
         result.setDraw(draw);
         Integer totalRecords = service.getTotalEntries();
@@ -146,6 +176,7 @@ public class ProductDto {
     }
 
     public void update(Integer id, ProductForm form) throws ApiException {
+        ValidateUtil.validateForms(form);
 
         BrandPojo brandP = bService.get(form.getBrand(), form.getCategory());
 
@@ -153,8 +184,6 @@ public class ProductDto {
         p.setBrandCat(brandP.getId());
 
         StringUtil.normaliseProduct(p);
-
-        ValidateUtil.validateProduct(p);
 
         if (service.checkBarCode(id, p.getBarcode())) {
             throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
