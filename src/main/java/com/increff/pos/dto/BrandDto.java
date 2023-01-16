@@ -30,9 +30,12 @@ public class BrandDto {
     private BrandService service;
 
     public void add(BrandForm f) throws ApiException {
+        
+        StringUtil.normalise(f, BrandForm.class);
+        
         ValidateUtil.validateForms(f);
         BrandPojo p = ConvertUtil.objectMapper(f, BrandPojo.class);
-        StringUtil.normaliseBrand(p);
+    
 
         try {
             service.getcheck(f.getBrand(), f.getCategory());
@@ -51,6 +54,7 @@ public class BrandDto {
         List<BrandPojo> pojoList = new ArrayList<BrandPojo>();
 
         for (BrandForm form : list) {
+            StringUtil.normalise(form, BrandForm.class);
             try {
                 ValidateUtil.validateForms(form);
             } catch (ConstraintViolationException e) {
@@ -87,7 +91,7 @@ public class BrandDto {
         
     
         if(searchValue.isPresent() && !searchValue.get().isBlank()){
-            list = service.searchQueryString(start/length, length,searchValue.get());
+            list = service.searchQueryString(start/length, length,StringUtil.toLowerCase(searchValue.get()));
         }
         else{
             list = service.getAll(start/length, length);
@@ -109,15 +113,19 @@ public class BrandDto {
     }
 
     public BrandData get(String brand, String category) throws ApiException {
+        brand = StringUtil.toLowerCase(brand);
+        category = StringUtil.toLowerCase(category);
         BrandPojo p = service.get(brand, category);
 
         return ConvertUtil.objectMapper(p, BrandData.class);
     }
 
     public void update(Integer id, BrandForm f) throws ApiException {
+        
+        StringUtil.normalise(f, BrandForm.class);
         ValidateUtil.validateForms(f);
         BrandPojo p = ConvertUtil.objectMapper(f, BrandPojo.class);
-        StringUtil.normaliseBrand(p);
+        
         service.update(id, p);
     }
 

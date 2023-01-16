@@ -1,8 +1,8 @@
 package com.increff.pos.util;
 
-import com.increff.pos.pojo.BrandPojo;
-import com.increff.pos.pojo.ProductPojo;
-import com.increff.pos.pojo.UserPojo;
+import java.lang.reflect.Field;
+
+import com.increff.pos.service.ApiException;
 
 public class StringUtil {
 
@@ -14,20 +14,20 @@ public class StringUtil {
 		return s == null ? null : s.trim().toLowerCase();
 	}
 
-	public static void normaliseBrand(BrandPojo p){
-		p.setBrand(toLowerCase(p.getBrand()));
-		p.setCategory(toLowerCase(p.getCategory()));
-	}
+	public static <T> void normalise(T form, Class<T> type) throws ApiException {
+		Field[] fields = type.getDeclaredFields();
 
-
-	public static void normaliseProduct(ProductPojo p){
-		p.setName(toLowerCase(p.getName()));
-        p.setBarcode(toLowerCase(p.getBarcode()));
-	}
-
-	public static void normalizeUser(UserPojo p) {
-		p.setEmail(p.getEmail().toLowerCase().trim());
-		p.setRole(p.getRole().toLowerCase().trim());
+		for(Field field: fields) {
+		    if(field.getType().getSimpleName() == "String"){
+				
+				field.setAccessible(true);
+				try{
+					field.set(form, toLowerCase((String)field.get(form)));
+				} catch(IllegalAccessException e){
+					throw new ApiException("Error normalising form");
+				}
+			}
+		}
 	}
 
 

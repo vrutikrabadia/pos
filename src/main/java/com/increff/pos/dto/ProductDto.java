@@ -36,6 +36,7 @@ public class ProductDto {
     private BrandService bService;
 
     public void add(ProductForm form) throws ApiException {
+        StringUtil.normalise(form, ProductForm.class);
         ValidateUtil.validateForms(form);
 
         BrandPojo brandP = bService.get(form.getBrand(), form.getCategory());
@@ -43,7 +44,6 @@ public class ProductDto {
         ProductPojo p = ConvertUtil.objectMapper(form, ProductPojo.class);
         p.setBrandCat(brandP.getId());
 
-        StringUtil.normaliseProduct(p);
 
         if (service.checkBarCode(0, p.getBarcode())) {
             throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
@@ -60,6 +60,7 @@ public class ProductDto {
         HashMap<Integer, List<String>> idToBrandCat = new HashMap<Integer, List<String>>();
 
         for (ProductForm form : list) {
+            StringUtil.normalise(form, ProductForm.class);
             try {
                 ValidateUtil.validateForms(form);
 
@@ -98,7 +99,6 @@ public class ProductDto {
                 }
             }
 
-            StringUtil.normaliseProduct(pojo);
 
             pojoList.add(pojo);
 
@@ -145,7 +145,7 @@ public class ProductDto {
             
             list = service.getByQueryString(start/length, length, searchValue.get());
             
-            List<BrandPojo> bList = bService.searchQueryString(0, brandSize, searchValue.get());
+            List<BrandPojo> bList = bService.searchQueryString(0, brandSize, StringUtil.toLowerCase(searchValue.get()));
 
             for(BrandPojo bPojo: bList){
                 list.addAll(service.getByBrandCat(bPojo.getId()));
@@ -176,6 +176,7 @@ public class ProductDto {
     }
 
     public void update(Integer id, ProductForm form) throws ApiException {
+        StringUtil.normalise(form, ProductForm.class);
         ValidateUtil.validateForms(form);
 
         BrandPojo brandP = bService.get(form.getBrand(), form.getCategory());
@@ -183,7 +184,6 @@ public class ProductDto {
         ProductPojo p = ConvertUtil.objectMapper(form, ProductPojo.class);
         p.setBrandCat(brandP.getId());
 
-        StringUtil.normaliseProduct(p);
 
         if (service.checkBarCode(id, p.getBarcode())) {
             throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");

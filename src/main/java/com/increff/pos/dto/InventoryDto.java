@@ -24,6 +24,7 @@ import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ConvertUtil;
 import com.increff.pos.util.ExceptionUtil;
+import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
 
 @Component
@@ -36,7 +37,7 @@ public class InventoryDto {
     private ProductService pService;
 
     public void add(InventoryForm form) throws ApiException {
-
+        StringUtil.normalise(form, InventoryForm.class);
         ValidateUtil.validateForms(form);
 
         ProductPojo p1 = pService.get(form.getBarcode());
@@ -66,10 +67,11 @@ public class InventoryDto {
         HashMap<String, Integer> barcodeToId = new HashMap<String, Integer>();
 
         for (InventoryForm form : list) {
-
+            
+            StringUtil.normalise(form, InventoryForm.class);
             try {
                 ValidateUtil.validateForms(form);
-                ;
+                
             } catch (ConstraintViolationException e) {
                 JSONObject error = new JSONObject(new GsonBuilder()
                         .excludeFieldsWithoutExposeAnnotation()
@@ -115,7 +117,7 @@ public class InventoryDto {
     }
 
     public InventoryData get(String barcode) throws ApiException {
-
+        barcode = StringUtil.toLowerCase(barcode);
         ProductPojo p = pService.get(barcode);
         InventoryPojo p1 = service.get(p.getId());
 
@@ -132,7 +134,7 @@ public class InventoryDto {
         if(searchValue.isPresent() && !searchValue.get().isBlank()){
 
             Integer totalProds = pService.getTotalEntries();
-            List<ProductPojo> pList = pService.getByQueryString(0, totalProds, searchValue.get());
+            List<ProductPojo> pList = pService.getByQueryString(0, totalProds, StringUtil.toLowerCase(searchValue.get()));
             
             for(ProductPojo prod: pList){
                 InventoryPojo inv = new InventoryPojo();
@@ -166,6 +168,7 @@ public class InventoryDto {
     }
 
     public void update(InventoryForm form) throws ApiException {
+        StringUtil.normalise(form, InventoryForm.class);
         ValidateUtil.validateForms(form);
 
         ProductPojo p1 = pService.get(form.getBarcode());

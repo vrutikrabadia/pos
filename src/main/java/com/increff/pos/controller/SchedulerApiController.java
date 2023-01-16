@@ -1,6 +1,8 @@
 package com.increff.pos.controller;
 
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,13 +39,13 @@ public class SchedulerApiController {
     @ApiOperation(value = "Get entries in date range")
     @RequestMapping(path = "/day-sales/dateRange", method = RequestMethod.GET)
     public SelectData<SchedulerData> getInDateRange(@RequestParam String startDate, @RequestParam String endDate, @RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length) throws ApiException {
-        return dto.getInDateRange(startDate, endDate, start, length,draw);
+        return dto.getInDateRange( start, length,draw, startDate, endDate);
     }
 
     @ApiOperation(value = "Get all entries")
-    @RequestMapping(path = "/day-sales/", method = RequestMethod.GET)
-    public SelectData<SchedulerData> get(@RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length) throws ApiException {
-        return dto.getAll(start, length, draw);
+    @RequestMapping(path = "/day-sales", method = RequestMethod.GET)
+    public SelectData<SchedulerData> get(@RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length, @RequestParam Optional<String> startDate, @RequestParam Optional<String> endDate) throws ApiException {
+        return dto.getAll(start, length, draw, startDate, endDate);
     }
 
 }

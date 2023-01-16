@@ -21,8 +21,8 @@ public class UserDto {
     UserService service;
 
     public void add(UserForm form) throws ApiException {
+        StringUtil.normalise(form, UserForm.class);
         UserPojo p = ConvertUtil.objectMapper(form, UserPojo.class);
-        StringUtil.normalizeUser(p);
         service.add(p);
     }
 

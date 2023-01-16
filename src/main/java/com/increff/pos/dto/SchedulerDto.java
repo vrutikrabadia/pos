@@ -2,9 +2,12 @@ package com.increff.pos.dto;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,8 +37,13 @@ public class SchedulerDto {
         service.add(pojo);
     }
 
-    public SelectData<SchedulerData> getAll(Integer start, Integer length, Integer draw){
+    public SelectData<SchedulerData> getAll(Integer start, Integer length, Integer draw, Optional<String> startDate, Optional<String> endDate) throws ApiException{
         List<SchedulerData> dataList = new ArrayList<SchedulerData>();
+
+        if(startDate.isPresent() && !startDate.get().isBlank() && endDate.isPresent() && !endDate.get().isBlank()){
+            return this.getInDateRange(start, length, draw, startDate.get(), endDate.get());
+        }
+
         List<SchedulerPojo> pojoList = service.getAll(start/length, length);
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");  
     
@@ -56,15 +64,15 @@ public class SchedulerDto {
         return result;
     }
 
-    public SelectData<SchedulerData> getInDateRange(String startDate, String endDate, Integer start, Integer length, Integer draw) throws ApiException{
+    public SelectData<SchedulerData> getInDateRange(Integer start, Integer length, Integer draw, String startDate, String endDate) throws ApiException{
         List<SchedulerData> dataList = new ArrayList<SchedulerData>();
 
         Date sDate;
         Date eDate;
         
         try{
-            sDate = new SimpleDateFormat("dd/MM/yyyy").parse(startDate);
-            eDate = new SimpleDateFormat("dd/MM/yyyy").parse(endDate); 
+            sDate = Date.from(LocalDate.parse(startDate).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+            eDate = Date.from(LocalDate.parse(endDate).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
         } catch (Exception e){
             throw new ApiException("Error converting date");
         }

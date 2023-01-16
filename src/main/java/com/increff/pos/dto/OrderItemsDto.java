@@ -26,6 +26,7 @@ import com.increff.pos.service.OrderService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ConvertUtil;
 import com.increff.pos.util.ExceptionUtil;
+import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
 
 @Component
@@ -46,6 +47,7 @@ public class OrderItemsDto {
         Set<String> barcodeSet = new HashSet<String> (); 
 
         for (OrderItemsForm f : list) {
+            StringUtil.normalise(f, OrderItemsForm.class);
             try{
                 ValidateUtil.validateForms(f);
             }
@@ -106,6 +108,7 @@ public class OrderItemsDto {
     }
 
     public void addToExisitingOrder(Integer orderId, OrderItemsForm form) throws ApiException {
+        StringUtil.normalise(form, OrderItemsForm.class);
         OrderItemsPojo item = ConvertUtil.objectMapper(form, OrderItemsPojo.class);
 
         oService.getCheck(orderId);
@@ -145,6 +148,7 @@ public class OrderItemsDto {
     }
 
     public void update(Integer id, OrderItemsForm f) throws ApiException {
+        StringUtil.normalise(f, OrderItemsForm.class);
         ValidateUtil.validateForms(f);
 
         OrderItemsPojo p = ConvertUtil.objectMapper(f, OrderItemsPojo.class);
