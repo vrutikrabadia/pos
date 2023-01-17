@@ -29,7 +29,7 @@ pos.properties
 jetty.log
 
 
-/src/main/resources/com/increff/pos/*.xml
+/pos-app/src/main/resources/com/increff/pos/*.xml
 
-/src/main/resources/com/increff/pos/*.pdf
+/pos-app/src/main/resources/com/increff/pos/*.pdf
 
