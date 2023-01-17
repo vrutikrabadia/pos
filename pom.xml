@@ -27,28 +27,50 @@
 		<commons-dbcp.version>1.4</commons-dbcp.version>
 		<slf4j.version>1.7.5</slf4j.version>
 		<lambok.version>1.18.24</lambok.version>
+		<javax.version>3.0.0</javax.version>
+		<hibernate-validator.version>6.0.13.Final</hibernate-validator.version>
+		<dom.version>2.3.0-jaxb-1.0.6</dom.version>
+		<fop.version>2.7</fop.version>
+		<json.version>20210307</json.version>
+		<gson.version>2.10.1</gson.version>
 		<!-- Jetty configuration -->
 		<jetty.version>9.4.21.v20190926</jetty.version>
 		<jetty.http.port>9000</jetty.http.port>
 		<jetty.context>/pos</jetty.context>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
-
-		<javax.version>3.0.0</javax.version>
-		<hibernate-validator.version>6.0.13.Final</hibernate-validator.version>
 	</properties>
 	<dependencies>
 
-		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<!-- PDF dependencies-->
+		<dependency>
+			<groupId>org.w3c</groupId>
+			<artifactId>dom</artifactId>
+			<version>${dom.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>fop</artifactId>
+			<version>${fop.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- JSON Dependencies-->
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20210307</version>
+			<version>${json.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.10.1</version>
+			<version>${gson.version}</version>
 		</dependency>
 
 

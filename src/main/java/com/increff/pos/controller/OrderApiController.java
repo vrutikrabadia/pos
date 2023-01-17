@@ -2,6 +2,8 @@ package com.increff.pos.controller;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,5 +59,11 @@ public class OrderApiController {
     @RequestMapping(path="/orders/{id}/finalise", method = RequestMethod.PUT)
     public void finaliseOrder(@PathVariable Integer id) throws ApiException{
         dto.finaliseOrder(id);
+    }
+
+    @ApiOperation(value = "Generate Invoice")
+    @RequestMapping(path="/orders/{id}/invoice", method = RequestMethod.GET)
+    public void generateInvoice(@PathVariable Integer id, HttpServletResponse response) throws Exception{
+        dto.generateInvoice(id, response);
     }
 }
