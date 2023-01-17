@@ -18,11 +18,12 @@ public class StringUtil {
 		Field[] fields = type.getDeclaredFields();
 
 		for(Field field: fields) {
-		    if(field.getType().getSimpleName() == "String"){
-				
+			
+		    if(field.getType().getSimpleName().equals("String")){
 				field.setAccessible(true);
 				try{
-					field.set(form, toLowerCase((String)field.get(form)));
+					field.set(form, toLowerCase(field.get(form).toString()));
+					
 				} catch(IllegalAccessException e){
 					throw new ApiException("Error normalising form");
 				}

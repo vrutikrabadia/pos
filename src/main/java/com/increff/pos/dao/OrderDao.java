@@ -1,5 +1,8 @@
 package com.increff.pos.dao;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -29,5 +32,18 @@ public class OrderDao extends AbstractDao{
         TypedQuery<OrderPojo> query = em.createQuery(cq);
 
         return getSingle(query);
+    }
+
+    public List<OrderPojo> selectInDateRange(Date startDate,Date endDate){
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        CriteriaQuery<OrderPojo> cq = cb.createQuery(OrderPojo.class);
+        Root<OrderPojo> root = cq.from(OrderPojo.class);
+
+        Predicate datePredicate = cb.between(root.get("updated"), startDate, endDate);
+        cq.where(datePredicate);
+        TypedQuery<OrderPojo> query = em.createQuery(cq);
+
+        return query.getResultList();
     }
 }

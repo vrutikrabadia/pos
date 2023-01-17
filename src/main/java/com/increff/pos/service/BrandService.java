@@ -84,6 +84,16 @@ public class BrandService {
         return dao.selectQueryString(pageNo, pageSize,queryString, columnList , BrandPojo.class);
     }
 
+    public List<BrandPojo> searchQueryStringBrand(Integer pageNo, Integer pageSize,String queryString){
+        List<String> columnList = Arrays.asList("brand");
+        return dao.selectQueryString(pageNo, pageSize,queryString, columnList , BrandPojo.class);
+    }
+
+    public List<BrandPojo> searchQueryStringCategory(Integer pageNo, Integer pageSize,String queryString){
+        List<String> columnList = Arrays.asList("category");
+        return dao.selectQueryString(pageNo, pageSize,queryString, columnList , BrandPojo.class);
+    }
+
     private BrandPojo getCheck(Integer id) throws ApiException {
         BrandPojo b = dao.selectById(id);
         if (Objects.isNull(b)) {
