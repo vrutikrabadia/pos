@@ -1,5 +1,6 @@
 package com.increff.pos.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.OrderDto;
 import com.increff.pos.model.data.OrderData;
+import com.increff.pos.model.data.OrderItemsData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.OrderForm;
+import com.increff.pos.model.form.OrderItemsForm;
 import com.increff.pos.service.ApiException;
 
 import io.swagger.annotations.Api;
@@ -31,7 +34,7 @@ public class OrderApiController {
 
     @ApiOperation(value="Creates order")
     @RequestMapping(path="/orders", method = RequestMethod.POST)
-    public OrderData add(@RequestBody OrderForm form) throws ApiException{
+    public OrderData add(@RequestBody List<OrderItemsForm> form) throws ApiException{
         return dto.add(form);
     }
 
@@ -40,6 +43,12 @@ public class OrderApiController {
     @RequestMapping(path="/orders/{id}", method = RequestMethod.GET)
     public OrderData get(@PathVariable Integer id) throws ApiException{
         return dto.get(id);
+    }
+
+    @ApiOperation(value="Get Order Items by order id")
+    @RequestMapping(path="/orders/{id}/items", method = RequestMethod.GET)
+    public List<OrderItemsData> getByOrderId(@PathVariable Integer id) throws ApiException{
+        return dto.getByOrderId(id);
     }
 
     @ApiOperation(value = "Gets All orders")

@@ -1,6 +1,7 @@
 package com.increff.pos.util;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import com.increff.pos.service.ApiException;
 
@@ -31,5 +32,11 @@ public class StringUtil {
 		}
 	}
 
+
+	public static <T> void normaliseList(List<T> formList, Class<T> type) throws ApiException {
+		for(T form: formList){
+			normalise(form, type);
+		}
+	} 
 
 }

@@ -143,7 +143,7 @@ public class ProductDto {
         if(searchValue.isPresent() && !searchValue.get().isBlank()){
             Integer brandSize = bService.getTotalEntries();
             
-            list = service.getByQueryString(start/length, length, searchValue.get());
+            list = service.getByQueryString(start, length, searchValue.get());
             
             List<BrandPojo> bList = bService.searchQueryString(0, brandSize, StringUtil.toLowerCase(searchValue.get()));
 
@@ -152,7 +152,7 @@ public class ProductDto {
             }
         }
         else{
-            list = service.getAll(start / length, length);
+            list = service.getAllPaginated(start, length);
         }
 
         for (ProductPojo p : list) {

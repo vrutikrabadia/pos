@@ -1,11 +1,8 @@
 package com.increff.pos.dto;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +16,7 @@ import com.increff.pos.pojo.SchedulerPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.SchedulerService;
 import com.increff.pos.util.ConvertUtil;
+import com.increff.pos.util.TimeUtil;
 import com.increff.pos.util.ValidateUtil;
 
 @Component
@@ -44,11 +42,11 @@ public class SchedulerDto {
             return this.getInDateRange(start, length, draw, startDate.get(), endDate.get());
         }
 
-        List<SchedulerPojo> pojoList = service.getAll(start/length, length);
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");  
+        List<SchedulerPojo> pojoList = service.getAllPaginated(start, length);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss Z");
     
         for(SchedulerPojo pojo: pojoList){
-            String strDate = dateFormat.format(pojo.getDate());
+            String strDate = pojo.getDate().format(formatter);
             SchedulerData data = ConvertUtil.objectMapper(pojo, SchedulerData.class);  
             data.setDate(strDate);
             
@@ -67,12 +65,12 @@ public class SchedulerDto {
     public SelectData<SchedulerData> getInDateRange(Integer start, Integer length, Integer draw, String startDate, String endDate) throws ApiException{
         List<SchedulerData> dataList = new ArrayList<SchedulerData>();
 
-        Date sDate;
-        Date eDate;
+        ZonedDateTime sDate;
+        ZonedDateTime eDate;
         
         try{
-            sDate = Date.from(LocalDate.parse(startDate).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-            eDate = Date.from(LocalDate.parse(endDate).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+            sDate = TimeUtil.formatYyyyMmDd(startDate);
+            eDate = TimeUtil.formatYyyyMmDd(endDate);
         } catch (Exception e){
             throw new ApiException("Error converting date");
         }
@@ -81,11 +79,12 @@ public class SchedulerDto {
         if(sDate.compareTo(eDate)>0){
             throw new ApiException("start date should be less than end date");
         }
-        List<SchedulerPojo> pojoList = service.getByDateRange(sDate, eDate,start/length, length);
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");  
+        List<SchedulerPojo> pojoList = service.getByDateRange(sDate, eDate,start, length);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss Z");
+
         
         for(SchedulerPojo pojo: pojoList){
-            String strDate = dateFormat.format(pojo.getDate());
+            String strDate = pojo.getDate().format(formatter);
             SchedulerData data = ConvertUtil.objectMapper(pojo, SchedulerData.class);  
             data.setDate(strDate);
             

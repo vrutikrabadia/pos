@@ -50,16 +50,19 @@ public class ProductService {
     }
 
     public ProductPojo get(String barcode) throws ApiException {
-        ProductPojo p1 = dao.selectByBarcode(barcode);
+        ProductPojo p1 = dao.selectByColumn("barcode", barcode, ProductPojo.class);
         if (Objects.isNull(p1)) {
             throw new ApiException("Product with bar code does not exist");
         }
         return p1;
     }
 
-    public List<ProductPojo> getAll(Integer pageNo, Integer pageSize) {
-        Integer offset = pageNo * pageSize;
-        return dao.selectAll(offset, pageSize, ProductPojo.class);
+    public List<ProductPojo> getAllPaginated(Integer offset, Integer pageSize) {
+        return dao.selectAllPaginated(offset, pageSize, ProductPojo.class);
+    }
+
+    public List<ProductPojo> getAll() {
+        return dao.selectAll(ProductPojo.class);
     }
 
     public void update(Integer id, ProductPojo p) throws ApiException {
@@ -72,7 +75,7 @@ public class ProductService {
     }
 
     public List<ProductPojo> getByBrandCat(Integer brandCat){
-        return dao.selectByBrandCat(brandCat);
+        return dao.selectMultiple("brandCat", brandCat, ProductPojo.class);
     }
 
     public List<ProductPojo> getByQueryString(Integer pageNo, Integer pageSize,String searchQuery){
@@ -84,7 +87,7 @@ public class ProductService {
 
     public ProductPojo getCheck(Integer id) throws ApiException {
 
-        ProductPojo p = dao.selectById(id);
+        ProductPojo p = dao.selectByColumn("id",id, ProductPojo.class);
         if (Objects.isNull(p)) {
             throw new ApiException("product does not exist with id: " + id);
         }
@@ -95,8 +98,12 @@ public class ProductService {
         return dao.getTotalEntries(ProductPojo.class);
     }
 
+    public <T> List<ProductPojo> getInColumn(String column, List<T> values){
+        return dao.selectByColumnUsingIn(column, values, ProductPojo.class);
+    }
+
     public boolean checkBarCode(Integer id, String barcode) {
-        ProductPojo p = dao.selectByBarcode(barcode);
+        ProductPojo p = dao.selectByColumn("barcode", barcode, ProductPojo.class);
         if (Objects.isNull(p)) {
             return false;
         }

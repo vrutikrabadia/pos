@@ -1,7 +1,7 @@
 package com.increff.pos.pojo;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +19,7 @@ public class SchedulerPojo extends AbstractPojo implements Serializable{
     
     @Id
     @Column(name = "date", nullable = false)
-    private Date date;
+    private ZonedDateTime date;
     @Column(name = "invoiced_orders_count", nullable = false)
     private Integer orderCount;
     @Column(name = "invoiced_items_count", nullable = false)

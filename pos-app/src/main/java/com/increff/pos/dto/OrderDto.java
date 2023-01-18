@@ -5,11 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,8 +22,10 @@ import org.springframework.util.FileCopyUtils;
 
 import com.google.gson.Gson;
 import com.increff.pos.model.data.OrderData;
+import com.increff.pos.model.data.OrderItemsData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.OrderForm;
+import com.increff.pos.model.form.OrderItemsForm;
 import com.increff.pos.pojo.OrderItemsPojo;
 import com.increff.pos.pojo.OrderPojo;
 import com.increff.pos.pojo.ProductPojo;
@@ -32,6 +35,8 @@ import com.increff.pos.service.OrderService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ConvertUtil;
 import com.increff.pos.util.PdfUtil;
+import com.increff.pos.util.StringUtil;
+import com.increff.pos.util.ValidateUtil;
 import com.increff.pos.util.XmlUtils;
 
 @Component
@@ -46,21 +51,63 @@ public class OrderDto {
     @Autowired
     private ProductService pService;
 
-    public OrderData add(OrderForm f) {
-        OrderPojo p = new OrderPojo();
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-        String strDate = dateFormat.format(p.getUpdated());
-        OrderData data = ConvertUtil.objectMapper(service.add(p), OrderData.class);
+    public OrderData add(List<OrderItemsForm> list) throws ApiException {
+        List<OrderItemsPojo> list1 = new ArrayList<OrderItemsPojo>();
+        JSONArray errorList = new JSONArray();
+        Set<String> barcodeSet = new HashSet<String> (); 
+        StringUtil.normaliseList(list, OrderItemsForm.class);
+        ValidateUtil.validateForms(list);
+
+        for (OrderItemsForm f : list) {
+            
+
+            if(barcodeSet.contains(f.getBarcode())){
+                JSONObject error = new JSONObject(new Gson().toJson(f));
+
+                error.put("error", "Duplicate products in the order");
+                errorList.put(error);
+            }
+
+            barcodeSet.add(f.getBarcode());
+
+
+            OrderItemsPojo p = ConvertUtil.objectMapper(f, OrderItemsPojo.class);
+
+            
+            ProductPojo product = new ProductPojo();
+            try{
+                product = pService.get(f.getBarcode());
+            }
+            catch(ApiException e){
+                JSONObject error = new JSONObject(new Gson().toJson(f));
+                
+                error.put("error", e.getMessage());
+                errorList.put(error);
+            }
+            p.setProductId(product.getId());
+
+            list1.add(p);
+        }
+
+        if(errorList.length() > 0){
+            throw new ApiException(errorList.toString());
+        }
+        OrderPojo order = service.add(list1);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss Z");
+        String strDate = order.getUpdated().format(formatter);
+        OrderData data = ConvertUtil.objectMapper(order, OrderData.class);
         data.setUpdated(strDate);
 
         return data;
+
     }
 
     public OrderData get(Integer id) throws ApiException {
         OrderPojo p = service.get(id);
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-        String strDate = dateFormat.format(p.getUpdated());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss Z");
+        String strDate = p.getUpdated().format(formatter);
         OrderData data = ConvertUtil.objectMapper(p, OrderData.class);
         data.setUpdated(strDate);
 
@@ -74,15 +121,17 @@ public class OrderDto {
             try {
                 list1.add(service.get(Integer.valueOf(searchValue.get())));
             } catch (ApiException e) {
-                list1 = service.getAll(start / length, length);
+                list1 = service.getAllPaginated(start, length);
             }
         } else {
-            list1 = service.getAll(start / length, length);
+            list1 = service.getAllPaginated(start, length);
         }
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss Z");
 
         for (OrderPojo p : list1) {
-            String strDate = dateFormat.format(p.getUpdated());
+            String strDate =  p.getUpdated().format(formatter);
             OrderData data = ConvertUtil.objectMapper(p, OrderData.class);
             data.setUpdated(strDate);
 
@@ -93,15 +142,33 @@ public class OrderDto {
         result.setData(list);
         result.setDraw(draw);
         Integer totalEntries = service.getTotalEntries();
+        System.out.println(totalEntries);
         result.setRecordsFiltered(totalEntries);
         result.setRecordsTotal(totalEntries);
         return result;
     }
 
+    public List<OrderItemsData> getByOrderId(Integer orderId) throws ApiException {
+        List<OrderItemsData> list = new ArrayList<OrderItemsData>();
+        List<OrderItemsPojo> list1 = iService.selectByOrderId(orderId);
+
+        for (OrderItemsPojo p : list1) {
+
+            ProductPojo product = pService.get(p.getProductId());
+            OrderItemsData data = ConvertUtil.objectMapper(p, OrderItemsData.class);
+            data.setBarcode(product.getBarcode());
+
+            list.add(data);
+        }
+
+        return list;
+
+    }
+
     public OrderData update(Integer id, OrderForm f) throws ApiException {
         OrderPojo p = service.update(id, null);
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-        String strDate = dateFormat.format(p.getUpdated());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss Z");
+        String strDate = p.getUpdated().format(formatter);
         OrderData data = ConvertUtil.objectMapper(p, OrderData.class);
         data.setUpdated(strDate);
 

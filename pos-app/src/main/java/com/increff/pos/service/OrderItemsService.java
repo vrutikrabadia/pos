@@ -29,15 +29,15 @@ public class OrderItemsService {
     SchedulerService sService;
 
      
-    public OrderPojo add(List<OrderItemsPojo> list) throws ApiException{
-        OrderPojo order = oService.add(new OrderPojo());
+    public void add(Integer orderId,List<OrderItemsPojo> list) throws ApiException{
+        
         Double revenue = 0.0;
         Integer totalQuantity = 0;
         for(OrderItemsPojo p: list){
             revenue = revenue + (p.getQuantity()*p.getSellingPrice());
             totalQuantity += p.getQuantity();
             iService.reduceQuantity(p.getProductId(), p.getQuantity());
-            p.setOrderId(order.getId());
+            p.setOrderId(orderId);
             dao.insert(p);
         }
 
@@ -46,7 +46,6 @@ public class OrderItemsService {
         sPojo.setTotalRevenue(revenue);
         sService.add(sPojo);
 
-        return order;
     }
 
     public void add(OrderItemsPojo item){
@@ -55,12 +54,12 @@ public class OrderItemsService {
 
      
     public OrderItemsPojo selectById(Integer id){
-        return dao.selectById(id);
+        return dao.selectByColumn("id",id, OrderItemsPojo.class);
     }
 
      
     public List<OrderItemsPojo> selectByOrderId(Integer orderId){
-        return dao.selectByOrderId(orderId);
+        return dao.selectMultiple("orderId", orderId, OrderItemsPojo.class);
     }
 
      

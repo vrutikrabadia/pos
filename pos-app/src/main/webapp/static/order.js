@@ -209,7 +209,7 @@ function displayOrder(id) {
 
 
 function placeOrder() {
-    var url = getOrderItemUrl();
+    var url = getOrderUrl();
 
     // var jsonObj = arrayToJson();
     // console.log(jsonObj);

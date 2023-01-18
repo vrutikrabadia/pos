@@ -6,12 +6,9 @@ import java.util.Objects;
 
 import javax.transaction.Transactional;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.GsonBuilder;
 import com.increff.pos.dao.BrandDao;
 import com.increff.pos.pojo.BrandPojo;
 
@@ -26,35 +23,23 @@ public class BrandService {
         dao.insert(p);
     }
 
-    public JSONArray bulkAdd(List<BrandPojo> list) throws ApiException {
-        JSONArray errorList = new JSONArray();
+    public void bulkAdd(List<BrandPojo> list) throws ApiException {
 
         for (BrandPojo brand : list) {
-            try {
-                getcheck(brand.getBrand(), brand.getCategory());
-            } catch (ApiException e) {
-                add(brand);
-                continue;
-            }
-            JSONObject error = new JSONObject(new GsonBuilder()
-                    .excludeFieldsWithoutExposeAnnotation()
-                    .create()
-                    .toJson(brand));
-            error.put("error", "Brand and category already exists");
-            errorList.put(error);
+                add(brand); 
         }
-
-        return errorList;
-
     }
 
     public BrandPojo get(Integer id) throws ApiException {
         return getCheck(id);
     }
 
-    public List<BrandPojo> getAll(Integer pageNo, Integer pageSize) {
-        Integer offset = pageNo * pageSize;
-        return dao.selectAll(offset, pageSize, BrandPojo.class);
+    public List<BrandPojo> getAllPaginated(Integer offset, Integer pageSize) {
+        return dao.selectAllPaginated(offset, pageSize, BrandPojo.class);
+    }
+
+    public List<BrandPojo> getAll() {
+        return dao.selectAll(BrandPojo.class);
     }
 
     public BrandPojo get(String brand, String category) throws ApiException {
@@ -94,11 +79,17 @@ public class BrandService {
         return dao.selectQueryString(pageNo, pageSize,queryString, columnList , BrandPojo.class);
     }
 
+    public List<BrandPojo> getInColumn(String column,List<String> values){
+        return dao.selectByColumnUsingIn(column, values, BrandPojo.class);
+    }
+
     private BrandPojo getCheck(Integer id) throws ApiException {
-        BrandPojo b = dao.selectById(id);
+        BrandPojo b = dao.selectByColumn("id", id, BrandPojo.class);
         if (Objects.isNull(b)) {
             throw new ApiException("brand/category with given ID does not exist, id: " + id);
         }
         return b;
     }
+
+
 }

@@ -1,17 +1,19 @@
 package com.increff.pos.dto;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-
-import javax.validation.ConstraintViolationException;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.gson.GsonBuilder;
+import com.google.gson.Gson;
 import com.increff.pos.model.data.BrandData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.BrandForm;
@@ -19,7 +21,6 @@ import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.BrandService;
 import com.increff.pos.util.ConvertUtil;
-import com.increff.pos.util.ExceptionUtil;
 import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
 
@@ -30,12 +31,11 @@ public class BrandDto {
     private BrandService service;
 
     public void add(BrandForm f) throws ApiException {
-        
+
         StringUtil.normalise(f, BrandForm.class);
-        
+
         ValidateUtil.validateForms(f);
         BrandPojo p = ConvertUtil.objectMapper(f, BrandPojo.class);
-    
 
         try {
             service.getcheck(f.getBrand(), f.getCategory());
@@ -49,34 +49,68 @@ public class BrandDto {
     }
 
     public void bulkAdd(List<BrandForm> list) throws ApiException {
-        JSONArray errorList = new JSONArray();
+
+        StringUtil.normaliseList(list, BrandForm.class);
+        ValidateUtil.validateList(list);
 
         List<BrandPojo> pojoList = new ArrayList<BrandPojo>();
 
         for (BrandForm form : list) {
-            StringUtil.normalise(form, BrandForm.class);
-            try {
-                ValidateUtil.validateForms(form);
-            } catch (ConstraintViolationException e) {
-                JSONObject error = new JSONObject(new GsonBuilder()
-                        .excludeFieldsWithoutExposeAnnotation()
-                        .create()
-                        .toJson(form));
-                error.put("error", ExceptionUtil.getValidationMessage(e));
-                errorList.put(error);
-                continue;
-            }
             BrandPojo pojo = ConvertUtil.objectMapper(form, BrandPojo.class);
             pojoList.add(pojo);
         }
 
-        JSONArray serviceErrors = service.bulkAdd(pojoList);
-        errorList.putAll(serviceErrors);
+        checkFileDuplications(pojoList);
 
-        if (!errorList.isEmpty()) {
+        checkDbDuplicate(pojoList);
+
+        service.bulkAdd(pojoList);
+
+    }
+
+    private void checkFileDuplications(List<BrandPojo> pojoList) throws ApiException {
+        JSONArray errorList = new JSONArray();
+        Set<String> fileSet = new HashSet<String>();
+
+        Set<BrandPojo> repeatSet = pojoList.stream().filter(e -> !fileSet.add(e.getBrand() + e.getCategory()))
+                .collect(Collectors.toSet());
+
+        if (repeatSet.size() > 0) {
+
+            repeatSet.forEach(e -> {
+                BrandForm repeated = ConvertUtil.objectMapper(e, BrandForm.class);
+                JSONObject error = new JSONObject(new Gson().toJson(repeated));
+                error.put("error", "DUPLICATE entries in file");
+                errorList.put(error);
+            });
+
             throw new ApiException(errorList.toString());
         }
+    }
 
+    private void checkDbDuplicate(List<BrandPojo> pojoList) throws ApiException{
+        JSONArray errorList = new JSONArray();
+        
+        List<String> brandList = pojoList.stream().map(BrandPojo::getBrand).collect(Collectors.toList());
+        List<BrandPojo> currentExixting = service.getInColumn("brand",brandList);
+        Set<String> dbSet = new HashSet<String>();
+        dbSet = currentExixting.stream().flatMap(pojo -> Stream.of(pojo.getBrand() + pojo.getCategory()))
+                .collect(Collectors.toSet());
+        Set<String> finalDbSet = dbSet;
+        Set<BrandPojo> repeatSet = pojoList.stream().filter(e -> !finalDbSet.add(e.getBrand() + e.getCategory()))
+                .collect(Collectors.toSet());
+
+        if (repeatSet.size() > 0) {
+
+            repeatSet.forEach(e -> {
+                BrandForm repeated = ConvertUtil.objectMapper(e, BrandForm.class);
+                JSONObject error = new JSONObject(new Gson().toJson(repeated));
+                error.put("error", "DUPLICATE: already exists in db");
+                errorList.put(error);
+            });
+
+            throw new ApiException(errorList.toString());
+        }
     }
 
     public BrandData get(Integer id) throws ApiException {
@@ -85,16 +119,14 @@ public class BrandDto {
     }
 
     public SelectData<BrandData> getAll(Integer start, Integer length, Integer draw, Optional<String> searchValue) {
-        
+
         List<BrandPojo> list = new ArrayList<BrandPojo>();
         List<BrandData> list1 = new ArrayList<BrandData>();
-        
-    
-        if(searchValue.isPresent() && !searchValue.get().isBlank()){
-            list = service.searchQueryString(start/length, length,StringUtil.toLowerCase(searchValue.get()));
-        }
-        else{
-            list = service.getAll(start/length, length);
+
+        if (searchValue.isPresent() && !searchValue.get().isBlank()) {
+            list = service.searchQueryString(start, length, StringUtil.toLowerCase(searchValue.get()));
+        } else {
+            list = service.getAllPaginated(start, length);
         }
 
         for (BrandPojo p : list) {
@@ -121,11 +153,11 @@ public class BrandDto {
     }
 
     public void update(Integer id, BrandForm f) throws ApiException {
-        
+
         StringUtil.normalise(f, BrandForm.class);
         ValidateUtil.validateForms(f);
         BrandPojo p = ConvertUtil.objectMapper(f, BrandPojo.class);
-        
+
         service.update(id, p);
     }
 

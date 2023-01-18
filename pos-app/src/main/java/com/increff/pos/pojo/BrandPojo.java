@@ -11,8 +11,6 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.google.gson.annotations.Expose;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,11 +28,9 @@ public class BrandPojo extends AbstractPojo implements Serializable{
 	private Integer id;
     
     @Column(name = "brand", nullable = false)
-    @Expose
     private String brand;
     
     @Column(name = "category", nullable = false)
-    @Expose
     private String category;
 
     

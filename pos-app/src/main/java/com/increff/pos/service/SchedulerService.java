@@ -1,6 +1,6 @@
 package com.increff.pos.service;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.increff.pos.dao.SchedulerDao;
 import com.increff.pos.pojo.SchedulerPojo;
-import com.increff.pos.util.ConvertUtil;
+import com.increff.pos.util.TimeUtil;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
@@ -21,7 +21,7 @@ public class SchedulerService {
     private SchedulerDao dao;
 
     public void add(SchedulerPojo pojo){
-        pojo.setDate(ConvertUtil.getDateWithoutTimeUsingCalendar());
+        pojo.setDate(TimeUtil.getCurrentZonedDateWithoutTime());
         SchedulerPojo check = getByDate(pojo.getDate()); 
 
         if(Objects.isNull(check)){
@@ -33,15 +33,15 @@ public class SchedulerService {
         }      
     }
 
-    public List<SchedulerPojo> getByDateRange(Date startDate, Date endDate, Integer offset, Integer pageSize){
+    public List<SchedulerPojo> getByDateRange(ZonedDateTime startDate, ZonedDateTime endDate, Integer offset, Integer pageSize){
         return dao.selectInDateRange(startDate, endDate, offset, pageSize);
     }
 
-    public List<SchedulerPojo> getAll(Integer offset, Integer pageSize){
-        return dao.selectAll(offset, pageSize, SchedulerPojo.class);
+    public List<SchedulerPojo> getAllPaginated(Integer offset, Integer pageSize){
+        return dao.selectAllPaginated(offset, pageSize, SchedulerPojo.class);
     }
 
-    public SchedulerPojo getByDate(Date date){
+    public SchedulerPojo getByDate(ZonedDateTime date){
         return dao.selectByDate(date);
     }
 
@@ -54,11 +54,13 @@ public class SchedulerService {
 
     }
 
-    public Integer getTotalEntriesinDateRange(Date startDate, Date endDate){
+    public Integer getTotalEntriesinDateRange(ZonedDateTime startDate, ZonedDateTime endDate){
         return dao.getTotalEntriesInDateRange(startDate, endDate);
     }
 
     public Integer getTotalEntries(){
         return dao.getTotalEntries(SchedulerPojo.class);
     }
+
+    
 }

@@ -8,19 +8,14 @@ import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
 import com.increff.pos.pojo.UserPojo;
 
 @Repository
-public class UserDao extends AbstractDao {
+public class UserDao extends AbstractDao<UserPojo> {
 	
-	@Transactional
-	public void insert(UserPojo p) {
-		em().persist(p);
-	}
 
 	public Integer delete(Integer id) {
 		CriteriaBuilder cb = em().getCriteriaBuilder();

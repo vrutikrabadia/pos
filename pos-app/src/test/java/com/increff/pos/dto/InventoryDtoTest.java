@@ -38,7 +38,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
         Integer quantity = 5;
 
         InventoryForm f = TestUtil.getInventoryForm(barcode, quantity);
-
+        
         dto.add(f);
 
         List<InventoryData> d = dto.getAll(0,1,1,empty).getData();

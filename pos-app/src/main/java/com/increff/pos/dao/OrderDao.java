@@ -1,6 +1,6 @@
 package com.increff.pos.dao;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
@@ -14,27 +14,10 @@ import org.springframework.stereotype.Repository;
 import com.increff.pos.pojo.OrderPojo;
 
 @Repository
-public class OrderDao extends AbstractDao{
+public class OrderDao extends AbstractDao<OrderPojo>{
     
-    public Integer insert(OrderPojo p){
-        em.persist(p);
-        return p.getId();
-    }
 
-    public OrderPojo selectById(Integer id){
-        
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<OrderPojo> cq = cb.createQuery(OrderPojo.class);
-        Root<OrderPojo> productRoot = cq.from(OrderPojo.class);
-        Predicate idPredicate = cb.equal(productRoot.get("id"), id);
-        cq.where(idPredicate);
-
-        TypedQuery<OrderPojo> query = em.createQuery(cq);
-
-        return getSingle(query);
-    }
-
-    public List<OrderPojo> selectInDateRange(Date startDate,Date endDate){
+    public List<OrderPojo> selectInDateRange(ZonedDateTime startDate, ZonedDateTime endDate){
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
         CriteriaQuery<OrderPojo> cq = cb.createQuery(OrderPojo.class);

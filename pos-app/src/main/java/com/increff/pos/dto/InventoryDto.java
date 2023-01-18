@@ -148,7 +148,7 @@ public class InventoryDto {
             }
         }
         else{
-            list1 = service.getAll(start / length, length);
+            list1 = service.getAllPaginated(start , length);
         }
 
         for (InventoryPojo p : list1) {

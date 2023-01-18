@@ -1,6 +1,6 @@
 package com.increff.pos.dao;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
@@ -14,9 +14,9 @@ import org.springframework.stereotype.Repository;
 import com.increff.pos.pojo.SchedulerPojo;
 
 @Repository
-public class SchedulerDao extends AbstractDao{
+public class SchedulerDao extends AbstractDao<SchedulerPojo>{
     
-    public List<SchedulerPojo> selectInDateRange(Date startDate,Date endDate, Integer offset, Integer pageSize){
+    public List<SchedulerPojo> selectInDateRange(ZonedDateTime startDate, ZonedDateTime endDate, Integer offset, Integer pageSize){
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
         CriteriaQuery<SchedulerPojo> cq = cb.createQuery(SchedulerPojo.class);
@@ -29,7 +29,7 @@ public class SchedulerDao extends AbstractDao{
         return query.setFirstResult(offset).setMaxResults(pageSize).getResultList();
     }
 
-    public SchedulerPojo selectByDate(Date date){
+    public SchedulerPojo selectByDate(ZonedDateTime date){
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
         CriteriaQuery<SchedulerPojo> cq = cb.createQuery(SchedulerPojo.class);
@@ -42,7 +42,7 @@ public class SchedulerDao extends AbstractDao{
         return getSingle(query);
     }
 
-    public Integer getTotalEntriesInDateRange(Date startDate,Date endDate){
+    public Integer getTotalEntriesInDateRange(ZonedDateTime startDate, ZonedDateTime endDate){
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
     	CriteriaQuery<Long> cq = cb.createQuery(Long.class);
@@ -53,7 +53,7 @@ public class SchedulerDao extends AbstractDao{
         
         TypedQuery<Long> query = em.createQuery(cq);
 
-    	return  Math.toIntExact(getSingle(query));
+    	return  Math.toIntExact(query.getFirstResult());
 
     }
 }
