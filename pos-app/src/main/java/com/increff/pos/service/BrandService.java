@@ -79,7 +79,7 @@ public class BrandService {
         return dao.selectQueryString(pageNo, pageSize,queryString, columnList , BrandPojo.class);
     }
 
-    public List<BrandPojo> getInColumn(String column,List<String> values){
+    public <T> List<BrandPojo> getInColumn(List<String> column,List<List<T>> values){
         return dao.selectByColumnUsingIn(column, values, BrandPojo.class);
     }
 

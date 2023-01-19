@@ -2,6 +2,7 @@ package com.increff.pos.util;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Objects;
 
 import com.increff.pos.service.ApiException;
 
@@ -23,8 +24,9 @@ public class StringUtil {
 		    if(field.getType().getSimpleName().equals("String")){
 				field.setAccessible(true);
 				try{
-					field.set(form, toLowerCase(field.get(form).toString()));
-					
+					if(Objects.nonNull(field.get(form))){
+						field.set(form, toLowerCase(field.get(form).toString()));
+					}
 				} catch(IllegalAccessException e){
 					throw new ApiException("Error normalising form");
 				}

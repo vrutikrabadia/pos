@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +14,7 @@ import com.increff.pos.dto.ReportDto;
 import com.increff.pos.model.data.BrandData;
 import com.increff.pos.model.data.InventoryReportData;
 import com.increff.pos.model.data.SalesReportData;
+import com.increff.pos.model.form.SalesReportForm;
 import com.increff.pos.service.ApiException;
 
 import io.swagger.annotations.Api;
@@ -34,9 +36,9 @@ public class ReportsApiController {
     }
 
     @ApiOperation(value = "Get Sales report")
-    @RequestMapping(path = "/reports/sales", method = RequestMethod.GET)
-    public List<SalesReportData> getSalesReport(@RequestParam String startDate, @RequestParam String endDate, @RequestParam Optional<String> brand, @RequestParam Optional<String> category) throws ApiException {
-        return dto.getSalesReport(startDate, endDate, brand, category);
+    @RequestMapping(path = "/reports/sales", method = RequestMethod.POST)
+    public List<SalesReportData> getSalesReport(@RequestBody SalesReportForm form) throws ApiException {
+        return dto.getSalesReport(form);
     }
 
     @ApiOperation(value = "Get Brand report")

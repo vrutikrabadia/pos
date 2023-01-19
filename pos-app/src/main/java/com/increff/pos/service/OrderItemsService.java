@@ -62,6 +62,10 @@ public class OrderItemsService {
         return dao.selectMultiple("orderId", orderId, OrderItemsPojo.class);
     }
 
+
+    public <T> List<OrderItemsPojo> getInColumn(List<String> columns, List<List<T>> values){
+        return dao.selectByColumnUsingIn(columns, values, OrderItemsPojo.class);
+    }
      
     public void update(Integer id, OrderItemsPojo p) throws ApiException{
         

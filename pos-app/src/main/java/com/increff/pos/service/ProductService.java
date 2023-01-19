@@ -98,7 +98,7 @@ public class ProductService {
         return dao.getTotalEntries(ProductPojo.class);
     }
 
-    public <T> List<ProductPojo> getInColumn(String column, List<T> values){
+    public <T> List<ProductPojo> getInColumn(List<String> column, List<List<T>>values){
         return dao.selectByColumnUsingIn(column, values, ProductPojo.class);
     }
 

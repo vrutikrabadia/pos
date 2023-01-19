@@ -1,6 +1,7 @@
 package com.increff.pos.dto;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -53,12 +54,7 @@ public class BrandDto {
         StringUtil.normaliseList(list, BrandForm.class);
         ValidateUtil.validateList(list);
 
-        List<BrandPojo> pojoList = new ArrayList<BrandPojo>();
-
-        for (BrandForm form : list) {
-            BrandPojo pojo = ConvertUtil.objectMapper(form, BrandPojo.class);
-            pojoList.add(pojo);
-        }
+        List<BrandPojo> pojoList = list.stream().map(e->ConvertUtil.objectMapper(e, BrandPojo.class)).collect(Collectors.toList());
 
         checkFileDuplications(pojoList);
 
@@ -92,7 +88,7 @@ public class BrandDto {
         JSONArray errorList = new JSONArray();
         
         List<String> brandList = pojoList.stream().map(BrandPojo::getBrand).collect(Collectors.toList());
-        List<BrandPojo> currentExixting = service.getInColumn("brand",brandList);
+        List<BrandPojo> currentExixting = service.getInColumn(Arrays.asList("brand"),Arrays.asList(brandList));
         Set<String> dbSet = new HashSet<String>();
         dbSet = currentExixting.stream().flatMap(pojo -> Stream.of(pojo.getBrand() + pojo.getCategory()))
                 .collect(Collectors.toSet());

@@ -104,16 +104,21 @@ public abstract class AbstractDao<T> {
 		return getSingle(query);
 	}
 
-	public <R> List<T> selectByColumnUsingIn(String column, List<R> values, Class<T> pojoClass) {
+	public <R> List<T> selectByColumnUsingIn(List<String> columns, List<List<R>> values, Class<T> pojoClass) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> cq = cb.createQuery(pojoClass);
 		Root<T> root = cq.from(pojoClass);
 
-		In<R> inClause = cb.in(root.get(column));
-		for (R val : values) {
-			inClause.value(val);
+		List<Predicate> preds = new ArrayList<>();
+		for(int i=0; i<columns.size(); i++){
+			In<R> inClause = cb.in(root.get(columns.get(i)));
+			for (R val : values.get(i)) {
+				inClause.value(val);
+			}
+			preds.add(inClause);
 		}
-		cq.select(root).where(inClause);
+		cq.where(cb.and(preds.toArray(new Predicate[] {})));
+		// cq.select(root).where(inClause);
 		TypedQuery<T> query = em.createQuery(cq);
 		return query.getResultList();
 	}
