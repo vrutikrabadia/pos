@@ -22,45 +22,45 @@ import io.swagger.annotations.ApiOperation;
 
 @Api
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/brands")
 public class BrandApiController {
 
     @Autowired
     private BrandDto dto;
 
     @ApiOperation(value = "Adds brand/category")
-    @RequestMapping(path = "/brands", method = RequestMethod.POST)
+    @RequestMapping(path = "", method = RequestMethod.POST)
     public void add(@RequestBody BrandForm form) throws ApiException {
         dto.add(form);
     }
 
     @ApiOperation(value = "Adds brand/category in bulk")
-    @RequestMapping(path = "/brands/bulk-add", method = RequestMethod.POST)
+    @RequestMapping(path = "/bulk-add", method = RequestMethod.POST)
     public void bulkAdd(@RequestBody List<BrandForm> form) throws ApiException {
         dto.bulkAdd(form);
     }
 
     @ApiOperation(value = "Get brand/category by id")
-    @RequestMapping(path = "/brands/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
     public BrandData get(@PathVariable Integer id) throws ApiException {
         return dto.get(id);
     }
 
     @ApiOperation(value = "Get all brand/category")
-    @RequestMapping(path = "/brands", method = RequestMethod.GET)
+    @RequestMapping(path = "", method = RequestMethod.GET)
     public SelectData<BrandData> get(@RequestParam(defaultValue="1") Integer draw, @RequestParam(defaultValue="0") Integer start, @RequestParam(defaultValue="20") Integer length, @RequestParam(value="search[value]") Optional<String> searchValue)
             throws ApiException {
         return dto.getAll(start, length, draw, searchValue);
     }
 
     @ApiOperation(value = "Get brand/category by brand/category")
-    @RequestMapping(path = "/brands/{brand}/categories/{category}", method = RequestMethod.GET)
+    @RequestMapping(path = "/{brand}/categories/{category}", method = RequestMethod.GET)
     public BrandData get(@PathVariable String brand, @PathVariable String category) throws ApiException {
         return dto.get(brand, category);
     }
 
     @ApiOperation(value = "Update brand/category by id")
-    @RequestMapping(path = "/brands/{id}", method = RequestMethod.PUT)
+    @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public void update(@PathVariable Integer id, @RequestBody BrandForm form) throws ApiException {
         dto.update(id, form);
     }

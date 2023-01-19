@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -95,10 +94,7 @@ public class OrderDto {
         }
         OrderPojo order = service.add(list1);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss Z");
-        String strDate = order.getUpdated().format(formatter);
         OrderData data = ConvertUtil.objectMapper(order, OrderData.class);
-        data.setUpdated(strDate);
 
         return data;
 
@@ -106,10 +102,7 @@ public class OrderDto {
 
     public OrderData get(Integer id) throws ApiException {
         OrderPojo p = service.get(id);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss Z");
-        String strDate = p.getUpdated().format(formatter);
         OrderData data = ConvertUtil.objectMapper(p, OrderData.class);
-        data.setUpdated(strDate);
 
         return data;
     }
@@ -127,13 +120,9 @@ public class OrderDto {
             list1 = service.getAllPaginated(start, length);
         }
         
-        
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss Z");
 
         for (OrderPojo p : list1) {
-            String strDate =  p.getUpdated().format(formatter);
             OrderData data = ConvertUtil.objectMapper(p, OrderData.class);
-            data.setUpdated(strDate);
 
             list.add(data);
         }
@@ -142,7 +131,6 @@ public class OrderDto {
         result.setData(list);
         result.setDraw(draw);
         Integer totalEntries = service.getTotalEntries();
-        System.out.println(totalEntries);
         result.setRecordsFiltered(totalEntries);
         result.setRecordsTotal(totalEntries);
         return result;
@@ -167,10 +155,7 @@ public class OrderDto {
 
     public OrderData update(Integer id, OrderForm f) throws ApiException {
         OrderPojo p = service.update(id, null);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss Z");
-        String strDate = p.getUpdated().format(formatter);
         OrderData data = ConvertUtil.objectMapper(p, OrderData.class);
-        data.setUpdated(strDate);
 
         return data;
     }

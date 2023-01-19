@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/products")
 public class ProductApiController {
     
 
@@ -32,31 +32,31 @@ public class ProductApiController {
 
 
     @ApiOperation(value = "Adds product")
-    @RequestMapping(path = "/products", method = RequestMethod.POST)
+    @RequestMapping(path = "", method = RequestMethod.POST)
     public void add(@RequestBody ProductForm form)throws ApiException{
         dto.add(form);
     }
 
     @ApiOperation(value = "Adds products in bulk")
-    @RequestMapping(path = "/products/bulk-add", method = RequestMethod.POST)
+    @RequestMapping(path = "/bulk-add", method = RequestMethod.POST)
     public void bulkAdddd(@RequestBody List<ProductForm> list)throws ApiException{
         dto.bulkAdd(list);
     }
 
     @ApiOperation(value = "Gets product by id")
-    @RequestMapping(path = "/products/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
     public ProductData get(@PathVariable Integer id)throws ApiException{
         return dto.get(id);
     }
 
     @ApiOperation(value = "Gets all products")
-    @RequestMapping(path = "/products", method = RequestMethod.GET)
+    @RequestMapping(path = "", method = RequestMethod.GET)
     public SelectData<ProductData> getAll(@RequestParam(defaultValue="1") Integer draw, @RequestParam(defaultValue="0") Integer start, @RequestParam(defaultValue="20") Integer length, @RequestParam(value="search[value]") Optional<String> searchValue) throws ApiException{
         return dto.getAll(start, length, draw, searchValue);
     }
 
     @ApiOperation(value = "Update product by id")
-    @RequestMapping(path = "/products/{id}", method = RequestMethod.PUT)
+    @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public void update(@PathVariable Integer id, @RequestBody ProductForm form)throws ApiException{
         dto.update(id, form);
     }

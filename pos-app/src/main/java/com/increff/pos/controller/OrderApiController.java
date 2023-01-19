@@ -26,52 +26,52 @@ import io.swagger.annotations.ApiOperation;
 
 @Api
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/orders")
 public class OrderApiController {
     
     @Autowired
     private OrderDto dto;
 
     @ApiOperation(value="Creates order")
-    @RequestMapping(path="/orders", method = RequestMethod.POST)
+    @RequestMapping(path="", method = RequestMethod.POST)
     public OrderData add(@RequestBody List<OrderItemsForm> form) throws ApiException{
         return dto.add(form);
     }
 
 
     @ApiOperation(value = "Gets Order by id")
-    @RequestMapping(path="/orders/{id}", method = RequestMethod.GET)
+    @RequestMapping(path="/{id}", method = RequestMethod.GET)
     public OrderData get(@PathVariable Integer id) throws ApiException{
         return dto.get(id);
     }
 
     @ApiOperation(value="Get Order Items by order id")
-    @RequestMapping(path="/orders/{id}/items", method = RequestMethod.GET)
+    @RequestMapping(path="/{id}/items", method = RequestMethod.GET)
     public List<OrderItemsData> getByOrderId(@PathVariable Integer id) throws ApiException{
         return dto.getByOrderId(id);
     }
 
     @ApiOperation(value = "Gets All orders")
-    @RequestMapping(path="/orders", method = RequestMethod.GET)
+    @RequestMapping(path="", method = RequestMethod.GET)
     public SelectData<OrderData> getAll(@RequestParam(defaultValue="1") Integer draw, @RequestParam(defaultValue="0") Integer start, @RequestParam(defaultValue="20") Integer length, @RequestParam(value="search[value]") Optional<String> searchValue) throws ApiException{
         
         return dto.getAll(start, length, draw, searchValue);
     }
 
     @ApiOperation(value = "Updates Order by id")
-    @RequestMapping(path="/orders/{id}", method = RequestMethod.PUT)
+    @RequestMapping(path="/{id}", method = RequestMethod.PUT)
     public OrderData put(@PathVariable Integer id, @RequestBody OrderForm form) throws ApiException{
         return dto.update(id, form);
     }
 
     @ApiOperation(value = "Sets order non editable")
-    @RequestMapping(path="/orders/{id}/finalise", method = RequestMethod.PUT)
+    @RequestMapping(path="/{id}/finalise", method = RequestMethod.PUT)
     public void finaliseOrder(@PathVariable Integer id) throws ApiException{
         dto.finaliseOrder(id);
     }
 
     @ApiOperation(value = "Generate Invoice")
-    @RequestMapping(path="/orders/{id}/invoice", method = RequestMethod.GET)
+    @RequestMapping(path="/{id}/invoice", method = RequestMethod.GET)
     public void generateInvoice(@PathVariable Integer id, HttpServletResponse response) throws Exception{
         dto.generateInvoice(id, response);
     }

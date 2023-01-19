@@ -245,7 +245,10 @@ function init() {
                 "data": "id"
             },
             {
-                "data": "updated"
+                "data": null,
+                "render": function (o) {
+                    return  new Date(o.updated).toLocaleString();
+                }
             },
             {
                 "data": null,

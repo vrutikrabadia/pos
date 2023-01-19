@@ -103,7 +103,6 @@ public class ProductDto {
             pojoList.add(pojo);
 
         }
-        System.out.println(pojoList.size());
 
         JSONArray serviceErrors = service.bulkAdd(pojoList);
         

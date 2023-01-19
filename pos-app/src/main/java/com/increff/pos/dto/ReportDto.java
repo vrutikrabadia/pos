@@ -29,7 +29,6 @@ import com.increff.pos.service.OrderItemsService;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.StringUtil;
-import com.increff.pos.util.TimeUtil;
 import com.increff.pos.util.ValidateUtil;
 
 @Component
@@ -112,15 +111,10 @@ public class ReportDto {
 
         StringUtil.normalise(form, SalesReportForm.class);
         ValidateUtil.validateForms(form);
-
-        ZonedDateTime sDate;
-        ZonedDateTime eDate;
-        try {
-            sDate = TimeUtil.formatYyyyMmDd(form.getStartDate());
-            eDate = TimeUtil.formatYyyyMmDd(form.getEndDate());
-        } catch (Exception e) {
-            throw new ApiException("Error converting date");
-        }
+        
+        ZonedDateTime sDate = form.getStartDate();
+        ZonedDateTime eDate = form.getEndDate();
+        
 
         if (sDate.compareTo(eDate) > 0) {
             throw new ApiException("start date should be less than end date");

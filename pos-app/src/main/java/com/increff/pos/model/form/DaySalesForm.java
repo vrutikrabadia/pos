@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SchedulerForm {
+public class DaySalesForm {
 
     @NotNull(message = "Items count cannot be null")
     @Min(value = 1, message = "Item count should be possitive")

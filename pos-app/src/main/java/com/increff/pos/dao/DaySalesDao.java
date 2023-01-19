@@ -11,44 +11,43 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.stereotype.Repository;
 
-import com.increff.pos.pojo.SchedulerPojo;
+import com.increff.pos.pojo.DaySalesPojo;
 
 @Repository
-public class SchedulerDao extends AbstractDao<SchedulerPojo>{
+public class DaySalesDao extends AbstractDao<DaySalesPojo>{
     
-    public List<SchedulerPojo> selectInDateRange(ZonedDateTime startDate, ZonedDateTime endDate, Integer offset, Integer pageSize){
+    public List<DaySalesPojo> selectInDateRange(ZonedDateTime startDate, ZonedDateTime endDate, Integer offset, Integer pageSize){
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
-        CriteriaQuery<SchedulerPojo> cq = cb.createQuery(SchedulerPojo.class);
-        Root<SchedulerPojo> root = cq.from(SchedulerPojo.class);
+        CriteriaQuery<DaySalesPojo> cq = cb.createQuery(DaySalesPojo.class);
+        Root<DaySalesPojo> root = cq.from(DaySalesPojo.class);
 
-        Predicate datePredicate = cb.between(root.get("date"), startDate, endDate);
+        Predicate datePredicate = cb.between(root.get("updated"), startDate, endDate);
         cq.where(datePredicate);
-        TypedQuery<SchedulerPojo> query = em.createQuery(cq);
+        TypedQuery<DaySalesPojo> query = em.createQuery(cq);
 
         return query.setFirstResult(offset).setMaxResults(pageSize).getResultList();
     }
 
-    public SchedulerPojo selectByDate(ZonedDateTime date){
+    public DaySalesPojo selectByDate(ZonedDateTime date){
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
-        CriteriaQuery<SchedulerPojo> cq = cb.createQuery(SchedulerPojo.class);
-        Root<SchedulerPojo> root = cq.from(SchedulerPojo.class);
+        CriteriaQuery<DaySalesPojo> cq = cb.createQuery(DaySalesPojo.class);
+        Root<DaySalesPojo> root = cq.from(DaySalesPojo.class);
 
         Predicate datePredicate = cb.equal(root.get("date"), date );
         cq.where(datePredicate);
-        TypedQuery<SchedulerPojo> query = em.createQuery(cq);
+        TypedQuery<DaySalesPojo> query = em.createQuery(cq);
 
         return getSingle(query);
     }
 
     public Integer getTotalEntriesInDateRange(ZonedDateTime startDate, ZonedDateTime endDate){
-
 		CriteriaBuilder cb = em.getCriteriaBuilder();
     	CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<SchedulerPojo> root = cq.from(SchedulerPojo.class);
+        Root<DaySalesPojo> root = cq.from(DaySalesPojo.class);
     	cq.select(cb.count(root));
-    	Predicate datePredicate = cb.between(root.get("date"), startDate, endDate);
+    	Predicate datePredicate = cb.between(root.get("updated"), startDate, endDate);
         cq.where(datePredicate);
         
         TypedQuery<Long> query = em.createQuery(cq);

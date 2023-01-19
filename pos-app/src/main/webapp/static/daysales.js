@@ -15,8 +15,8 @@ function displayBrand(data){
 
 
 function searchDateRange(){
-    var startDate = $("#inputStartDate").val();
-    var endDate = $("#inputEndDate").val();
+    var startDate = new Date($("#inputStartDate").val()).toISOString();
+    var endDate = new Date($("#inputEndDate").val()).toISOString();
     // Set dynamic parameters for the data table
     $('#day-sales-table').data('dt_params', { startDate: startDate, endDate: endDate });
     // Redraw data table, causes data to be reloaded
@@ -56,7 +56,11 @@ function init(){
                if(dt_params){ $.extend(d, dt_params); }
             }},
 		"columns": [
-            { "data": "date" },
+            { "data": null,
+            "render": function (o) {
+                return  new Date(o.date).toLocaleString();
+            } 
+        },
             { "data": "itemsCount" },
             { "data": "orderCount" },
             { "data": "totalRevenue" },

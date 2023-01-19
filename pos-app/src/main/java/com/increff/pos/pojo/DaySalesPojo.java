@@ -15,7 +15,7 @@ import lombok.Setter;
 @Table(name = "pos_day_sales")
 @Getter
 @Setter
-public class SchedulerPojo extends AbstractPojo implements Serializable{
+public class DaySalesPojo extends AbstractPojo implements Serializable{
     
     @Id
     @Column(name = "date", nullable = false)

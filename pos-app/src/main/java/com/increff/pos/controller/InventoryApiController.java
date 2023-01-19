@@ -22,7 +22,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/inventory")
 public class InventoryApiController {
     
     @Autowired
@@ -30,31 +30,31 @@ public class InventoryApiController {
 
 
     @ApiOperation(value="Adds Inventory")
-    @RequestMapping(path="/inventory", method = RequestMethod.POST)
+    @RequestMapping(path="", method = RequestMethod.POST)
     public void add(@RequestBody InventoryForm form) throws ApiException{
         dto.add(form);
     }
 
     @ApiOperation(value="Adds Inventory Bulk")
-    @RequestMapping(path="/inventory/bulk-add", method = RequestMethod.POST)
+    @RequestMapping(path="/bulk-add", method = RequestMethod.POST)
     public void bulkAdd(@RequestBody List<InventoryForm> list) throws ApiException{
         dto.bulkAdd(list);
     }
 
     @ApiOperation(value = "Get inventory by id")
-    @RequestMapping(path="/inventory/{barcode}", method = RequestMethod.GET)
+    @RequestMapping(path="/{barcode}", method = RequestMethod.GET)
     public InventoryData get(@PathVariable String barcode) throws ApiException{
         return dto.get(barcode);
     }
 
     @ApiOperation(value = "Get inventory ")
-    @RequestMapping(path="/inventory", method = RequestMethod.GET)
+    @RequestMapping(path="", method = RequestMethod.GET)
     public SelectData<InventoryData> getAll(@RequestParam Integer draw,@RequestParam Integer start, @RequestParam Integer length, @RequestParam(value="search[value]") Optional<String> searchValue) throws ApiException{
         return dto.getAll(start, length, draw, searchValue);
     }
 
     @ApiOperation(value = "Update inventory by barcode")
-    @RequestMapping(path="/inventory", method = RequestMethod.PUT)
+    @RequestMapping(path="", method = RequestMethod.PUT)
     public void update(@RequestBody InventoryForm f) throws ApiException{
         dto.update(f);
     }

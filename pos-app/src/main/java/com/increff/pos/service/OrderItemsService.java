@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.increff.pos.dao.OrderItemsDao;
 import com.increff.pos.pojo.OrderItemsPojo;
 import com.increff.pos.pojo.OrderPojo;
-import com.increff.pos.pojo.SchedulerPojo;
+import com.increff.pos.pojo.DaySalesPojo;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
@@ -26,7 +26,7 @@ public class OrderItemsService {
     private OrderService oService;
 
     @Autowired 
-    SchedulerService sService;
+    DaySalesService sService;
 
      
     public void add(Integer orderId,List<OrderItemsPojo> list) throws ApiException{
@@ -41,7 +41,7 @@ public class OrderItemsService {
             dao.insert(p);
         }
 
-        SchedulerPojo sPojo = new SchedulerPojo();
+        DaySalesPojo sPojo = new DaySalesPojo();
         sPojo.setItemsCount(totalQuantity);
         sPojo.setTotalRevenue(revenue);
         sService.add(sPojo);

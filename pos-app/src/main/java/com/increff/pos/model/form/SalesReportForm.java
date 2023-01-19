@@ -1,6 +1,11 @@
 package com.increff.pos.model.form;
 
-import javax.validation.constraints.NotBlank;
+import java.time.ZonedDateTime;
+
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.increff.pos.spring.CustomZonedDateTimeDeserializer;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,11 +13,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SalesReportForm {
-    @NotBlank(message = "startDate cannot be blank")
-    String startDate;
+    @JsonDeserialize(using = CustomZonedDateTimeDeserializer.class)
+    @NotNull(message = "startDate cannot be blank")
+    ZonedDateTime startDate;
     
-    @NotBlank(message = "endDate cannot be blank")
-    String endDate;
+    @JsonDeserialize(using = CustomZonedDateTimeDeserializer.class)
+    @NotNull(message = "endDate cannot be blank")
+    ZonedDateTime endDate;
 
     String brand;
     String category;

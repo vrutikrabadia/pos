@@ -9,20 +9,20 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.increff.pos.dao.SchedulerDao;
-import com.increff.pos.pojo.SchedulerPojo;
+import com.increff.pos.dao.DaySalesDao;
+import com.increff.pos.pojo.DaySalesPojo;
 import com.increff.pos.util.TimeUtil;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
-public class SchedulerService {
+public class DaySalesService {
     
     @Autowired
-    private SchedulerDao dao;
+    private DaySalesDao dao;
 
-    public void add(SchedulerPojo pojo){
+    public void add(DaySalesPojo pojo){
         pojo.setDate(TimeUtil.getCurrentZonedDateWithoutTime());
-        SchedulerPojo check = getByDate(pojo.getDate()); 
+        DaySalesPojo check = getByDate(pojo.getDate()); 
 
         if(Objects.isNull(check)){
             pojo.setOrderCount(1);
@@ -33,20 +33,20 @@ public class SchedulerService {
         }      
     }
 
-    public List<SchedulerPojo> getByDateRange(ZonedDateTime startDate, ZonedDateTime endDate, Integer offset, Integer pageSize){
+    public List<DaySalesPojo> getByDateRange(ZonedDateTime startDate, ZonedDateTime endDate, Integer offset, Integer pageSize){
         return dao.selectInDateRange(startDate, endDate, offset, pageSize);
     }
 
-    public List<SchedulerPojo> getAllPaginated(Integer offset, Integer pageSize){
-        return dao.selectAllPaginated(offset, pageSize, SchedulerPojo.class);
+    public List<DaySalesPojo> getAllPaginated(Integer offset, Integer pageSize){
+        return dao.selectAllPaginated(offset, pageSize, DaySalesPojo.class);
     }
 
-    public SchedulerPojo getByDate(ZonedDateTime date){
+    public DaySalesPojo getByDate(ZonedDateTime date){
         return dao.selectByDate(date);
     }
 
-    public void update(SchedulerPojo pojo){
-        SchedulerPojo row = dao.selectByDate(pojo.getDate());
+    public void update(DaySalesPojo pojo){
+        DaySalesPojo row = dao.selectByDate(pojo.getDate());
 
         row.setItemsCount(row.getItemsCount()+pojo.getItemsCount());
         row.setOrderCount(row.getOrderCount()+1);
@@ -59,7 +59,7 @@ public class SchedulerService {
     }
 
     public Integer getTotalEntries(){
-        return dao.getTotalEntries(SchedulerPojo.class);
+        return dao.getTotalEntries(DaySalesPojo.class);
     }
 
     
