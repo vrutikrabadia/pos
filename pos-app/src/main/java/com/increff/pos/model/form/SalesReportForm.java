@@ -14,12 +14,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SalesReportForm {
-    @ApiModelProperty(required = true,example = "2016-01-01")
+    @ApiModelProperty(required = true,example = "2020-07-14T21:56:00Z")
     @JsonDeserialize(using = CustomZonedDateTimeDeserializer.class)
     @NotNull(message = "startDate cannot be blank")
     ZonedDateTime startDate;
     
-    @ApiModelProperty(required = true,example = "2016-01-01")
+    @ApiModelProperty(required = true,example = "2020-07-14T21:56:00Z")
     @JsonDeserialize(using = CustomZonedDateTimeDeserializer.class)
     @NotNull(message = "endDate cannot be blank")
     ZonedDateTime endDate;

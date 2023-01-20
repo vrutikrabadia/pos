@@ -22,15 +22,15 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 /target/
-/pos-app/target
+*/target
 .vscode
 
 pos.properties
+pdf.properties
 
 jetty.log
 
 
-/pos-app/src/main/resources/com/increff/pos/*.xml
-
-/pos-app/src/main/resources/com/increff/pos/*.pdf
+*.xml
+*.pdf
 

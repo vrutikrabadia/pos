@@ -45,8 +45,8 @@ public class DaySalesApiController {
 
     @ApiOperation(value = "Get all entries")
     @RequestMapping(path = "/day-sales", method = RequestMethod.GET)
-    public SelectData<DaySalesData> get(@RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length, @RequestParam  Optional<ZonedDateTime> startDate, @RequestParam Optional<ZonedDateTime> endDate) throws ApiException {
-        return dto.getAll(start, length, draw, startDate, endDate);
+    public SelectData<DaySalesData> get(@RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length, @RequestParam  Optional<ZonedDateTime> optionalStartDate, @RequestParam Optional<ZonedDateTime> optionalEndDate) throws ApiException {
+        return dto.getAll(start, length, draw, optionalStartDate, optionalEndDate);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.increff.pos.spring;
+package com.increff.pdf.spring;
 
 import java.io.IOException;
 import java.time.ZonedDateTime;
@@ -15,11 +15,10 @@ public class CustomZonedDateTimeDeserializer extends JsonDeserializer {
             DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
 
         String date = jsonParser.getText();
-        
-        // TemporalAccessor accessor= DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(date);
-        return ZonedDateTime.parse(date);
-        
 
+        // TemporalAccessor accessor=
+        // DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(date);
+        return ZonedDateTime.parse(date);
 
     }
 }
