@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.increff.pos.dao.DaySalesDao;
 import com.increff.pos.pojo.DaySalesPojo;
-import com.increff.pos.util.TimeUtil;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
@@ -21,11 +20,9 @@ public class DaySalesService {
     private DaySalesDao dao;
 
     public void add(DaySalesPojo pojo){
-        pojo.setDate(TimeUtil.getCurrentZonedDateWithoutTime());
         DaySalesPojo check = getByDate(pojo.getDate()); 
 
         if(Objects.isNull(check)){
-            pojo.setOrderCount(1);
             dao.insert(pojo); 
         }
         else{

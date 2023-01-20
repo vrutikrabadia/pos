@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.increff.pos.dao.OrderItemsDao;
 import com.increff.pos.pojo.OrderItemsPojo;
 import com.increff.pos.pojo.OrderPojo;
-import com.increff.pos.pojo.DaySalesPojo;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
@@ -41,10 +40,10 @@ public class OrderItemsService {
             dao.insert(p);
         }
 
-        DaySalesPojo sPojo = new DaySalesPojo();
-        sPojo.setItemsCount(totalQuantity);
-        sPojo.setTotalRevenue(revenue);
-        sService.add(sPojo);
+        // DaySalesPojo sPojo = new DaySalesPojo();
+        // sPojo.setItemsCount(totalQuantity);
+        // sPojo.setTotalRevenue(revenue);
+        // sService.add(sPojo);
 
     }
 
