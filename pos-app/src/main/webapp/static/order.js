@@ -207,6 +207,37 @@ function displayOrder(id) {
 
 }
 
+function downloadInvoice(orderId) {
+
+    var url = getOrderUrl() + "/" + orderId + "/invoice";
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        success: function (response) {
+            const binary = atob(response);
+            const array = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                array[i] = binary.charCodeAt(i);
+            }
+            const blob = new Blob([array], {
+                type: 'application/pdf'
+            });
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'invoice'+orderId+'.pdf';
+            a.click();
+        },
+        error: function (error) {
+            alert(error.responseJSON.message);
+        }
+    });
+}
+
 
 function placeOrder() {
     var url = getOrderUrl();
@@ -247,13 +278,13 @@ function init() {
             {
                 "data": null,
                 "render": function (o) {
-                    return  new Date(o.updated).toLocaleString();
+                    return new Date(o.updated).toLocaleString();
                 }
             },
             {
                 "data": null,
                 "render": function (o) {
-                    return '<button onclick="displayOrder(' + o.id + ')">view</button>'
+                    return '<button onclick="displayOrder(' + o.id + ')">view</button><button onclick="downloadInvoice(' + o.id + ')">Download Invoice</button>'
                 }
             }
         ]

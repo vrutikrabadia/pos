@@ -41,25 +41,6 @@
 	</properties>
 	<dependencies>
 
-		<!-- PDF dependencies-->
-		<dependency>
-			<groupId>org.w3c</groupId>
-			<artifactId>dom</artifactId>
-			<version>${dom.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>fop</artifactId>
-			<version>${fop.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>xml-apis</groupId>
-					<artifactId>xml-apis</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
 		<!-- JSON Dependencies-->
 		<dependency>
 			<groupId>org.json</groupId>

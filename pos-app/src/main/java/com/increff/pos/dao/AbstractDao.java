@@ -118,7 +118,6 @@ public abstract class AbstractDao<T> {
 			preds.add(inClause);
 		}
 		cq.where(cb.and(preds.toArray(new Predicate[] {})));
-		// cq.select(root).where(inClause);
 		TypedQuery<T> query = em.createQuery(cq);
 		return query.getResultList();
 	}

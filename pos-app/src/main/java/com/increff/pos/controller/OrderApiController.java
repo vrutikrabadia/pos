@@ -3,7 +3,6 @@ package com.increff.pos.controller;
 import java.util.List;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,7 +71,7 @@ public class OrderApiController {
 
     @ApiOperation(value = "Generate Invoice")
     @RequestMapping(path="/{id}/invoice", method = RequestMethod.GET)
-    public void generateInvoice(@PathVariable Integer id, HttpServletResponse response) throws Exception{
-        dto.generateInvoice(id, response);
+    public String generateInvoice(@PathVariable Integer id) throws Exception{
+         return dto.generateInvoice(id);
     }
 }

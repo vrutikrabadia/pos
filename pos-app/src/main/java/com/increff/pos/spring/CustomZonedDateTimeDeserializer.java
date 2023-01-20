@@ -16,7 +16,6 @@ public class CustomZonedDateTimeDeserializer extends JsonDeserializer {
 
         String date = jsonParser.getText();
         
-        // TemporalAccessor accessor= DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(date);
         return ZonedDateTime.parse(date);
         
 

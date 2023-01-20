@@ -1,9 +1,10 @@
-package com.increff.pos.util;
+package com.increff.pdf.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.format.DateTimeFormatter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,28 +14,25 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.increff.pdf.model.form.InvoiceForm;
+import com.increff.pdf.model.form.InvoiceItemsForm;
 
 
 public class XmlUtils {
 
-    public static void generateInvoiceXml(JSONObject invoiceData) throws Exception {
-        
-        JSONArray itemArray = invoiceData.getJSONArray("items");
+    public static void generateInvoiceXml(InvoiceForm invoiceData) throws Exception {
         
         double subTotal = 0.0;
 
-
-        for (int i = 0; i < itemArray.length(); i++) {
-            JSONObject item = itemArray.getJSONObject(i);
-            subTotal += item.getInt("quantity") * item.getDouble("sellingPrice");
+        for(InvoiceItemsForm item: invoiceData.getItemsList()){
+            subTotal += item.getQuantity()*item.getSellingPrice();
         }
 
-        double tax = subTotal * 0.18;
-        double total = subTotal + tax;
+
+        double total = subTotal;
 
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -101,18 +99,14 @@ public class XmlUtils {
 
         // invoice date
         Element invoice_date = doc.createElement("Invoice_date");
-        invoice_date.setTextContent(invoiceData.getString("updated"));
+        invoice_date.setTextContent(DateTimeFormatter.ofPattern("dd/MM/yyyy - hh:mm").format(invoiceData.getUpdated()));
         gdkRow.appendChild(invoice_date);
 
         // invoice number
         Element invoice_number = doc.createElement("Invoice_number");
-        invoice_number.setTextContent(invoiceData.get("id").toString());
+        invoice_number.setTextContent(invoiceData.getId().toString());
         gdkRow.appendChild(invoice_number);
 
-        // invoice tax
-        Element invoice_total = doc.createElement("SALES_TAX");
-        invoice_total.setTextContent(String.format("%.2f",tax));
-        gdkRow.appendChild(invoice_total);
 
         // sub total
         Element sub_total = doc.createElement("SUBTOTAL");
@@ -126,8 +120,7 @@ public class XmlUtils {
 
         Integer recordCount = 1;
 
-        for (int i = 0; i < itemArray.length(); i++) {
-            JSONObject item = itemArray.getJSONObject(i);
+        for (InvoiceItemsForm item: invoiceData.getItemsList()) {
             // RECORDSET
             Element recordset = doc.createElement("RECORDSET");
             recordset.setAttribute("RecordsetNumber", recordCount.toString());
@@ -140,25 +133,25 @@ public class XmlUtils {
 
             //NAME
             Element name = doc.createElement("NAME");
-            name.setTextContent(item.getString("productName"));
+            name.setTextContent(item.getName());
             recordset.appendChild(name);
 
             //BARCODE 
             Element barcode = doc.createElement("BARCODE");
-            barcode.setTextContent(item.getString("barcode"));
+            barcode.setTextContent(item.getBarcode());
             recordset.appendChild(barcode);
             
             //QUANTITY
             Element quantity = doc.createElement("QUANTITY");
-            quantity.setTextContent(item.get("quantity").toString());
+            quantity.setTextContent(item.getQuantity().toString());
             recordset.appendChild(quantity);
 
             //UNIT_PRICE
             Element rate = doc.createElement("UNIT_PRICE");
-            rate.setTextContent(item.get("sellingPrice").toString());
+            rate.setTextContent(item.getSellingPrice().toString());
             recordset.appendChild(rate);
 
-            double itemTotal = item.getInt("quantity") * item.getDouble("sellingPrice");
+            double itemTotal = item.getQuantity() * item.getSellingPrice();
 
             //AMOUNT
             Element amount = doc.createElement("TOTAL");
@@ -168,7 +161,7 @@ public class XmlUtils {
             recordCount++;
         }
 
-        try (FileOutputStream output = new FileOutputStream(new File("src/main/resources/com/increff/pos/invoice"+invoiceData.get("id").toString()+".xml").getAbsolutePath())) {
+        try (FileOutputStream output = new FileOutputStream(new File("src/main/resources/com/increff/pdf/invoice"+invoiceData.getId().toString()+".xml").getAbsolutePath())) {
             writeXml(doc, output);
         } catch (IOException e) {
             e.printStackTrace();

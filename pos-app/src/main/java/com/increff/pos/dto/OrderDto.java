@@ -1,25 +1,24 @@
 package com.increff.pos.dto;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.FileCopyUtils;
+import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
+import com.increff.pos.model.data.InvoiceData;
+import com.increff.pos.model.data.InvoiceItemsData;
 import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.data.OrderItemsData;
 import com.increff.pos.model.data.SelectData;
@@ -32,11 +31,10 @@ import com.increff.pos.service.ApiException;
 import com.increff.pos.service.OrderItemsService;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.service.ProductService;
+import com.increff.pos.util.Base64Util;
 import com.increff.pos.util.ConvertUtil;
-import com.increff.pos.util.PdfUtil;
 import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
-import com.increff.pos.util.XmlUtils;
 
 @Component
 public class OrderDto {
@@ -50,18 +48,19 @@ public class OrderDto {
     @Autowired
     private ProductService pService;
 
+    @Autowired
+    private RestTemplate restTemplate;
 
     public OrderData add(List<OrderItemsForm> list) throws ApiException {
         List<OrderItemsPojo> list1 = new ArrayList<OrderItemsPojo>();
         JSONArray errorList = new JSONArray();
-        Set<String> barcodeSet = new HashSet<String> (); 
+        Set<String> barcodeSet = new HashSet<String>();
         StringUtil.normaliseList(list, OrderItemsForm.class);
         ValidateUtil.validateForms(list);
 
         for (OrderItemsForm f : list) {
-            
 
-            if(barcodeSet.contains(f.getBarcode())){
+            if (barcodeSet.contains(f.getBarcode())) {
                 JSONObject error = new JSONObject(new Gson().toJson(f));
 
                 error.put("error", "Duplicate products in the order");
@@ -70,17 +69,14 @@ public class OrderDto {
 
             barcodeSet.add(f.getBarcode());
 
-
             OrderItemsPojo p = ConvertUtil.objectMapper(f, OrderItemsPojo.class);
 
-            
             ProductPojo product = new ProductPojo();
-            try{
+            try {
                 product = pService.get(f.getBarcode());
-            }
-            catch(ApiException e){
+            } catch (ApiException e) {
                 JSONObject error = new JSONObject(new Gson().toJson(f));
-                
+
                 error.put("error", e.getMessage());
                 errorList.put(error);
             }
@@ -89,7 +85,7 @@ public class OrderDto {
             list1.add(p);
         }
 
-        if(errorList.length() > 0){
+        if (errorList.length() > 0) {
             throw new ApiException(errorList.toString());
         }
         OrderPojo order = service.add(list1);
@@ -119,7 +115,6 @@ public class OrderDto {
         } else {
             list1 = service.getAllPaginated(start, length);
         }
-        
 
         for (OrderPojo p : list1) {
             OrderData data = ConvertUtil.objectMapper(p, OrderData.class);
@@ -160,58 +155,43 @@ public class OrderDto {
         return data;
     }
 
-    public void generateInvoice(Integer orderId, HttpServletResponse response) throws ApiException, Exception {
+    public String generateInvoice(Integer orderId) throws ApiException, Exception {
+
+        String filePath = new File("src/main/resources/com/increff/pos/invoice/invoice"+orderId+".pdf").getAbsolutePath();
+        File file = new File(filePath);
+
+        if (file.exists()){
+        return Base64Util.encodeFileToBase64Binary(filePath);
+        }
 
         OrderPojo order = service.get(orderId);
 
-        JSONObject invoiceData = new JSONObject(new Gson().toJson(order));
-
-        JSONArray itemArray = new JSONArray();
-
+        InvoiceData invoiceData = ConvertUtil.objectMapper(order, InvoiceData.class);
         List<OrderItemsPojo> itemsList = iService.selectByOrderId(orderId);
 
+        List<InvoiceItemsData> invItems = new ArrayList<InvoiceItemsData>();
+
         for (OrderItemsPojo item : itemsList) {
-            JSONObject itemData = new JSONObject(new Gson().toJson(item));
+            InvoiceItemsData itemData = ConvertUtil.objectMapper(item, InvoiceItemsData.class);
             ProductPojo prod = pService.get(item.getProductId());
-            itemData.put("productName", prod.getName());
-            itemData.put("barcode", prod.getBarcode());
-            itemArray.put(itemData);
+            itemData.setBarcode(prod.getBarcode());
+            itemData.setName(prod.getName());
+            invItems.add(itemData);
         }
 
-        invoiceData.put("items", itemArray);
+        invoiceData.setItemsList(invItems);
 
-        try {
-            XmlUtils.generateInvoiceXml(invoiceData);
-        } catch (Exception e) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-            throw new ApiException("Error generating XML");
-        }
+        String apiUrl = "http://localhost:9500/pdf/api/invoices";
+        ResponseEntity<String> apiResponse = restTemplate.postForEntity(apiUrl, invoiceData, String.class);
+        String responseBody = apiResponse.getBody();
 
-        try {
-            PdfUtil.generateInvoicePdf(order.getId());
-        } catch (Exception e) {
-            throw new ApiException("Error generating PDF");
-        }
+        Base64Util.decodeBase64ToFile(responseBody, filePath);
 
-        try {
+        return responseBody;
 
-            File file = new File(new File("src/main/resources/com/increff/pos/invoice"+orderId.toString()+".pdf").getAbsolutePath());
-
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-            String mimeType = URLConnection.guessContentTypeFromStream(inputStream);
-
-            if (mimeType == null) {
-                mimeType = "application/octet-stream";
-            }
-
-            response.setContentType(mimeType);
-            response.setContentLength((int) file.length());
-            response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
-
-            FileCopyUtils.copy(inputStream, response.getOutputStream());
-        } catch (Exception e) {
-            throw new ApiException("Unable to download the file");
-        }
     }
 
     public void finaliseOrder(Integer id) throws ApiException {
