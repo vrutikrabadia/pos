@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GDK>
+    <GDK_ROW RowNumber="1">
+        <Company_City>Bengaluru</Company_City>
+        <Company_Email>support@increff.com</Company_Email>
+        <Company_Name>Increff</Company_Name>
+        <Company_Phone>080-12345678</Company_Phone>
+        <Company_Street_Address>HSr Layout Sector 6</Company_Street_Address>
+        <Company_Zip_Code>560102</Company_Zip_Code>
+        <Report_date>15/01/2023 - 04:05</Report_date>
+        <Report_name>Sales Report</Report_name>
+        <RECORDSET RecordsetNumber="1">
+            <BRAND>string</BRAND>
+            <CATEGORY>string12</CATEGORY>
+            <QUANTITY>12</QUANTITY>
+            <REVENUE>12</REVENUE>
+        </RECORDSET>
+        <RECORDSET RecordsetNumber="2">
+            <BRAND>kitkat</BRAND>
+            <CATEGORY>a1b2c3d4</CATEGORY>
+            <QUANTITY>12</QUANTITY>
+            <REVENUE>12</REVENUE>
+        </RECORDSET>
+    </GDK_ROW>
+</GDK>

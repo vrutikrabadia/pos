@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GDK>
+    <GDK_ROW RowNumber="1">
+        <Client_City>client city</Client_City>
+        <Client_Name>client name</Client_Name>
+        <Client_Street_Address>client street address</Client_Street_Address>
+        <Client_Zip_Code>client zip code</Client_Zip_Code>
+        <Company_City>Bengaluru</Company_City>
+        <Company_Email>support@increff.com</Company_Email>
+        <Company_Name>Increff</Company_Name>
+        <Company_Phone>080-12345678</Company_Phone>
+        <Company_Street_Address>HSr Layout Sector 6</Company_Street_Address>
+        <Company_Zip_Code>560102</Company_Zip_Code>
+        <Invoice_date>12/01/2023 - 12:57</Invoice_date>
+        <Invoice_number>4</Invoice_number>
+        <SUBTOTAL>400.00</SUBTOTAL>
+        <TOTAL>400.00</TOTAL>
+        <RECORDSET RecordsetNumber="1">
+            <SNO>1</SNO>
+            <NAME>string</NAME>
+            <BARCODE>string12</BARCODE>
+            <QUANTITY>10</QUANTITY>
+            <UNIT_PRICE>20.0</UNIT_PRICE>
+            <TOTAL>200.00</TOTAL>
+        </RECORDSET>
+        <RECORDSET RecordsetNumber="2">
+            <SNO>2</SNO>
+            <NAME>kitkat</NAME>
+            <BARCODE>a1b2c3d5</BARCODE>
+            <QUANTITY>10</QUANTITY>
+            <UNIT_PRICE>20.0</UNIT_PRICE>
+            <TOTAL>200.00</TOTAL>
+        </RECORDSET>
+    </GDK_ROW>
+</GDK>

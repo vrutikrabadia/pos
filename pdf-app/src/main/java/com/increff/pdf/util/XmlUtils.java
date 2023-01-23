@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,8 +19,11 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.increff.pdf.model.form.BrandReportForm;
+import com.increff.pdf.model.form.InventoryReportForm;
 import com.increff.pdf.model.form.InvoiceForm;
 import com.increff.pdf.model.form.InvoiceItemsForm;
+import com.increff.pdf.model.form.SalesReportForm;
 
 
 public class XmlUtils {
@@ -167,6 +172,273 @@ public class XmlUtils {
             e.printStackTrace();
         }
     }
+
+
+    public static void generateBrandReportXml(List<BrandReportForm> brands) throws Exception{
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+        // root elements
+        Document doc = docBuilder.newDocument();
+        Element rootElement = doc.createElement("GDK");
+        doc.appendChild(rootElement);
+
+        // GDK Row
+        Element gdkRow = doc.createElement("GDK_ROW");
+        rootElement.appendChild(gdkRow);
+        gdkRow.setAttribute("RowNumber", "1");
+
+
+        // company city
+        Element company_city = doc.createElement("Company_City");
+        company_city.setTextContent("Bengaluru");
+        gdkRow.appendChild(company_city);
+
+        // company email
+        Element company_email = doc.createElement("Company_Email");
+        company_email.setTextContent("support@increff.com");
+        gdkRow.appendChild(company_email);
+
+        // company name
+        Element company_name = doc.createElement("Company_Name");
+        company_name.setTextContent("Increff");
+        gdkRow.appendChild(company_name);
+
+        // company phone
+        Element company_phone = doc.createElement("Company_Phone");
+        company_phone.setTextContent("080-12345678");
+        gdkRow.appendChild(company_phone);
+
+        // company street address
+        Element company_street_address = doc.createElement("Company_Street_Address");
+        company_street_address.setTextContent("HSr Layout Sector 6");
+        gdkRow.appendChild(company_street_address);
+
+        // company zip code
+        Element company_zip_code = doc.createElement("Company_Zip_Code");
+        company_zip_code.setTextContent("560102");
+        gdkRow.appendChild(company_zip_code);
+
+        // report date
+        Element report_date = doc.createElement("Report_date");
+        report_date.setTextContent(DateTimeFormatter.ofPattern("dd/MM/yyyy - hh:mm").format(LocalDateTime.now()));
+        gdkRow.appendChild(report_date);
+        
+        //Report name
+        Element report_name = doc.createElement("Report_name");
+        report_name.setTextContent("Brand Report");
+        gdkRow.appendChild(report_name);
+
+        Integer recordCount = 1;
+
+        for (BrandReportForm brand: brands) {
+            // RECORDSET
+            Element recordset = doc.createElement("RECORDSET");
+            recordset.setAttribute("RecordsetNumber", recordCount.toString());
+            gdkRow.appendChild(recordset);
+
+            //BRAND
+            Element brand_name = doc.createElement("BRAND");
+            brand_name.setTextContent(brand.getBrand());
+            recordset.appendChild(brand_name);
+
+            //CATEGORY
+            Element category = doc.createElement("CATEGORY");
+            category.setTextContent(brand.getCategory());
+            recordset.appendChild(category);
+
+            recordCount++;
+        }
+
+        try (FileOutputStream output = new FileOutputStream(new File("src/main/resources/com/increff/pdf/brandReport.xml").getAbsolutePath())) {
+            writeXml(doc, output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void generateInventoryReportXml(List<InventoryReportForm> inventory) throws Exception{
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+        // root elements
+        Document doc = docBuilder.newDocument();
+        Element rootElement = doc.createElement("GDK");
+        doc.appendChild(rootElement);
+
+        // GDK Row
+        Element gdkRow = doc.createElement("GDK_ROW");
+        rootElement.appendChild(gdkRow);
+        gdkRow.setAttribute("RowNumber", "1");
+
+
+        // company city
+        Element company_city = doc.createElement("Company_City");
+        company_city.setTextContent("Bengaluru");
+        gdkRow.appendChild(company_city);
+
+        // company email
+        Element company_email = doc.createElement("Company_Email");
+        company_email.setTextContent("support@increff.com");
+        gdkRow.appendChild(company_email);
+
+        // company name
+        Element company_name = doc.createElement("Company_Name");
+        company_name.setTextContent("Increff");
+        gdkRow.appendChild(company_name);
+
+        // company phone
+        Element company_phone = doc.createElement("Company_Phone");
+        company_phone.setTextContent("080-12345678");
+        gdkRow.appendChild(company_phone);
+
+        // company street address
+        Element company_street_address = doc.createElement("Company_Street_Address");
+        company_street_address.setTextContent("HSr Layout Sector 6");
+        gdkRow.appendChild(company_street_address);
+
+        // company zip code
+        Element company_zip_code = doc.createElement("Company_Zip_Code");
+        company_zip_code.setTextContent("560102");
+        gdkRow.appendChild(company_zip_code);
+
+        // report date
+        Element report_date = doc.createElement("Report_date");
+        report_date.setTextContent(DateTimeFormatter.ofPattern("dd/MM/yyyy - hh:mm").format(LocalDateTime.now()));
+        gdkRow.appendChild(report_date);
+        
+        //Report name
+        Element report_name = doc.createElement("Report_name");
+        report_name.setTextContent("Inventory Report");
+        gdkRow.appendChild(report_name);
+
+        Integer recordCount = 1;
+
+        for (InventoryReportForm inv: inventory) {
+            // RECORDSET
+            Element recordset = doc.createElement("RECORDSET");
+            recordset.setAttribute("RecordsetNumber", recordCount.toString());
+            gdkRow.appendChild(recordset);
+
+            //BRAND
+            Element brand_name = doc.createElement("BRAND");
+            brand_name.setTextContent(inv.getBrand());
+            recordset.appendChild(brand_name);
+
+            //CATEGORY
+            Element category = doc.createElement("CATEGORY");
+            category.setTextContent(inv.getCategory());
+            recordset.appendChild(category);
+
+            //QUANTITY
+            Element quantity = doc.createElement("QUANTITY");
+            quantity.setTextContent(inv.getQuantity().toString());
+            recordset.appendChild(quantity);
+
+            recordCount++;
+        }
+
+        try (FileOutputStream output = new FileOutputStream(new File("src/main/resources/com/increff/pdf/inventoryReport.xml").getAbsolutePath())) {
+            writeXml(doc, output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void generateSalesReportXml(List<SalesReportForm> sales) throws Exception{
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+        // root elements
+        Document doc = docBuilder.newDocument();
+        Element rootElement = doc.createElement("GDK");
+        doc.appendChild(rootElement);
+
+        // GDK Row
+        Element gdkRow = doc.createElement("GDK_ROW");
+        rootElement.appendChild(gdkRow);
+        gdkRow.setAttribute("RowNumber", "1");
+
+
+        // company city
+        Element company_city = doc.createElement("Company_City");
+        company_city.setTextContent("Bengaluru");
+        gdkRow.appendChild(company_city);
+
+        // company email
+        Element company_email = doc.createElement("Company_Email");
+        company_email.setTextContent("support@increff.com");
+        gdkRow.appendChild(company_email);
+
+        // company name
+        Element company_name = doc.createElement("Company_Name");
+        company_name.setTextContent("Increff");
+        gdkRow.appendChild(company_name);
+
+        // company phone
+        Element company_phone = doc.createElement("Company_Phone");
+        company_phone.setTextContent("080-12345678");
+        gdkRow.appendChild(company_phone);
+
+        // company street address
+        Element company_street_address = doc.createElement("Company_Street_Address");
+        company_street_address.setTextContent("HSr Layout Sector 6");
+        gdkRow.appendChild(company_street_address);
+
+        // company zip code
+        Element company_zip_code = doc.createElement("Company_Zip_Code");
+        company_zip_code.setTextContent("560102");
+        gdkRow.appendChild(company_zip_code);
+
+        // report date
+        Element report_date = doc.createElement("Report_date");
+        report_date.setTextContent(DateTimeFormatter.ofPattern("dd/MM/yyyy - hh:mm").format(LocalDateTime.now()));
+        gdkRow.appendChild(report_date);
+        
+        //Report name
+        Element report_name = doc.createElement("Report_name");
+        report_name.setTextContent("Sales Report");
+        gdkRow.appendChild(report_name);
+
+        Integer recordCount = 1;
+
+        for (SalesReportForm sale: sales) {
+            // RECORDSET
+            Element recordset = doc.createElement("RECORDSET");
+            recordset.setAttribute("RecordsetNumber", recordCount.toString());
+            gdkRow.appendChild(recordset);
+
+            //BRAND
+            Element brand_name = doc.createElement("BRAND");
+            brand_name.setTextContent(sale.getBrand());
+            recordset.appendChild(brand_name);
+
+            //CATEGORY
+            Element category = doc.createElement("CATEGORY");
+            category.setTextContent(sale.getCategory());
+            recordset.appendChild(category);
+
+            //QUANTITY
+            Element quantity = doc.createElement("QUANTITY");
+            quantity.setTextContent(sale.getQuantity().toString());
+            recordset.appendChild(quantity);
+
+            //REVENUE
+            Element revenue = doc.createElement("REVENUE");
+            revenue.setTextContent(sale.getRevenue().toString());
+            recordset.appendChild(revenue);
+
+            recordCount++;
+        }
+
+        try (FileOutputStream output = new FileOutputStream(new File("src/main/resources/com/increff/pdf/salesReport.xml").getAbsolutePath())) {
+            writeXml(doc, output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private static void writeXml(Document doc, OutputStream output) throws TransformerException {
 
