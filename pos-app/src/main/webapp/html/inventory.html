@@ -14,7 +14,7 @@
 
  <!-- Top row with form-->
  <div class="row">
-	 <div class="col-12">
+	 <div class="col-12" th:if="${info.getRole() == 'supervisor'}">
 			<form class="form-inline" id="inventory-form">
 			  <div class="form-group">
 			    <label for="inputBarCode" class="col-sm-2 col-form-label">BarCode</label>

@@ -35,6 +35,9 @@
        <li class="nav-item">
         <a class="btn btn-primary" th:href="@{/site/login}">Login</a>
       </li>
+      <li class="nav-item">
+        <a class="btn btn-secondary" th:href="@{/site/signup}">Signup</a>
+      </li>
     </ul>
  
   </div>
@@ -67,10 +70,10 @@
       <li class="nav-item">
         <a class="nav-link" th:href="@{/ui/orders}">Orders</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" th:if="${info.getRole() == 'supervisor'}">
         <a class="nav-link" th:href="@{/ui/day-sales}">Sales</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" th:if="${info.getRole() == 'supervisor'}">
         <a class="nav-link" th:href="@{/ui/admin}">Admin</a>
       </li>
 

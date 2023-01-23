@@ -1,6 +1,5 @@
 package com.increff.pos.controller;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.ReportDto;
-import com.increff.pos.model.data.SalesReportData;
 import com.increff.pos.model.form.SalesReportForm;
 import com.increff.pos.service.ApiException;
 
