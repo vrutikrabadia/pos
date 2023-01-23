@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.increff.pos.dto.UserDto;
 import com.increff.pos.model.data.InfoData;
 import com.increff.pos.model.form.LoginForm;
 import com.increff.pos.pojo.UserPojo;
@@ -28,15 +29,33 @@ import com.increff.pos.util.UserPrincipal;
 import io.swagger.annotations.ApiOperation;
 
 @Controller
+@RequestMapping(path = "/session")
 public class LoginController {
 
 	@Autowired
 	private UserService service;
+
+	@Autowired
+	private UserDto dto;
+
 	@Autowired
 	private InfoData info;
+
+	@ApiOperation(value = "signup user")
+	@RequestMapping(path = "/signup", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public ModelAndView signup(LoginForm f) throws ApiException{
+		try{
+			dto.add(f);
+		}
+		catch(ApiException e){
+			info.setMessage(e.getMessage());
+			return new ModelAndView("redirect:/site/signup");
+		}
+		return new ModelAndView("redirect:/site/login");
+	}
 	
 	@ApiOperation(value = "Logs in a user")
-	@RequestMapping(path = "/session/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	@RequestMapping(path = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ModelAndView login(HttpServletRequest req, LoginForm f) throws ApiException {
 		UserPojo p = service.get(f.getEmail());
 		boolean authenticated = (p != null && Objects.equals(p.getPassword(), f.getPassword()));
@@ -58,7 +77,7 @@ public class LoginController {
 
 	}
 
-	@RequestMapping(path = "/session/logout", method = RequestMethod.GET)
+	@RequestMapping(path = "/logout", method = RequestMethod.GET)
 	public ModelAndView logout(HttpServletRequest request, HttpServletResponse response) {
 		request.getSession().invalidate();
 		return new ModelAndView("redirect:/site/logout");
@@ -68,6 +87,7 @@ public class LoginController {
 		// Create principal
 		UserPrincipal principal = new UserPrincipal();
 		principal.setEmail(p.getEmail());
+		principal.setRole(p.getRole());
 		principal.setId(p.getId());
 
 		// Create Authorities

@@ -4,6 +4,11 @@ function getInventoryUrl(){
 	return baseUrl + "/api/inventory";
 }
 
+function getReportsUrl(){
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/reports";
+}
+
 //BUTTON ACTIONS
 function addInventory(event){
 	//Set the values to update
@@ -168,6 +173,39 @@ function displayInventory(data){
 }
 
 
+function downloadReport(){
+	var url = getReportsUrl() + "/inventory";
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        success: function (response) {
+            const binary = atob(response);
+            const array = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                array[i] = binary.charCodeAt(i);
+            }
+            const blob = new Blob([array], {
+                type: 'application/pdf'
+            });
+
+            const a = document.createElement('a');
+            //generate current datetime
+			var date = new Date();
+			a.href = URL.createObjectURL(blob);
+            a.download = 'inventoryReport-'+date+'.pdf';
+            a.click();
+        },
+        error: function (error) {
+            alert(error.responseJSON.message);
+        }
+    });
+}
+
+
 //INITIALIZATION CODE
 function init(){
 
@@ -194,7 +232,8 @@ function init(){
 	$('#upload-data').click(displayUploadData);
 	$('#process-data').click(processData);
 	$('#download-errors').click(downloadErrors);
-    $('#inventoryFile').on('change', updateFileName)
+    $('#inventoryFile').on('change', updateFileName);
+	$('#download-report').click(downloadReport);
 }
 
 $(document).ready(init);

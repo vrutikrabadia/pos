@@ -4,7 +4,10 @@ function getDaySalesUrl(){
 	return baseUrl + "/api/day-sales";
 }
 
-
+function getReportsUrl(){
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/reports";
+}
 
 function displayBrand(data){
 	$("#brand-edit-form input[name=brand]").val(data.brand);	
@@ -30,6 +33,56 @@ function refresh(){
      $('#day-sales-table').data('dt_params', { startDate: "", endDate: "" });
      // Redraw data table, causes data to be reloaded
      $('#day-sales-table').DataTable().draw();
+}
+
+
+function downloadReport(){
+    console.log("downloadReport");
+    //select input from form id
+    var startDate = new Date($("#downlaodInputStartDate").val()).toISOString();
+    var endDate = new Date($("#downloadInputEndDate").val()).toISOString();
+    var brand = $("#inputBrand").val();
+    var category = $("#inputCategory").val();
+
+    var data = {
+        startDate: startDate,
+        endDate: endDate,
+        brand: brand,
+        category: category
+    }
+
+    var url = getReportsUrl() + "/sales";
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        success: function (response) {
+            const binary = atob(response);
+            const array = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                array[i] = binary.charCodeAt(i);
+            }
+            const blob = new Blob([array], {
+                type: 'application/pdf'
+            });
+
+            const a = document.createElement('a');
+            //generate current datetime
+			var date = new Date();
+			a.href = URL.createObjectURL(blob);
+            a.download = 'brandReport-'+date+'.pdf';
+            a.click();
+        },
+        error: function (error) {
+            alert(error.responseJSON.message);
+        }
+    });
+    //clear form using form id
+    $('#sales-report-form').trigger("reset");
 }
 
 //INITIALIZATION CODE
@@ -70,7 +123,10 @@ function init(){
 
 	$('#refresh-data').click(refresh);
     $('#search-date-range').click(searchDateRange);
-	
+	$('#download-report-button').click(function(){
+        $('#download-report-modal').modal('toggle');
+    });
+    $('#download-report').click(downloadReport);
 }
 
 $(document).ready(init);

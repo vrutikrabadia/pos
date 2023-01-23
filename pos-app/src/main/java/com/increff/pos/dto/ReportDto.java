@@ -11,7 +11,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import com.increff.pos.model.data.BrandData;
 import com.increff.pos.model.data.InventoryReportData;
@@ -52,7 +56,13 @@ public class ReportDto {
     @Autowired
     private BrandDto bDto;
 
-    public List<InventoryReportData> getInventoryReport() throws ApiException {
+    @Autowired
+    private RestTemplate restTemplate;
+
+
+    //functions for inventory report
+
+    public String getInventoryReport() throws ApiException {
 
         List<InventoryPojo> iList = iService.getAll();
         HashMap<Integer, Integer> prodIdtoBrandCat = getProductIdToBrandCatMap(iList);
@@ -62,7 +72,7 @@ public class ReportDto {
         return invReportFromMap(resultMap, brandCatIds);
     }
 
-    private List<InventoryReportData> invReportFromMap(HashMap<Integer, Integer> resultMap, List<Integer> brandCatIds) {
+    private String invReportFromMap(HashMap<Integer, Integer> resultMap, List<Integer> brandCatIds) {
         List<InventoryReportData> result = new ArrayList<InventoryReportData>();
 
         List<BrandPojo> brandList = bService.getInColumn(Arrays.asList("id"), Arrays.asList(brandCatIds));
@@ -79,7 +89,8 @@ public class ReportDto {
 
             result.add(res);
         }
-        return result;
+        
+        return getReportFile(result, "/inventory");
     }
 
     private HashMap<Integer, Integer> getProductIdToBrandCatMap(List<InventoryPojo> iList) {
@@ -107,7 +118,9 @@ public class ReportDto {
         return resultMap;
     }
 
-    public List<SalesReportData> getSalesReport(SalesReportForm form) throws ApiException {
+    //functions for sales report
+
+    public String getSalesReport(SalesReportForm form) throws ApiException {
 
         StringUtil.normalise(form, SalesReportForm.class);
         ValidateUtil.validateForms(form);
@@ -130,7 +143,7 @@ public class ReportDto {
 
     }
 
-    private List<SalesReportData> generateSalesReportWithBrandandCategory(String brand, String category,
+    private String generateSalesReportWithBrandandCategory(String brand, String category,
             ZonedDateTime sDate, ZonedDateTime eDate) throws ApiException {
 
         List<BrandPojo> brandList = new ArrayList<BrandPojo>();
@@ -161,7 +174,7 @@ public class ReportDto {
 
     }
 
-    private List<SalesReportData> generateSalesReportOnlyDates(ZonedDateTime sDate, ZonedDateTime eDate) {
+    private String generateSalesReportOnlyDates(ZonedDateTime sDate, ZonedDateTime eDate) {
 
         List<OrderItemsPojo> itemsList = getOrderItems(sDate, eDate, null);
 
@@ -191,7 +204,7 @@ public class ReportDto {
 
     }
 
-    private List<SalesReportData> generateSalesReport(List<OrderItemsPojo> itemlsList, List<BrandPojo> brandList,
+    private String generateSalesReport(List<OrderItemsPojo> itemlsList, List<BrandPojo> brandList,
             List<ProductPojo> prodList) {
 
         HashMap<Integer, Integer> prodIdToBrandCatId = (HashMap<Integer, Integer>) prodList.stream()
@@ -228,16 +241,29 @@ public class ReportDto {
             result.add(data);
         }
 
-        return result;
+        return getReportFile(result, "/sales");
     }
 
-    
+    //functions for brand report
 
-    public List<BrandData> getBrandReport() {
+    public String getBrandReport() {
 
         Integer totalBrands = bService.getTotalEntries();
-        return bDto.getAll(0, totalBrands, 1, Optional.empty()).getData();
+        List<BrandData> brandList = bDto.getAll(0, totalBrands, 1, Optional.empty()).getData();
 
+        return getReportFile(brandList, "/brands");
+    }
+
+    private <T> String getReportFile(T result, String path){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String apiUrl = "http://localhost:9500/pdf/api/reports" + path;
+        ResponseEntity<String> apiResponse = restTemplate.postForEntity(apiUrl, result, String.class);
+        String responseBody = apiResponse.getBody();
+
+
+        return responseBody;
     }
 
 }

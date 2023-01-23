@@ -4,6 +4,11 @@ function getBrandUrl(){
 	return baseUrl + "/api/brands";
 }
 
+function getReportsUrl(){
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/reports";
+}
+
 //BUTTON ACTIONS
 function addBrand(event){
 	//Set the values to update
@@ -172,6 +177,37 @@ function displayBrand(data){
 	$('#edit-brand-modal').modal('toggle');
 }
 
+function downloadReport(){
+	var url = getReportsUrl() + "/brands";
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        success: function (response) {
+            const binary = atob(response);
+            const array = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) {
+                array[i] = binary.charCodeAt(i);
+            }
+            const blob = new Blob([array], {
+                type: 'application/pdf'
+            });
+
+            const a = document.createElement('a');
+            //generate current datetime
+			var date = new Date();
+			a.href = URL.createObjectURL(blob);
+            a.download = 'brandReport-'+date+'.pdf';
+            a.click();
+        },
+        error: function (error) {
+            alert(error.responseJSON.message);
+        }
+    });
+}
 
 //INITIALIZATION CODE
 function init(){
@@ -201,7 +237,7 @@ function init(){
 	$('#process-data').click(processData);
 	$('#download-errors').click(downloadErrors);
     $('#brandFile').on('change', updateFileName);
-
+	$('#download-report').click(downloadReport);
 	
 }
 
