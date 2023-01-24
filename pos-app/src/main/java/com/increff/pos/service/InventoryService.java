@@ -22,7 +22,7 @@ public class InventoryService {
         dao.insert(p);
     }
 
-
+    //REFACTOR: after review
     public void bulkAdd(List<InventoryPojo> list){
         for(InventoryPojo inv: list){
             try{

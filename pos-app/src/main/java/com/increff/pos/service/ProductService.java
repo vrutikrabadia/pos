@@ -26,6 +26,7 @@ public class ProductService {
         dao.insert(p);
     }
 
+    //REFACTOR:Refactor after review
     public JSONArray bulkAdd(List<ProductPojo> list) throws ApiException{
         JSONArray errorList = new JSONArray();
 

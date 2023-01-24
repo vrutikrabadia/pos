@@ -69,21 +69,11 @@ public class BrandService {
         return dao.selectQueryString(pageNo, pageSize,queryString, columnList , BrandPojo.class);
     }
 
-    public List<BrandPojo> searchQueryStringBrand(Integer pageNo, Integer pageSize,String queryString){
-        List<String> columnList = Arrays.asList("brand");
-        return dao.selectQueryString(pageNo, pageSize,queryString, columnList , BrandPojo.class);
-    }
-
-    public List<BrandPojo> searchQueryStringCategory(Integer pageNo, Integer pageSize,String queryString){
-        List<String> columnList = Arrays.asList("category");
-        return dao.selectQueryString(pageNo, pageSize,queryString, columnList , BrandPojo.class);
-    }
-
     public <T> List<BrandPojo> getInColumn(List<String> column,List<List<T>> values){
         return dao.selectByColumnUsingIn(column, values, BrandPojo.class);
     }
 
-    private BrandPojo getCheck(Integer id) throws ApiException {
+    protected BrandPojo getCheck(Integer id) throws ApiException {
         BrandPojo b = dao.selectByColumn("id", id, BrandPojo.class);
         if (Objects.isNull(b)) {
             throw new ApiException("brand/category with given ID does not exist, id: " + id);

@@ -119,6 +119,14 @@ public class ProductDtoTest extends AbstractUnitTest{
 
 
     @Test
+    public void testGetById() throws ApiException{
+        TestUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "p1", 10.00);
+        List<ProductData> d = dto.getAll(0,1,1,empty).getData();
+        ProductData p = dto.get(d.get(0).getId());
+        assertEquals(p.getBarcode(), d.get(0).getBarcode());
+    }
+
+    @Test
     public void testGetAll() throws ApiException{
         String brand  = "brand1";
         String category = "category1";

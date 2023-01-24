@@ -60,7 +60,7 @@ public class InventoryDto {
 
     }
 
-    //FIXME :  refactor bulk add
+    //REFACTOR :  refactor bulk add
     public void bulkAdd(List<InventoryForm> list) throws ApiException{
         JSONArray errorList = new JSONArray();
         List<InventoryPojo> pojoList = new ArrayList<InventoryPojo>();
