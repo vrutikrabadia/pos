@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import com.increff.pos.model.data.DaySalesData;
 import com.increff.pos.model.data.SelectData;
-import com.increff.pos.model.form.DaySalesForm;
 import com.increff.pos.pojo.DaySalesPojo;
 import com.increff.pos.pojo.OrderItemsPojo;
 import com.increff.pos.pojo.OrderPojo;
@@ -23,7 +22,7 @@ import com.increff.pos.service.DaySalesService;
 import com.increff.pos.service.OrderItemsService;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.util.ConvertUtil;
-import com.increff.pos.util.ValidateUtil;
+import com.increff.pos.util.DateTimeProvider;
 
 @Component
 
@@ -39,21 +38,8 @@ public class DaySalesDto {
     private OrderItemsService oItemsService;
 
 
-    public void add(DaySalesForm form) throws ApiException{
-        ValidateUtil.validateForms(form);
-        
-        DaySalesPojo pojo = ConvertUtil.objectMapper(form, DaySalesPojo.class);
-           
-
-        service.add(pojo);
-    }
-
-    public SelectData<DaySalesData> getAll(Integer start, Integer length, Integer draw, Optional<ZonedDateTime> startDate, Optional<ZonedDateTime> endDate) throws ApiException{
+    public SelectData<DaySalesData> getAll(Integer start, Integer length, Integer draw) throws ApiException{
         List<DaySalesData> dataList = new ArrayList<DaySalesData>();
-
-        if(startDate.isPresent() && Objects.nonNull(startDate.get()) && endDate.isPresent() && Objects.nonNull(endDate.get())){
-            return this.getInDateRange(start, length, draw, startDate.get(), endDate.get());
-        }
 
         List<DaySalesPojo> pojoList = service.getAllPaginated(start, length);
     
@@ -105,8 +91,8 @@ public class DaySalesDto {
     @Scheduled(cron = "0 44 11 * * *")
     public void scheduler(){
         //get start of day and end of day of previous day
-        ZonedDateTime start = ZonedDateTime.now().minusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
-        ZonedDateTime end = ZonedDateTime.now().minusDays(1).withHour(23).withMinute(59).withSecond(59).withNano(999999999);
+        ZonedDateTime start = DateTimeProvider.getInstance().timeNow().minusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        ZonedDateTime end = DateTimeProvider.getInstance().timeNow().minusDays(1).withHour(23).withMinute(59).withSecond(59).withNano(999999999);
 
         
         //get total sales of previous day

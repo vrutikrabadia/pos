@@ -22,7 +22,7 @@ public class DaySalesDao extends AbstractDao<DaySalesPojo>{
         CriteriaQuery<DaySalesPojo> cq = cb.createQuery(DaySalesPojo.class);
         Root<DaySalesPojo> root = cq.from(DaySalesPojo.class);
 
-        Predicate datePredicate = cb.between(root.get("updated"), startDate, endDate);
+        Predicate datePredicate = cb.between(root.get("date"), startDate, endDate);
         cq.where(datePredicate);
         TypedQuery<DaySalesPojo> query = em.createQuery(cq);
 
@@ -47,7 +47,7 @@ public class DaySalesDao extends AbstractDao<DaySalesPojo>{
     	CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<DaySalesPojo> root = cq.from(DaySalesPojo.class);
     	cq.select(cb.count(root));
-    	Predicate datePredicate = cb.between(root.get("updated"), startDate, endDate);
+    	Predicate datePredicate = cb.between(root.get("date"), startDate, endDate);
         cq.where(datePredicate);
         
         TypedQuery<Long> query = em.createQuery(cq);

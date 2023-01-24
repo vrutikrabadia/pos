@@ -63,12 +63,6 @@ public class OrderApiController {
         return dto.update(id, form);
     }
 
-    @ApiOperation(value = "Sets order non editable")
-    @RequestMapping(path="/{id}/finalise", method = RequestMethod.PUT)
-    public void finaliseOrder(@PathVariable Integer id) throws ApiException{
-        dto.finaliseOrder(id);
-    }
-
     @ApiOperation(value = "Generate Invoice")
     @RequestMapping(path="/{id}/invoice", method = RequestMethod.GET)
     public String generateInvoice(@PathVariable Integer id) throws Exception{

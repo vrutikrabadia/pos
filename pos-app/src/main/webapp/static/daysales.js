@@ -18,21 +18,18 @@ function displayBrand(data){
 
 
 function searchDateRange(){
+
     var startDate = new Date($("#inputStartDate").val()).toISOString();
     var endDate = new Date($("#inputEndDate").val()).toISOString();
-    // Set dynamic parameters for the data table
-    $('#day-sales-table').data('dt_params', { startDate: startDate, endDate: endDate });
-    // Redraw data table, causes data to be reloaded
-    $('#day-sales-table').DataTable().draw();
+    var table = $('#day-sales-table').DataTable();
+    table.ajax.url(getDaySalesUrl()+"/dateRange?startDate="+startDate+"&endDate="+endDate).load();
 
     
 }
 
 function refresh(){
-     // Set dynamic parameters for the data table
-     $('#day-sales-table').data('dt_params', { startDate: "", endDate: "" });
-     // Redraw data table, causes data to be reloaded
-     $('#day-sales-table').DataTable().draw();
+    var table = $('#day-sales-table').DataTable();
+    table.ajax.url(getDaySalesUrl()).load();
 }
 
 

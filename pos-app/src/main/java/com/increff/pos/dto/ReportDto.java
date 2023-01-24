@@ -93,7 +93,7 @@ public class ReportDto {
         return getReportFile(result, "/inventory");
     }
 
-    private HashMap<Integer, Integer> getProductIdToBrandCatMap(List<InventoryPojo> iList) {
+    protected HashMap<Integer, Integer> getProductIdToBrandCatMap(List<InventoryPojo> iList) {
         List<Integer> idList = iList.stream().map(InventoryPojo::getId).collect(Collectors.toList());
         List<ProductPojo> productList = pService.getInColumn(Arrays.asList("id"), Arrays.asList(idList));
 
@@ -102,7 +102,7 @@ public class ReportDto {
         return prodIdtoBrandCat;
     }
 
-    private HashMap<Integer, Integer> getbrandCatIdToQuantityMap(HashMap<Integer, Integer> prodIdtoBrandCat,
+    protected HashMap<Integer, Integer> getbrandCatIdToQuantityMap(HashMap<Integer, Integer> prodIdtoBrandCat,
             List<InventoryPojo> iList, List<Integer> brandCatIds) {
 
         HashMap<Integer, Integer> resultMap = (HashMap<Integer, Integer>) brandCatIds.stream()
@@ -189,7 +189,7 @@ public class ReportDto {
         return generateSalesReport(itemsList, brandList, prodList);
     }
 
-    private List<OrderItemsPojo> getOrderItems(ZonedDateTime sDate, ZonedDateTime eDate, List<Integer> prodIds) {
+    protected List<OrderItemsPojo> getOrderItems(ZonedDateTime sDate, ZonedDateTime eDate, List<Integer> prodIds) {
         List<OrderPojo> orderList = oService.getInDateRange(sDate, eDate);
 
         List<Integer> orderIds = orderList.stream().map(OrderPojo::getId).collect(Collectors.toList());

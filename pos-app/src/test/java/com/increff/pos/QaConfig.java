@@ -1,4 +1,4 @@
-package com.increff.pos.dto;
+package com.increff.pos;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -64,7 +65,7 @@ public class BrandDto {
 
     }
 
-    private void checkFileDuplications(List<BrandPojo> pojoList) throws ApiException {
+    protected void checkFileDuplications(List<BrandPojo> pojoList) throws ApiException {
         JSONArray errorList = new JSONArray();
         Set<String> fileSet = new HashSet<String>();
 
@@ -84,7 +85,7 @@ public class BrandDto {
         }
     }
 
-    private void checkDbDuplicate(List<BrandPojo> pojoList) throws ApiException{
+    protected void checkDbDuplicate(List<BrandPojo> pojoList) throws ApiException{
         JSONArray errorList = new JSONArray();
         
         List<String> brandList = pojoList.stream().map(BrandPojo::getBrand).collect(Collectors.toList());
@@ -154,6 +155,18 @@ public class BrandDto {
         ValidateUtil.validateForms(f);
         BrandPojo p = ConvertUtil.objectMapper(f, BrandPojo.class);
 
+        BrandPojo p1 = new BrandPojo();
+        try{
+            p1 = service.get(p.getBrand(), p.getCategory());
+            
+        }catch(ApiException e){
+
+        }
+        
+        if(Objects.nonNull(p1) && p1.getId()!=p.getId()){
+            throw new ApiException("DUPLICATE: brand/category already exists");
+        }
+        
         service.update(id, p);
     }
 

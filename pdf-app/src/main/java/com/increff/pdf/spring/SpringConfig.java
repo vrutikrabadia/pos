@@ -8,7 +8,7 @@ import org.springframework.context.annotation.PropertySources;
 @Configuration
 @ComponentScan("com.increff.pdf")
 @PropertySources({ //
-		@PropertySource(value = "file:./pfd.properties", ignoreResourceNotFound = true) //
+		@PropertySource(value = "file:./src/main/resources/com/increff/pdf/pfd.properties", ignoreResourceNotFound = true) //
 })
 public class SpringConfig {
 

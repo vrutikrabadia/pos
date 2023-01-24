@@ -11,7 +11,10 @@ import javax.validation.ConstraintViolationException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.increff.pos.AbstractUnitTest;
+import com.increff.pos.TestUtil;
 import com.increff.pos.model.data.InventoryData;
+import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.InventoryForm;
 import com.increff.pos.service.ApiException;
 
@@ -26,14 +29,11 @@ public class InventoryDtoTest extends AbstractUnitTest{
     public void testAddAndGet() throws ApiException{
         String brand = "brand1";
         String category = "category1";
-
-        TestUtil.addBrand(brand, category);
-
         String barcode = "1a3t5tq8";
         String name = "name1";
         Double mrp = 18.88;
 
-        TestUtil.addProduct(barcode, brand, category, name, mrp);
+        TestUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
 
         Integer quantity = 5;
 
@@ -52,14 +52,12 @@ public class InventoryDtoTest extends AbstractUnitTest{
     public void testGetAll() throws ApiException{
         String brand = "brand1";
         String category = "category1";
-
-        TestUtil.addBrand(brand, category);
-
         String barcode = "1a3t5tq8";
         String name = "name1";
         Double mrp = 18.88;
 
-        TestUtil.addProduct(barcode, brand, category, name, mrp);
+        Integer brandId = TestUtil.addBrand(brand, category);
+        TestUtil.addProduct(barcode, brandId, name, mrp);
 
         Integer quantity = 5;
 
@@ -71,7 +69,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
         String name1 = "name1";
         Double mrp1 = 18.88;
 
-        TestUtil.addProduct(barcode1, brand, category, name1, mrp1);
+        TestUtil.addProduct(barcode1, brandId, name1, mrp1);
 
         InventoryForm f1 = TestUtil.getInventoryForm(barcode1, quantity);
 
@@ -87,14 +85,11 @@ public class InventoryDtoTest extends AbstractUnitTest{
     public void testUpdate() throws ApiException{
         String brand = "brand1";
         String category = "category1";
-
-        TestUtil.addBrand(brand, category);
-
         String barcode = "1a3t5tq8";
         String name = "name1";
         Double mrp = 18.88;
 
-        TestUtil.addProduct(barcode, brand, category, name, mrp);
+        TestUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
 
         Integer quantity = 5;
 
@@ -132,14 +127,11 @@ public class InventoryDtoTest extends AbstractUnitTest{
     public void testAddInventoryExists() throws ApiException{
         String brand = "brand1";
         String category = "category1";
-
-        TestUtil.addBrand(brand, category);
-
         String barcode = "1a3t5tq8";
         String name = "name1";
         Double mrp = 18.88;
 
-        TestUtil.addProduct(barcode, brand, category, name, mrp);
+        TestUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
 
         Integer quantity = 5;
 
@@ -178,14 +170,11 @@ public class InventoryDtoTest extends AbstractUnitTest{
     public void testAddNegativeQuantity() throws ApiException{
         String brand = "brand1";
         String category = "category1";
-
-        TestUtil.addBrand(brand, category);
-
         String barcode = "1a3t5tq8";
         String name = "name1";
         Double mrp = 18.88;
 
-        TestUtil.addProduct(barcode, brand, category, name, mrp);
+        TestUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
 
         Integer quantity = -5;
 
@@ -204,14 +193,11 @@ public class InventoryDtoTest extends AbstractUnitTest{
     public void testUpdateNegativeQuantity() throws ApiException{
         String brand = "brand1";
         String category = "category1";
-
-        TestUtil.addBrand(brand, category);
-
         String barcode = "1a3t5tq8";
         String name = "name1";
         Double mrp = 18.88;
 
-        TestUtil.addProduct(barcode, brand, category, name, mrp);
+        TestUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
 
         Integer quantity = 5;
 
@@ -231,4 +217,49 @@ public class InventoryDtoTest extends AbstractUnitTest{
         fail();
 
     }
+
+    @Test
+    public void testGetByBarCode() throws ApiException{
+        String brand = "brand1";
+        String category = "category1";
+        String barcode = "1a3t5tq8";
+        String name = "name1";
+        Double mrp = 18.88;
+
+        TestUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
+
+        Integer quantity = 5;
+
+        InventoryForm f = TestUtil.getInventoryForm(barcode, quantity);
+
+        dto.add(f);
+
+        InventoryData data = dto.get(barcode);
+
+        assertEquals(quantity, data.getQuantity());
+
+    }
+
+    @Test
+    public void testGetBySearchValue() throws ApiException{
+        String brand = "brand1";
+        String category = "category1";
+        String barcode = "1a3t5tq8";
+        String name = "name1";
+        Double mrp = 18.88;
+
+        TestUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
+
+        Integer quantity = 5;
+
+        InventoryForm f = TestUtil.getInventoryForm(barcode, quantity);
+
+        dto.add(f);
+
+        SelectData<InventoryData> data = dto.getAll(0,5,0,Optional.of("1a"));
+
+        assertEquals(1, data.getData().size());
+    }
+
+    //TODO: add inventory bulk add tests
 }

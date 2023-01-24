@@ -8,7 +8,9 @@
 	<packaging>war</packaging>
 	<name>pos</name>
 	<url>http://maven.apache.org</url>
+	
 	<properties>
+		
 		<!-- Maven configuration -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -243,7 +245,7 @@
 					<systemProperties>
 						<systemProperty>
 							<name>log4j.configuration</name>
-							<value>file:./log4j.properties</value>
+							<value>file:./src/main/resources/com/increff/pos/log4j.properties</value>
 						</systemProperty>
 					</systemProperties>
 					<httpConnector>
@@ -263,6 +265,17 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.8</version>
+				<configuration>
+					<excludes>
+						<exclude>com/increff/pos/controller/*</exclude>
+						<exclude>com/increff/pos/model/data/*</exclude>
+						<exclude>com/increff/pos/model/form/*</exclude>
+						<exclude>com/increff/pos/spring/*</exclude>
+						<exclude>com/increff/pos/dao/*</exclude>
+						<exclude>com/increff/pos/pojo/*</exclude>
+						
+					</excludes>
+				 </configuration>
 				<executions>
 					<execution>
 						<goals>

@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 public class TimeUtil {
     public static ZonedDateTime getCurrentZonedDateWithoutTime(){
-		return setTimeToZero(ZonedDateTime.now());
+		return setTimeToZero(DateTimeProvider.INSTANCE.timeNow());
 	}
 	public static ZonedDateTime setTimeToZero(ZonedDateTime zdt) {
 		return zdt.withHour(0).withMinute(0).withSecond(0).withNano(0);

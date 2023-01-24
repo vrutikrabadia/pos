@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.increff.pos.AbstractUnitTest;
+
 
 public class AboutAppServiceTest extends AbstractUnitTest {
 

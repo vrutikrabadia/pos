@@ -84,18 +84,6 @@ public class AppRestControllerAdvice {
 
         @InitBinder
         public void initBinder(WebDataBinder binder) {
-                binder.registerCustomEditor(Optional.class, "optionalZonedDate", new PropertyEditorSupport() {
-                        @Override
-                        public void setAsText(String text) {
-                                setValue(Optional.ofNullable(text)
-                                                .map(s -> ZonedDateTime.parse(s, DateTimeFormatter.ISO_DATE_TIME)));
-                        }
-
-                        @Override
-                        public String getAsText() {
-                                return ((Optional<ZonedDateTime>) getValue()).map(ZonedDateTime::toString).orElse(null);
-                        }
-                });
                 binder.registerCustomEditor(
                                 Instant.class,
                                 new Editor<>(

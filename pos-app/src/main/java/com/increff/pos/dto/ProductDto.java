@@ -52,6 +52,8 @@ public class ProductDto {
         service.add(p);
     }
 
+    // FIXME: update the bulk add
+    
     public void bulkAdd(List<ProductForm> list) throws ApiException {
         JSONArray errorList = new JSONArray();
         List<ProductPojo> pojoList = new ArrayList<ProductPojo>();

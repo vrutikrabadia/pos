@@ -194,8 +194,4 @@ public class OrderDto {
 
     }
 
-    public void finaliseOrder(Integer id) throws ApiException {
-        service.finaliseOrder(id);
-    }
-
 }

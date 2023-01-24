@@ -8,6 +8,8 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Version;
 
+import com.increff.pos.util.DateTimeProvider;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,12 +30,12 @@ public abstract class AbstractPojo {
 
     @PrePersist
     protected void onCreate() {
-        updated = created = ZonedDateTime.now();
+        updated = created = DateTimeProvider.INSTANCE.timeNow();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updated = ZonedDateTime.now();
+        updated = DateTimeProvider.INSTANCE.timeNow();
     }
 
 }
