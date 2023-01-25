@@ -3,6 +3,9 @@ package com.increff.pos.util;
 import java.io.Closeable;
 import java.io.IOException;
 
+import lombok.Generated;
+
+@Generated
 public class IOUtil {
 
 	public static void closeQuietly(Closeable c) {

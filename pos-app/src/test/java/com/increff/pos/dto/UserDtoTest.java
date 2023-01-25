@@ -31,6 +31,19 @@ public class UserDtoTest extends AbstractUnitTest {
         assertEquals(data.getRole(), role);
     }
 
+    @Test(expected = ApiException.class)
+    public void testAddDuplicateUser() throws ApiException {
+        String email = "email";
+        String password = "password";
+        String role = "role";
+        UserForm form = new UserForm();
+        form.setEmail(email);
+        form.setPassword(password);
+        form.setRole(role);
+        userDto.add(form);
+        userDto.add(form);
+    }
+
     @Test
     public void testGetAll() throws ApiException {
         String email = "email";

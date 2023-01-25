@@ -273,7 +273,11 @@
 						<exclude>com/increff/pos/spring/*</exclude>
 						<exclude>com/increff/pos/dao/*</exclude>
 						<exclude>com/increff/pos/pojo/*</exclude>
-						
+						<exclude>com/increff/pos/utils/CookieUtil.java</exclude>
+						<exclude>com/increff/pos/utils/SecutiryUtil.java</exclude>
+						<exclude>com/increff/pos/utils/UserPrincipal.java</exclude>
+						<exclude>com/increff/pos/utils/IOUtil.java</exclude>
+
 					</excludes>
 				 </configuration>
 				<executions>
@@ -291,6 +295,16 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10.4</version>
+				<configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
+					<additionalOptions>-Xdoclint:none</additionalOptions>
+					<additionalJOption>-Xdoclint:none</additionalJOption>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

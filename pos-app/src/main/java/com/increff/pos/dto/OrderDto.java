@@ -148,13 +148,6 @@ public class OrderDto {
 
     }
 
-    public OrderData update(Integer id, OrderForm f) throws ApiException {
-        OrderPojo p = service.update(id, null);
-        OrderData data = ConvertUtil.objectMapper(p, OrderData.class);
-
-        return data;
-    }
-
     public String generateInvoice(Integer orderId) throws ApiException, Exception {
 
         String filePath = new File("src/main/resources/com/increff/pos/invoice/invoice"+orderId+".pdf").getAbsolutePath();

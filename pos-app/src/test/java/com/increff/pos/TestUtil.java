@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 
 import javax.annotation.PostConstruct;
 
+import com.increff.pos.util.DateTimeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -114,6 +115,17 @@ public class TestUtil {
         return form;
     }
 
+    public static OrderItemsPojo getItemsPojo(Integer orderId, Integer prodId, Integer quantity, Double sellingPrice){
+        OrderItemsPojo pojo = new OrderItemsPojo();
+
+        pojo.setOrderId(orderId);
+        pojo.setProductId(prodId);
+        pojo.setQuantity(quantity);
+        pojo.setSellingPrice(sellingPrice);
+
+        return pojo;
+    }
+
     public static SalesReportForm getSalesReportForm(ZonedDateTime start, ZonedDateTime end, String brand, String category){
         SalesReportForm form = new SalesReportForm();
         form.setStartDate(start);
@@ -194,6 +206,18 @@ public class TestUtil {
         dPojo.setTotalRevenue(sales);
 
         dDao.insert(dPojo);
+    }
+
+    public static DaySalesPojo getDaySalesPojo(Integer itemsCount, Integer orderCount, Double totalRevenue){
+        DaySalesPojo pojo = new DaySalesPojo();
+
+        pojo.setDate(DateTimeProvider.getInstance().timeNow().withHour(12).withMinute(0).withSecond(0));
+        pojo.setItemsCount(itemsCount);
+        pojo.setOrderCount(orderCount);
+        pojo.setTotalRevenue(totalRevenue);
+
+
+        return pojo;
     }
 
 }

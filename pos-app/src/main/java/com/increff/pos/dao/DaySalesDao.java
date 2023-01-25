@@ -29,18 +29,6 @@ public class DaySalesDao extends AbstractDao<DaySalesPojo>{
         return query.setFirstResult(offset).setMaxResults(pageSize).getResultList();
     }
 
-    public DaySalesPojo selectByDate(ZonedDateTime date){
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-
-        CriteriaQuery<DaySalesPojo> cq = cb.createQuery(DaySalesPojo.class);
-        Root<DaySalesPojo> root = cq.from(DaySalesPojo.class);
-
-        Predicate datePredicate = cb.equal(root.get("date"), date );
-        cq.where(datePredicate);
-        TypedQuery<DaySalesPojo> query = em.createQuery(cq);
-
-        return getSingle(query);
-    }
 
     public Integer getTotalEntriesInDateRange(ZonedDateTime startDate, ZonedDateTime endDate){
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -52,7 +40,7 @@ public class DaySalesDao extends AbstractDao<DaySalesPojo>{
         
         TypedQuery<Long> query = em.createQuery(cq);
 
-    	return  Math.toIntExact(query.getFirstResult());
+    	return  Math.toIntExact(getSingle(query));
 
     }
 }

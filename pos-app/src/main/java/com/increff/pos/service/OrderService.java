@@ -63,17 +63,7 @@ public class OrderService {
         return dao.getTotalEntries(OrderPojo.class);
     }
 
-    public OrderPojo update(Integer id,OrderPojo p) throws ApiException{
-        OrderPojo p1 = getCheck(id);
-        return p1;
-    }
-
     public List<OrderPojo> getInDateRange(ZonedDateTime startDate, ZonedDateTime endDate){
         return dao.selectInDateRange(startDate, endDate);
-    }
-     
-    public void finaliseOrder(Integer id) throws ApiException{
-        OrderPojo p1 = getCheck(id);
-        p1.setEditable(false);
     }
 }

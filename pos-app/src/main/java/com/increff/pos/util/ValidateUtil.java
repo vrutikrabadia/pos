@@ -15,9 +15,19 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 import com.increff.pos.service.ApiException;
 
-
+/**
+ * Contains method that validates the input forms recieved in the request.
+ */
 public class ValidateUtil {
     
+    
+    /** 
+     * This method validates the form.
+     * The rules are specified in the form class using validation annotations.
+     * @param <T> T class of the form object
+     * @param form
+     * @throws ConstraintViolationException
+     */
     public static <T> void validateForms(T form){
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
@@ -27,6 +37,14 @@ public class ValidateUtil {
         }
     }
 
+    
+    /** 
+     * This method validates a list form.
+     * The rules are specified in the form class using validation annotations.
+     * @param <T> T class of the form
+     * @param formList
+     * @throws ApiException
+     */
     public static <T> void validateList(List<T> formList) throws ApiException{
         JSONArray errorList = new JSONArray();
 

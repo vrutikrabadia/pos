@@ -1,6 +1,7 @@
 package com.increff.pos.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,11 +13,10 @@ import com.increff.pos.AbstractUnitTest;
 import com.increff.pos.TestUtil;
 import com.increff.pos.pojo.ProductPojo;
 
-public class ProductServiceTest extends AbstractUnitTest{
-    
+public class ProductServiceTest extends AbstractUnitTest {
+
     @Autowired
     private ProductService service;
-
 
     @Test
     public void testAdd() throws ApiException {
@@ -26,7 +26,6 @@ public class ProductServiceTest extends AbstractUnitTest{
         assertEquals("abcdefgh", p1.getBarcode());
         assertEquals(10.00, p1.getMrp(), 0.001);
     }
-
 
     @Test
     public void testGetAll() throws ApiException {
@@ -76,45 +75,74 @@ public class ProductServiceTest extends AbstractUnitTest{
     }
 
     @Test
-    public void testGetByBrandCategory(){
+    public void testGetByBrandCategory() {
         Integer brandId = TestUtil.addBrand("b1", "c1");
-        TestUtil.addProduct("abcdefgh",brandId, "n1", 10.00);
-        TestUtil.addProduct("abcdefg1",brandId, "n2", 10.00);
+        TestUtil.addProduct("abcdefgh", brandId, "n1", 10.00);
+        TestUtil.addProduct("abcdefg1", brandId, "n2", 10.00);
         List<ProductPojo> p1 = service.getByBrandCat(brandId);
 
         assertEquals(2, p1.size());
     }
 
     @Test
-    public void testGetByQueryString(){
+    public void testGetByQueryString() {
         Integer brandId = TestUtil.addBrand("b1", "c1");
-        TestUtil.addProduct("abcdefgh",brandId, "n1", 10.00);
-        TestUtil.addProduct("a1cdefgh",brandId, "n2", 10.00);
-        List<ProductPojo> p1 = service.getByQueryString(0,5,"n1");
+        TestUtil.addProduct("abcdefgh", brandId, "n1", 10.00);
+        TestUtil.addProduct("a1cdefgh", brandId, "n2", 10.00);
+        List<ProductPojo> p1 = service.getByQueryString(0, 5, "n1");
 
         assertEquals(1, p1.size());
-        
-        p1 = service.getByQueryString(0,5,"abc");
+
+        p1 = service.getByQueryString(0, 5, "abc");
         assertEquals(1, p1.size());
     }
 
     @Test
-    public void testGetTotalEntries(){
+    public void testGetTotalEntries() {
         Integer brandId = TestUtil.addBrand("b1", "c1");
-        TestUtil.addProduct("abcdefgh",brandId, "n1", 10.00);
-        TestUtil.addProduct("a1cdefgh",brandId, "n2", 10.00);
-        
+        TestUtil.addProduct("abcdefgh", brandId, "n1", 10.00);
+        TestUtil.addProduct("a1cdefgh", brandId, "n2", 10.00);
+
         Integer expectedCount = 2;
         assertEquals(expectedCount, service.getTotalEntries());
     }
 
     @Test
-    public void testGetInColumn(){
+    public void testGetInColumn() {
         Integer brandId = TestUtil.addBrand("b1", "c1");
-        TestUtil.addProduct("abcdefgh",brandId, "n1", 10.00);
-        TestUtil.addProduct("a1cdefgh",brandId, "n2", 10.00);
-        
+        TestUtil.addProduct("abcdefgh", brandId, "n1", 10.00);
+        TestUtil.addProduct("a1cdefgh", brandId, "n2", 10.00);
+
         List<ProductPojo> p1 = service.getInColumn(Arrays.asList("name"), Arrays.asList(Arrays.asList("n1", "n2")));
         assertEquals(2, p1.size());
     }
+
+    @Test
+    public void testGetBarcodeNotExists() {
+        Integer id = TestUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
+
+        try {
+            ProductPojo p1 = service.get("abcdefg1");
+        } catch (ApiException e) {
+            return;
+        }
+
+        fail();
+    }
+
+    @Test 
+    public void testGeProductNotExists(){
+        Integer id = TestUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
+        try{
+            service.get(99999999);
+        }
+        catch(ApiException e){
+            return;
+        }
+
+        fail();
+
+    }
+
+
 }

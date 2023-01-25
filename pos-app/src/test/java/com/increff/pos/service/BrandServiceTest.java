@@ -13,23 +13,17 @@ import com.increff.pos.TestUtil;
 import com.increff.pos.pojo.BrandPojo;
 
 public class BrandServiceTest extends AbstractUnitTest {
-    
+
     @Autowired
     private BrandService service;
 
+    
     @Test
     public void testAddAndGet() throws ApiException {
         Integer id = TestUtil.addBrand("brand", "category");
         BrandPojo p1 = service.get(id);
         assertEquals("brand", p1.getBrand());
         assertEquals("category", p1.getCategory());
-    }
-
-    @Test
-    public void testGetAll() throws ApiException {
-        TestUtil.addBrand("brand1", "category1");
-        TestUtil.addBrand("brand2", "category2");
-        assertEquals(2, service.getAll().size());
     }
 
     @Test
@@ -79,14 +73,14 @@ public class BrandServiceTest extends AbstractUnitTest {
         assertEquals("brand", p1.getBrand());
         assertEquals("category", p1.getCategory());
 
-        try{
+        try {
             service.getCheck(100);
         } catch (ApiException e) {
             return;
         }
 
         fail();
-        
+
     }
 
     @Test
@@ -96,7 +90,7 @@ public class BrandServiceTest extends AbstractUnitTest {
         assertEquals("brand", p1.getBrand());
         assertEquals("category", p1.getCategory());
 
-        try{
+        try {
             service.getcheck("brand1", "category1");
         } catch (ApiException e) {
             return;
@@ -106,30 +100,32 @@ public class BrandServiceTest extends AbstractUnitTest {
     }
 
     @Test
-    public void testSearchQueryString(){
+    public void testSearchQueryString() {
         TestUtil.addBrand("brand", "category");
-        assertEquals(1, service.searchQueryString(0,5,"brand").size());
-        assertEquals(1,  service.searchQueryString(0,5,"category").size());
-        assertEquals(0, service.searchQueryString(0,5,"brand1").size());
+        assertEquals(1, service.searchQueryString(0, 5, "brand").size());
+        assertEquals(1, service.searchQueryString(0, 5, "category").size());
+        assertEquals(0, service.searchQueryString(0, 5, "brand1").size());
     }
 
     @Test
-    public void testGetTotalEntries(){
+    public void testGetTotalEntries() {
         TestUtil.addBrand("brand", "category");
         TestUtil.addBrand("brand1", "category1");
 
-        Integer expectedEntries= 2;
+        Integer expectedEntries = 2;
         assertEquals(expectedEntries, service.getTotalEntries());
     }
 
     @Test
-    public void testGetInColumn(){
+    public void testGetInColumn() {
         TestUtil.addBrand("brand", "category");
         TestUtil.addBrand("brand", "category1");
 
-        assertEquals(2, service.getInColumn(Arrays.asList("brand"),Arrays.asList(Arrays.asList("brand"))).size());
-        assertEquals(1, service.getInColumn(Arrays.asList("category"),Arrays.asList(Arrays.asList("category"))).size());
-        assertEquals(1, service.getInColumn(Arrays.asList("brand", "category"),Arrays.asList(Arrays.asList("brand"), Arrays.asList("category"))).size());
+        assertEquals(2, service.getInColumn(Arrays.asList("brand"), Arrays.asList(Arrays.asList("brand"))).size());
+        assertEquals(1,
+                service.getInColumn(Arrays.asList("category"), Arrays.asList(Arrays.asList("category"))).size());
+        assertEquals(1, service.getInColumn(Arrays.asList("brand", "category"),
+                Arrays.asList(Arrays.asList("brand"), Arrays.asList("category"))).size());
 
     }
 

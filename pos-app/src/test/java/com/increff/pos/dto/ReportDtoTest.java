@@ -134,7 +134,7 @@ public class ReportDtoTest extends AbstractUnitTest{
         itemsList = dto.getOrderItems(DateTimeProvider.getInstance().timeNow().minusDays(3), DateTimeProvider.getInstance().timeNow().plusDays(1), null);
         assertEquals(4, itemsList.size());
         
-        itemsList = dto.getOrderItems(DateTimeProvider.getInstance().timeNow().minusDays(3), DateTimeProvider.getInstance().timeNow().plusDays(1), Arrays.asList(1));
+        itemsList = dto.getOrderItems(DateTimeProvider.getInstance().timeNow().minusDays(3), DateTimeProvider.getInstance().timeNow().plusDays(1), Arrays.asList(productId1));
         assertEquals(2, itemsList.size());
     
     }

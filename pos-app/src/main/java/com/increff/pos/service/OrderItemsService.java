@@ -40,11 +40,6 @@ public class OrderItemsService {
             dao.insert(p);
         }
 
-        // DaySalesPojo sPojo = new DaySalesPojo();
-        // sPojo.setItemsCount(totalQuantity);
-        // sPojo.setTotalRevenue(revenue);
-        // sService.add(sPojo);
-
     }
 
     public void add(OrderItemsPojo item){
@@ -64,32 +59,6 @@ public class OrderItemsService {
 
     public <T> List<OrderItemsPojo> getInColumn(List<String> columns, List<List<T>> values){
         return dao.selectByColumnUsingIn(columns, values, OrderItemsPojo.class);
-    }
-     
-    public void update(Integer id, OrderItemsPojo p) throws ApiException{
-        
-        
-        OrderItemsPojo p1 = selectById(id);
-
-        if(p1.getProductId() != p.getProductId()){
-            throw new ApiException("Mismatch in product barcode provided");
-        }
-
-        OrderPojo op = oService.update(p1.getOrderId(), null);
-
-        if(!op.isEditable()){
-            throw new ApiException("Order is no longer editable");
-        }
-
-        if(p1.getQuantity() > p.getQuantity()){
-            iService.increaseQuantity(p1.getProductId(), p1.getQuantity()-p.getQuantity());
-        }
-        else if(p1.getQuantity() < p.getQuantity()){
-            iService.reduceQuantity(p1.getProductId(), p.getQuantity()-p1.getQuantity());
-        }
-
-        p1.setQuantity(p.getQuantity());
-        p1.setSellingPrice(p.getSellingPrice());
     }
     
 }

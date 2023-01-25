@@ -8,7 +8,18 @@ import org.apache.commons.io.FileUtils;
 
 import com.increff.pos.service.ApiException;
 
+
+/**
+ * Used for conversionn of File to Base64 string and vice versa.
+ */
 public class Base64Util {
+    
+    /** 
+     * This method is used to read a file saved at the specified path and convert it into base64 string.
+     * @param fileName
+     * @return String
+     * @throws ApiException
+     */
     public static String encodeFileToBase64Binary(String fileName)throws ApiException{
         File file = new File(fileName);
         try{
@@ -17,7 +28,15 @@ public class Base64Util {
             throw new ApiException("error encoding file to base 64");
         }
     }
-
+    
+    
+    /** 
+     * This method takes two arguments a base64 string and a file path. 
+     * It converts base64 string to a file and saves it at the specified location.
+     * @param base64
+     * @param filePath
+     * @throws ApiException
+     */
     public static void decodeBase64ToFile(String base64, String filePath) throws ApiException{
         File file = new File(filePath);
 

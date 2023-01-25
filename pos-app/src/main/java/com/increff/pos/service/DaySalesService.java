@@ -23,6 +23,7 @@ public class DaySalesService {
         DaySalesPojo check = getByDate(pojo.getDate()); 
 
         if(Objects.isNull(check)){
+
             dao.insert(pojo); 
         }
         else{
@@ -39,19 +40,23 @@ public class DaySalesService {
     }
 
     public DaySalesPojo getByDate(ZonedDateTime date){
-        return dao.selectByDate(date);
+        List<DaySalesPojo> list = dao.selectInDateRange(date.withHour(0).withMinute(0).withSecond(0), date.withHour(23).withMinute(59).withSecond(59), 0, 1);
+        return list.isEmpty()?null:list.get(0);
     }
 
     public void update(DaySalesPojo pojo){
-        DaySalesPojo row = dao.selectByDate(pojo.getDate());
+        DaySalesPojo row = getByDate(pojo.getDate());
 
-        row.setItemsCount(row.getItemsCount()+pojo.getItemsCount());
+        Integer newItemsCount = row.getItemsCount()+pojo.getItemsCount();
+        Double newRevenue = row.getTotalRevenue()+pojo.getTotalRevenue();
+        row.setItemsCount(newItemsCount);
         row.setOrderCount(row.getOrderCount()+1);
-        row.setTotalRevenue(row.getTotalRevenue()+pojo.getTotalRevenue());
+        row.setTotalRevenue(newRevenue);
 
     }
 
     public Integer getTotalEntriesinDateRange(ZonedDateTime startDate, ZonedDateTime endDate){
+
         return dao.getTotalEntriesInDateRange(startDate, endDate);
     }
 

@@ -32,6 +32,7 @@ public class BrandDto {
     @Autowired
     private BrandService service;
 
+    
     public void add(BrandForm f) throws ApiException {
 
         StringUtil.normalise(f, BrandForm.class);

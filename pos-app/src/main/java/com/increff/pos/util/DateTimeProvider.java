@@ -3,6 +3,11 @@ package com.increff.pos.util;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 
+/**
+ * Used to modify the current date time for testing purpose.
+ * A user can set custom clock to timeTravel during the tests.
+ * If no custom clock is set explicitly the timeNow() method returns the current ZonedDateTime.
+*/
 public enum DateTimeProvider {
     INSTANCE;
 

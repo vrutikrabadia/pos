@@ -161,8 +161,8 @@ public class BrandDtoTest extends AbstractUnitTest{
         fail();
     }
 
-    @Test
-    public void testFileDuplicate(){
+    @Test(expected = ApiException.class)
+    public void testFileDuplicate() throws ApiException{
         
         List<BrandForm> brandList = new ArrayList<BrandForm>();
 
@@ -174,26 +174,20 @@ public class BrandDtoTest extends AbstractUnitTest{
 
         List<BrandPojo> pojoList = brandList.stream().map(e->ConvertUtil.objectMapper(e, BrandPojo.class)).collect(Collectors.toList());
 
-        try{
-            dto.checkFileDuplications(pojoList);
-        }catch(ApiException e){
-            fail();
-        }
+
+        dto.checkFileDuplications(pojoList);
+
 
         brandList.add(f2);
         pojoList = brandList.stream().map(e->ConvertUtil.objectMapper(e, BrandPojo.class)).collect(Collectors.toList());
 
-        try{
-            dto.checkFileDuplications(pojoList);
-        }catch(ApiException e){
-            return;
-        }
-        fail();
+        dto.checkFileDuplications(pojoList);
+
     }
 
 
-    @Test
-    public void testDbDuplicate(){
+    @Test(expected = ApiException.class)
+    public void testDbDuplicate() throws ApiException{
         TestUtil.addBrand("b2", "c2");
 
         List<BrandForm> brandList = new ArrayList<BrandForm>();
@@ -206,13 +200,8 @@ public class BrandDtoTest extends AbstractUnitTest{
 
         List<BrandPojo> pojoList = brandList.stream().map(e->ConvertUtil.objectMapper(e, BrandPojo.class)).collect(Collectors.toList());
 
-        try{
-            dto.checkDbDuplicate(pojoList);
-        }catch(ApiException e){
-            return;
-        }
+        dto.checkDbDuplicate(pojoList);
 
-        fail();
     }
 
     @Test
@@ -234,6 +223,31 @@ public class BrandDtoTest extends AbstractUnitTest{
         SelectData<BrandData> dataList = dto.getAll(0, 3, 0, empty);
 
         assertEquals(2, dataList.getData().size());
+    }
+
+    @Test(expected = ApiException.class)
+    public void testUpdateAreadyExists() throws ApiException{
+        TestUtil.addBrand("b1", "c1");
+        TestUtil.addBrand("b2", "c2");
+
+        List<BrandData> d = dto.getAll(0, 2, 0, empty).getData();
+
+        BrandForm f = TestUtil.getBrandForm("b1", "c1");
+        f.setBrand("b2");
+        f.setCategory("c2");
+
+        dto.update(d.get(0).getId(), f);
+    }
+
+    @Test
+    public  void testGetAllSearchValue(){
+        TestUtil.addBrand("b1", "c1");
+        TestUtil.addBrand("b2", "c2");
+        TestUtil.addBrand("b3", "c3");
+
+        SelectData<BrandData> d = dto.getAll(0, 3, 0, Optional.of("b1"));
+
+        assertEquals(1, d.getData().size());
     }
 
 }
