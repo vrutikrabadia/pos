@@ -8,44 +8,17 @@
 <script src="https://kit.fontawesome.com/c30beb553f.js" crossorigin="anonymous"></script>
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+
 <link rel="stylesheet" th:href="@{/static/app.css}">
 
 </head>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light mb-1" th:fragment="name_site_navbar">
-  <a class="navbar-brand" th:href="@{/}">
-    <img th:src="@{/static/logo.jpg}" class="d-inline-block align-top" alt="">
-  </a>
-
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
-      
-      <li class="nav-item">
-        <a class="nav-link" th:href="@{/site/features}">Features</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" th:href="@{/site/pricing}">Pricing</a>
-      </li>
-    </ul>
-    
-    <ul class="navbar-nav ml-auto">
-       <li class="nav-item">
-        <a class="btn btn-primary" th:href="@{/site/login}">Login</a>
-      </li>
-      <li class="nav-item">
-        <a class="btn btn-secondary" th:href="@{/site/signup}">Signup</a>
-      </li>
-    </ul>
- 
-  </div>
-</nav>
-
 <nav class="navbar navbar-expand-lg navbar-light bg-light  mb-1" th:fragment="name_app_navbar">
-  <a class="navbar-brand" th:href="@{/}">
-    <img th:src="@{/static/logo.jpg}" class="d-inline-block align-top" alt="">
+  <a class="navbar-brand" th:href="@{/ui/home}">
+    <img th:src="@{/static/logo.webp}" class="d-inline-block align-top" alt="">
   </a>
 
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,7 +60,7 @@
 	    	&nbsp;&gt;&nbsp;
 	    </li>
 	    <li class="nav-item">
-	    	<a class="nav-link" th:href="@{/session/logout}">Logout</a>
+	    	<a class="btn secondary-btn" th:href="@{/session/logout}">Logout</a>
 	    </li>
     </ul>
     
@@ -96,14 +69,26 @@
 </nav>
 
 <footer class="footer  mt-1" th:fragment="name_footer">
-	Copyright Increff 2019
+	Copyright Increff 2023
 	&nbsp;
+
+  
+ 
+
+  
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>  
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   
   <script src = "https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
   <link rel = "stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+
+  
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+  
+  
 	<script th:src="@{/static/app.js}"/></script>
 	<script th:src="@{/static/papaparse.min.js}"/></script>
 	

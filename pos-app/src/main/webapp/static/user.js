@@ -1,8 +1,4 @@
 
-function getUserUrl(){
-	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/admin/user";
-}
 
 //BUTTON ACTIONS
 function addUser(event){
@@ -60,8 +56,8 @@ function displayUserList(data){
 	$tbody.empty();
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = '<button onclick="deleteUser(' + e.id + ')">delete</button>'
-		buttonHtml += ' <button onclick="displayEditUser(' + e.id + ')">edit</button>'
+		var buttonHtml = '<button class="btn" onclick="deleteUser(' + e.id + ')"><img src='+deleteButton+ '></button>'
+		buttonHtml += ' <button class="btn" onclick="displayEditUser(' + e.id + ')"><img src='+editButton+ '></button>'
 		var row = '<tr>'
 		+ '<td>' + e.id + '</td>'
 		+ '<td>' + e.email + '</td>'

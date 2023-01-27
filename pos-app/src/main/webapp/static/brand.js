@@ -1,14 +1,4 @@
 
-function getBrandUrl(){
-	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/brands";
-}
-
-function getReportsUrl(){
-	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/reports";
-}
-
 //BUTTON ACTIONS
 function addBrand(event){
 	//Set the values to update
@@ -24,7 +14,8 @@ function addBrand(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
-			$("#brand-table").DataTable().ajax.reload()
+			$("#brand-table").DataTable().ajax.reload();
+			sweetAlert("Yay!!", "Brand added successfully", "success");
 	   },
 	   error: handleAjaxError
 	});
@@ -50,7 +41,8 @@ function updateBrand(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
-			$("#brand-table").DataTable().ajax.reload()
+			$("#brand-table").DataTable().ajax.reload();
+			sweetAlert("Yay!!", "Brand updated successfully", "success");
 	   },
 	   error: handleAjaxError
 	});
@@ -58,19 +50,6 @@ function updateBrand(event){
 	return false;
 }
 
-
-function deleteBrand(id){
-	var url = getBrandUrl() + "/" + id;
-
-	$.ajax({
-	   url: url,
-	   type: 'DELETE',
-	   success: function(data) {
-			$("#brand-table").DataTable().ajax.reload()
-	   },
-	   error: handleAjaxError
-	});
-}
 
 // FILE UPLOAD METHODS
 var fileData = [];
@@ -105,6 +84,7 @@ function uploadRows(){
 			processCount = fileData.length;
 			
 			updateUploadDialog();
+			sweetAlert("Yay!!", "Brands uploaded successfully", "success");
 			return;	 
 		},
 		error: function(error){
@@ -114,6 +94,7 @@ function uploadRows(){
 			processCount = fileData.length;	 
 			
 			updateUploadDialog();
+			sweetAlert("Oops...", "Error uploading brands check error file.", "error");
 			return;
 		}
 	 });
@@ -204,14 +185,31 @@ function downloadReport(){
             a.click();
         },
         error: function (error) {
-            alert(error.responseJSON.message);
+			sweetAlert("Oops...", error.responseJSON.message, "error");
         }
     });
 }
 
+function getConditionalColumns(){
+	var columns = [
+		{ "data": "id" },
+		{ "data": "brand" },
+		{ "data": "category" },
+	];
+	if(user == "supervisor"){
+		columns.push(
+			{
+				"data":null,
+				"render":function(o){return '<button class="btn" onclick="displayEditBrand(' + o.id + ')" ><img src='+editButton+ '></button>'}
+			}
+		);
+	}
+
+	return columns;
+};
+
 //INITIALIZATION CODE
 function init(){
-
 	$('#brand-table').DataTable( {
         "ordering": false,
 		"processing": true,
@@ -219,20 +217,12 @@ function init(){
 		"lengthMenu": [2,5,10,20, 40, 60, 80, 100],
 		"pageLength":10,
 		"ajax": {url : getBrandUrl()},
-		"columns": [
-            { "data": "id" },
-            { "data": "brand" },
-            { "data": "category" },
-			{
-				"data":null,
-				"render":function(o){return '<button onclick="displayEditBrand(' + o.id + ')">edit</button>'}
-			}
-        ]
+		"columns": getConditionalColumns()
 	});
 
 	$('#add-brand').click(addBrand);
 	$('#update-brand').click(updateBrand);
-	$('#refresh-data').click($("#brand-table").DataTable().ajax.reload());
+	$('#refresh-data').click(function(){$("#brand-table").DataTable().ajax.reload()});
 	$('#upload-data').click(displayUploadData);
 	$('#process-data').click(processData);
 	$('#download-errors').click(downloadErrors);

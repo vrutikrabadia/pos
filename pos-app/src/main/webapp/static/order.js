@@ -1,25 +1,6 @@
 var wholeOrder = []
 var currentInventory = new Map();
 
-function getOrderItemUrl() {
-    var baseUrl = $("meta[name=baseUrl]").attr("content")
-    return baseUrl + "/api/orders/items";
-}
-
-function getOrderUrl() {
-    var baseUrl = $("meta[name=baseUrl]").attr("content")
-    return baseUrl + "/api/orders";
-}
-
-function getProductUrl() {
-    var baseUrl = $("meta[name=baseUrl]").attr("content")
-    return baseUrl + "/api/products";
-}
-
-function getInventoryUrl() {
-    var baseUrl = $("meta[name=baseUrl]").attr("content")
-    return baseUrl + "/api/inventory";
-}
 
 function resetForm() {
     var element = document.getElementById("order-item-form");
@@ -27,8 +8,19 @@ function resetForm() {
 }
 
 function deleteOrderItem(id) {
+    currentInventory.set(wholeOrder[id].barcode, currentInventory.get(wholeOrder[id].barcode) + parseInt(wholeOrder[id].quantity));
     wholeOrder.splice(id, 1);
     displayOrderItemList();
+}
+
+function editOrderItem(id){
+    var barcode = wholeOrder[id].barcode;
+    var quantity = wholeOrder[id].quantity;
+    var sellingPrice = wholeOrder[id].sellingPrice;
+    $('#order-item-form input[name=barcode]').val(barcode);
+    $('#order-item-form input[name=quantity]').val(quantity);
+    $('#order-item-form input[name=sellingPrice]').val(sellingPrice);
+    deleteOrderItem(id);
 }
 
 function displayOrderItemList(data) {
@@ -38,7 +30,7 @@ function displayOrderItemList(data) {
     // logic is flawedshould be in a loop
     for (var i in wholeOrder) {
         var e = wholeOrder[i];
-        var buttonHtml = '<button onclick="deleteOrderItem(' + i + ')" class="btn">delete</button>';
+        var buttonHtml = '<button class="btn" onclick="editOrderItem(' + i + ')" class="btn"><img src='+editButton+ '></button><button class="btn" onclick="deleteOrderItem(' + i + ')" class="btn"><img src='+deleteButton+ '></button>';
         var row = '<tr>' +
             '<td>' + wholeOrder[i].barcode + '</td>' +
             '<td>' + wholeOrder[i].quantity + '</td>' +
@@ -69,15 +61,16 @@ function changeQuantity(json) {
         if (wholeOrder[i].barcode == json.barcode) {
             var prev = parseInt(wholeOrder[i].quantity);
 
-            var new_quantity = parseInt(prev) + parseInt(json.quantity);
+            currentInventory.set(json.barcode, parseInt(currentInventory.get(json.barcode)) + parseInt(prev));
 
-            console.log(currentInventory.get(json.barcode));
+            var new_quantity = parseInt(prev) + parseInt(json.quantity);
 
             if (new_quantity <= currentInventory.get(json.barcode)) {
                 json.quantity = new_quantity;
                 wholeOrder[i] = json;
             } else {
-                alert("quantity not sufficient for this item");
+                currentInventory.set(json.barcode, currentInventory.get(json.barcode) -  parseInt(prev));
+                sweetAlert("Oops...", "quantity not sufficient for this item", "error");
             }
 
         }
@@ -102,23 +95,40 @@ function addOrderItem(event) {
     var $form = $("#order-item-form");
     var json = JSON.parse(toJson($form));
 
+    if(json.barcode == "" || json.quantity == "" || json.sellingPrice == ""){
+        sweetAlert("Oops...", "Please enter the details", "error");
+        return;
+    }
+
+    if(json.quantity <= 0 || json.sellingPrice <= 0){
+        sweetAlert("Oops...", "Please enter valid quantity and selling price", "error");
+        return;
+    }
+
     if (checkOrderItemExist()) {
 
         if (checkSellingPrice(json) == false) {
-            alert("Selling price cannot be different");
+            sweetAlert("Oops...", "Selling price cannot be different", "error");
         } else {
             changeQuantity(json);
         }
     } else {
         wholeOrder.push(json)
     }
+
+    currentInventory.set(json.barcode, currentInventory.get(json.barcode) - json.quantity);
     resetForm();
 
     displayOrderItemList();
 
 }
 
-function displayCart() {
+function displayCart() { 
+
+    for(i in wholeOrder){
+        currentInventory.set(wholeOrder[i].barcode, currentInventory.get(wholeOrder[i].barcode) + parseInt(wholeOrder[i].quantity));
+    }
+    wholeOrder = [];
     $('#add-order-item-modal').modal('toggle');
     // table should be empty
     var $tbody = $('#order-item-table').find('tbody');
@@ -130,6 +140,12 @@ function getOrderItemList() {
     console.log(jsonObj);
 }
 
+function insufficientQuantityAlert(input, inv){
+    if(input.value >  inv|| input.value < 1){
+        sweetAlert("Oops...", "Insufficient inventory", "error");
+        input.value = null;
+    }
+}
 
 function checkInventory() {
 
@@ -143,7 +159,7 @@ function checkInventory() {
         $('#order-item-form input[name=quantity]').attr({
             "max": inv,
             "min": 1,
-            "onkeyup": "if(this.value > " + inv + " || this.value < 1) this.value = null;"
+            "onkeyup": "insufficientQuantityAlert(this, " + inv + ");"
         });
 
         return;
@@ -164,11 +180,11 @@ function checkInventory() {
             $('#order-item-form input[name=quantity]').attr({
                 "max": response.quantity,
                 "min": 1,
-                "onkeyup": "if(this.value > " + response.quantity + " || this.value < 1) this.value = null;"
+                "onkeyup": "insufficientQuantityAlert(this, " + response.quantity + ");"
             });
         },
         error: function (error) {
-            alert(error.responseJSON.message);
+            sweetAlert("Oops...", error.responseJSON.message, "error");
         }
     });
 }
@@ -201,7 +217,7 @@ function displayOrder(id) {
             });
         },
         error: function (error) {
-            alert(error.responseJSON.message);
+            sweetAlert("Oops...", error.responseJSON.message, "error");
         }
     });
 
@@ -233,7 +249,7 @@ function downloadInvoice(orderId) {
             a.click();
         },
         error: function (error) {
-            alert(error.responseJSON.message);
+            sweetAlert("Oops...", error.responseJSON.message, "error");
         }
     });
 }
@@ -242,6 +258,9 @@ function downloadInvoice(orderId) {
 function placeOrder() {
     var url = getOrderUrl();
 
+    if(wholeOrder.length == 0){
+        sweetAlert("Oops...", "Please add items to the order", "error");
+    }
     // var jsonObj = arrayToJson();
     // console.log(jsonObj);
     $.ajax({
@@ -255,6 +274,7 @@ function placeOrder() {
             $('#add-order-item-modal').modal('toggle');
             wholeOrder = []
             $("#Order-table").DataTable().ajax.reload();
+            sweetAlert("Yay!!", "Order Placed Successfully", "success");
         },
         error: handleAjaxError
     });
@@ -284,7 +304,7 @@ function init() {
             {
                 "data": null,
                 "render": function (o) {
-                    return '<button onclick="displayOrder(' + o.id + ')">view</button><button onclick="downloadInvoice(' + o.id + ')">Download Invoice</button>'
+                    return '<button class="btn" onclick="displayOrder(' + o.id + ')"><img src='+viewButton+ '></button><button class="btn" onclick="downloadInvoice(' + o.id + ')"><img src='+downloadButoon+ '></button>'
                 }
             }
         ]
@@ -298,7 +318,7 @@ function init() {
     $('#add-order-item').click(addOrderItem);
     $('#place-order').click(placeOrder);
     $('#search-order-item').click(checkInventory);
-    $('#refresh-data').click($("#Order-table").DataTable().ajax.reload());
+    $('#refresh-data').click(function(){$("#Order-table").DataTable().ajax.reload()});
 }
 
 $(document).ready(init);

@@ -8,6 +8,7 @@ import org.apache.commons.io.FileUtils;
 
 import com.increff.pos.service.ApiException;
 
+//TODO: Add docs in the code after verification
 
 /**
  * Used for conversionn of File to Base64 string and vice versa.

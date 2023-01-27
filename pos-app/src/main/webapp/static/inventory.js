@@ -1,13 +1,5 @@
 
-function getInventoryUrl(){
-	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/inventory";
-}
 
-function getReportsUrl(){
-	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/reports";
-}
 
 //BUTTON ACTIONS
 function addInventory(event){
@@ -24,7 +16,8 @@ function addInventory(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
-		$("#inventory-table").DataTable().ajax.reload()
+		$("#inventory-table").DataTable().ajax.reload();
+		sweetAlert("Yay!!", "Inventory added successfully", "success");
 	   },
 	   error: handleAjaxError
 	});
@@ -49,7 +42,8 @@ function updateInventory(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
-		$("#inventory-table").DataTable().ajax.reload()
+		$("#inventory-table").DataTable().ajax.reload();
+		sweetAlert("Yay!!", "Inventory updated successfully", "success");
 	   },
 	   error: handleAjaxError
 	});
@@ -57,19 +51,6 @@ function updateInventory(event){
 	return false;
 }
 
-
-function deleteInventory(id){
-	var url = getInventoryUrl() + "/" + id;
-
-	$.ajax({
-	   url: url,
-	   type: 'DELETE',
-	   success: function(data) {
-		$("#inventory-table").DataTable().ajax.reload() 
-	   },
-	   error: handleAjaxError
-	});
-}
 
 // FILE UPLOAD METHODS
 var fileData = [];
@@ -102,7 +83,9 @@ function uploadRows(){
 			processCount = fileData.length;
 			
 			updateUploadDialog();
-			return;	 
+			sweetAlert("Yay!!", "Inventory uploaded successfully", "success");
+			return;
+
 		},
 		error: function(error){
 			console.log(error);
@@ -111,6 +94,7 @@ function uploadRows(){
 			processCount = fileData.length;	 
 			
 			updateUploadDialog();
+			sweetAlert("Oops...", "Error uploading inventory check error file.", "error");
 			return;
 		}
 	 });
@@ -200,11 +184,27 @@ function downloadReport(){
             a.click();
         },
         error: function (error) {
-            alert(error.responseJSON.message);
+			sweetAlert("Oops...", error.responseJSON.message, "error");
         }
     });
 }
 
+function getConditionalColumns(){
+	var columns = columns = [
+		{ "data": "barcode" },
+		{ "data": "quantity", className: "text-right" },
+	];
+
+	if(user == 'supervisor'){
+		columns.push({
+				"data":null,
+				"render":function(o){return '<button class="btn" onclick="displayEditInventory(\'' + o.barcode + '\')"><img src='+editButton+ '></button>'}
+			}
+		);
+	}
+
+	return columns;
+}
 
 //INITIALIZATION CODE
 function init(){
@@ -216,19 +216,12 @@ function init(){
 		"lengthMenu": [2,5,10,20, 40, 60, 80, 100],
 		"pageLength":10,
 		"ajax": {url : getInventoryUrl()},
-		"columns": [
-            { "data": "barcode" },
-            { "data": "quantity" },
-			{
-				"data":null,
-				"render":function(o){return '<button onclick="displayEditInventory(\'' + o.barcode + '\')">edit</button>'}
-			}
-        ]
+		"columns": getConditionalColumns()
 	});
 
 	$('#add-inventory').click(addInventory);
 	$('#update-inventory').click(updateInventory);
-	$('#refresh-data').click($("#inventory-table").DataTable().ajax.reload());
+	$('#refresh-data').click(function(){$("#inventory-table").DataTable().ajax.reload()});
 	$('#upload-data').click(displayUploadData);
 	$('#process-data').click(processData);
 	$('#download-errors').click(downloadErrors);

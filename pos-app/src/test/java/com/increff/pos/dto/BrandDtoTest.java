@@ -25,6 +25,8 @@ public class BrandDtoTest extends AbstractUnitTest{
 
     @Autowired 
     private BrandDto dto;
+
+    //TODO : put it in test util 
     private Optional<String> empty = Optional.empty();
 
 
@@ -84,11 +86,11 @@ public class BrandDtoTest extends AbstractUnitTest{
         
         TestUtil.addBrand("brand1", "category1");
 
-        BrandForm f = TestUtil.getBrandForm("brand1", "category1");
+        BrandForm form = TestUtil.getBrandForm("brand1", "category1");
         
-
+        //TODO: assert with message
         try{
-            dto.add(f);
+            dto.add(form);
         }
         catch(ApiException e){
             return;
@@ -129,6 +131,8 @@ public class BrandDtoTest extends AbstractUnitTest{
             assertEquals(d.getBrand(), brand);
         } 
     }
+
+    //REFACTOR: separate each scenario
 
     @Test
     public void testBrandValidation(){

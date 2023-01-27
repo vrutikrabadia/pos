@@ -16,9 +16,9 @@ public class OrderItemsForm {
     @Size(min = 8, max = 8, message = "Barcode length must be 8 characters")
     private String barcode;
 
-    
+    //TODO: add >1 constraint
     @NotNull(message = "Quantity cannot be null")
-    @Min(value = 0, message="Quantity should be non negative")
+    @Min(value = 1, message="Quantity should be non negative")
     private Integer quantity;
 
     @NotNull(message = "Selling price cannot be null")

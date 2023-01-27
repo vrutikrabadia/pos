@@ -18,6 +18,8 @@ import lombok.Setter;
 @Setter
 public abstract class AbstractPojo {
 
+    //TODO: Implement physical naming startergy
+
     @Column(name = "created", nullable = false)
     private ZonedDateTime created;
 

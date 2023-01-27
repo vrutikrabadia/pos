@@ -18,15 +18,17 @@
 			<form class="form-inline" id="product-form">
 
                 <div class="form-group">
-                    <label for="barcode" class="col-sm-2 col-form-label">BarCode</label>
+                    <label for="barcode" class="col-sm-2 col-form-label">Barcode</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="barcode" id="barcode" placeholder="enter barcode" maxlength="8" minlength="8">
                     </div>
                 </div>
+
+				
 			    <div class="form-group">
 			      <label for="inputBrand" class="col-sm-2 col-form-label">Brand</label>
 			      <div class="col-sm-10">
-                    <select placeholder="Select Brand" data-search="true" id="brand-select" name="brand">
+                    <select placeholder="Select Brand" data-search="true" id="brand-select" class="select2 form-control" name="brand">
                         <option disabled selected value> -- select an option -- </option>
                     </select>
 			      </div>
@@ -34,7 +36,7 @@
 			    <div class="form-group">
 			      <label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
 			      <div class="col-sm-10">
-                    <select placeholder="Select Brand" data-search="true" id="category-select" name="category">
+                    <select placeholder="Select Brand" data-search="true" id="category-select" class="select2 form-control" name="category">
                         <option disabled selected value> -- select an option -- </option>
                     </select>
 			      </div>
@@ -51,11 +53,11 @@
 			      <input type="number" class="form-control" name="mrp" id="inputName" placeholder="enter mrp">
 			    </div>
 			  </div>
-			  <button type="button" class="btn btn-primary" id="add-product">Add</button>
+			  <button type="button" class="btn primary-btn " id="add-product">Add</button>
 			  &nbsp;
-			  <button type="button" class="btn btn-primary" id="refresh-data">Refresh</button>
+			  <button type="button" class="btn primary-btn " id="refresh-data">Refresh</button>
 			  &nbsp;
-			  <button type="button" class="btn btn-primary" id="upload-data">Upload</button>
+			  <button type="button" class="btn primary-btn " id="upload-data">Upload</button>
 			</form>
 	 </div>	
 </div> 
@@ -78,7 +80,7 @@
 	      <th scope="col">Category</th>
 	      <th scope="col">Name</th>
 	      <th scope="col">M.R.P.</th>
-	      <th scope="col">Actions</th>
+	      <th scope="col" th:if="${info.getRole() == 'supervisor'}">Actions</th>
 
 	    </tr>
 	  </thead>
@@ -91,7 +93,7 @@
 	      <td>Dairy</td>
           <td>nestle kitkat 100 grams</td>
           <td>49.00</td>
-	      <td>Edit</td>
+	      <td th:if="${info.getRole() == 'supervisor'}">Edit</td>
 	    </tr>
 	  </tbody>
 	</table>
@@ -100,7 +102,7 @@
 </div>
 
 <!-- product Edit Modal -->
-<div class="modal" tabindex="-1" role="dialog" id="edit-product-modal">
+<div class="modal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" id="edit-product-modal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -112,28 +114,28 @@
       <div class="modal-body">
 			<form class="form-inline" id="product-edit-form">
                 <div class="form-group">
-                  <label for="inputBarCode" class="col-sm-2 col-form-label">BarCode</label>
+                  <label for="inputBarCode" class="col-sm-2 col-form-label">Barcode</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="barcode" placeholder="enter barcode" minlength="8" maxlength="8">
+                    <input type="text" class="form-control" name="barcode" placeholder="enter barcode" minlength="8" maxlength="8" readonly>
                   </div>
                 </div>
 			  <div class="form-group">
 			    <label for="inputBrand" class="col-sm-2 col-form-label">Brand</label>
 			    <div class="col-sm-10">
-			      <!-- <input type="text" class="form-control" name="brand" placeholder="enter brand"> -->
+			      <input type="text" class="form-control" name="brand" placeholder="enter brand" readonly>
 
-                  <select placeholder="Select Brand" data-search="true" id="brand-edit-select" name="brand">
+                  <!-- <select placeholder="Select Brand" data-search="true" id="brand-edit-select" class="select2 form-control" name="brand">
                     <option disabled selected value> -- select an option -- </option>
-                  </select>
+                  </select> -->
 			    </div>
 			  </div>
 			  <div class="form-group">
 			    <label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
 			    <div class="col-sm-10">
-			      <!-- <input type="text" class="form-control" name="category" placeholder="enter category"> -->
-                  <select placeholder="Select Category" data-search="true" id="category-edit-select" name="category">
+			      <input type="text" class="form-control" name="category" placeholder="enter category" readonly>
+                  <!-- <select placeholder="Select Category" data-search="true" id="category-edit-select" class="select2 form-control" name="category">
                     <option disabled selected value> -- select an option -- </option>
-                  </select>
+                  </select> -->
 			    </div>
 			  </div>
               <div class="form-group">
@@ -152,8 +154,8 @@
 			</form>        
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="update-product">Update</button>
+        <button type="button" class="btn secondary-btn" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn primary-btn " id="update-product">Update</button>
       </div>
     </div>
   </div>
@@ -161,7 +163,7 @@
 
 
 <!-- product Upload Modal -->
-<div class="modal" tabindex="-1" role="dialog" id="upload-product-modal">
+<div class="modal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" id="upload-product-modal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       
@@ -185,8 +187,8 @@
       </div>
       
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="process-data">Upload</button>
+        <button type="button" class="btn secondary-btn" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn primary-btn " id="process-data">Upload</button>
         <button type="button" class="btn btn-warning" id="download-errors">Download Errors</button>
       </div>
     </div>
@@ -196,6 +198,14 @@
 </div> <!-- Container end-->
 
 <footer th:replace="snippets.html :: name_footer"></footer>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/
+	
+		var user = /*[[${info.getRole()}]]*/ 'operator';
+	
+	/*]]>*/
+</script>
 
 <script th:src="@{/static/product.js}"/></script>
 

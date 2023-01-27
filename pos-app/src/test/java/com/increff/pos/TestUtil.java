@@ -27,6 +27,8 @@ import com.increff.pos.pojo.OrderItemsPojo;
 import com.increff.pos.pojo.OrderPojo;
 import com.increff.pos.pojo.ProductPojo;
 
+
+//TODO: autowire in tests
 @Component
 public class TestUtil {
     

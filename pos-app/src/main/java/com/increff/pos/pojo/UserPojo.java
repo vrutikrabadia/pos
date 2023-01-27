@@ -17,7 +17,9 @@ public class UserPojo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String email;
+	//TODO: not nullable
 	private String password;
+	//TODO: assign enum
 	private String role;
 
 }

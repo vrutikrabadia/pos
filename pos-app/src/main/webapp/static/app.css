@@ -21,3 +21,51 @@ body {
 .fas{
     font-size: 4rem;
 }
+
+
+.primary-btn{
+	background-color: #eb6469;
+	border-color: #eb6469;
+	margin-left: 0.5rem;
+	margin-right: 0.5rem;
+	color: #fff;
+
+}
+
+.secondary-btn{
+	background-color: #172b54;
+	border-color: #172b54;
+	margin-left: 0.5rem;
+	margin-right: 0.5rem;
+	color: #fff;
+}
+.secondary-btn:hover{
+	color: #eb6469;
+}
+
+.page-item.active .page-link {
+    z-index: 1;
+    color: #172b54;
+    background-color: #eb6469;
+    border-color: #eb6469;
+}
+
+label{
+	margin-bottom: 1rem;
+}
+
+.form-inline .form-group{
+	margin-bottom: 1rem;
+}
+
+.page-link{
+	color: #eb6469;
+}
+
+.select2-container .select2-selection--single{
+    height:calc(1.5em + 0.75rem + 2px) !important;
+}
+.select2-container--default .select2-selection--single{
+         border: 1px solid #ced4da !important; 
+     border-radius: 0.25rem  !important; 
+}

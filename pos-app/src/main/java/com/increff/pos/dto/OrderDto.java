@@ -22,12 +22,12 @@ import com.increff.pos.model.data.InvoiceItemsData;
 import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.data.OrderItemsData;
 import com.increff.pos.model.data.SelectData;
-import com.increff.pos.model.form.OrderForm;
 import com.increff.pos.model.form.OrderItemsForm;
 import com.increff.pos.pojo.OrderItemsPojo;
 import com.increff.pos.pojo.OrderPojo;
 import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.service.ApiException;
+import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.OrderItemsService;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.service.ProductService;
@@ -47,6 +47,9 @@ public class OrderDto {
 
     @Autowired
     private ProductService pService;
+
+    @Autowired
+    private InventoryService invService;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -81,6 +84,15 @@ public class OrderDto {
                 errorList.put(error);
             }
             p.setProductId(product.getId());
+
+            try {
+                invService.checkInventory(product.getId(), f.getQuantity());
+            } catch (ApiException e) {
+                JSONObject error = new JSONObject(new Gson().toJson(f));
+
+                error.put("error", e.getMessage()+" for "+f.getBarcode());
+                errorList.put(error);
+            }
 
             list1.add(p);
         }

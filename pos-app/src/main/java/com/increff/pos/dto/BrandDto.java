@@ -57,7 +57,7 @@ public class BrandDto {
         ValidateUtil.validateList(list);
 
         List<BrandPojo> pojoList = list.stream().map(e->ConvertUtil.objectMapper(e, BrandPojo.class)).collect(Collectors.toList());
-
+        //TODO: do file check on form level
         checkFileDuplications(pojoList);
 
         checkDbDuplicate(pojoList);
@@ -65,7 +65,10 @@ public class BrandDto {
         service.bulkAdd(pojoList);
 
     }
+    //TODO: ,ake it private
+    //REFACTOR:: Try creating generic functionn 
 
+    //TODO: pass list of failed pojos to generic function and create JSON there
     protected void checkFileDuplications(List<BrandPojo> pojoList) throws ApiException {
         JSONArray errorList = new JSONArray();
         Set<String> fileSet = new HashSet<String>();

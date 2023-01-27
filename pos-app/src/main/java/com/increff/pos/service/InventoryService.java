@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.protobuf.Api;
 import com.increff.pos.dao.InventoryDao;
 import com.increff.pos.pojo.InventoryPojo;
 
@@ -67,6 +68,13 @@ public class InventoryService {
             throw new ApiException("Inventory does not exist for thr product");
         }
         return p;
+    }
+
+    public void checkInventory(Integer id, Integer quantity) throws ApiException{
+        InventoryPojo inv = getCheck(id);
+        if(inv.getQuantity() < quantity){
+            throw new ApiException("Insufficient Inventory");
+        }
     }
      
     public void reduceQuantity(Integer id, Integer quantity) throws ApiException{

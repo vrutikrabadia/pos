@@ -43,7 +43,8 @@ public class LoginController {
 
 	@ApiOperation(value = "signup user")
 	@RequestMapping(path = "/signup", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public ModelAndView signup(LoginForm f) throws ApiException{
+	public ModelAndView signup(HttpServletRequest req, LoginForm f) throws ApiException{
+		info.setMessage("No message");
 		try{
 			dto.add(f);
 		}
@@ -51,12 +52,26 @@ public class LoginController {
 			info.setMessage(e.getMessage());
 			return new ModelAndView("redirect:/site/signup");
 		}
-		return new ModelAndView("redirect:/site/login");
+		
+		UserPojo p = service.get(f.getEmail());
+		boolean authenticated = (p != null && Objects.equals(p.getPassword(), f.getPassword()));
+		if (!authenticated) {
+			info.setMessage("Invalid username or password");
+			return new ModelAndView("redirect:/site/login");
+		}
+
+		Authentication authentication = convert(p);
+		HttpSession session = req.getSession(true);
+		SecurityUtil.createContext(session);
+		SecurityUtil.setAuthentication(authentication);
+
+		return new ModelAndView("redirect:/ui/home");
 	}
 	
 	@ApiOperation(value = "Logs in a user")
 	@RequestMapping(path = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ModelAndView login(HttpServletRequest req, LoginForm f) throws ApiException {
+		info.setMessage("No message");
 		UserPojo p = service.get(f.getEmail());
 		boolean authenticated = (p != null && Objects.equals(p.getPassword(), f.getPassword()));
 		if (!authenticated) {

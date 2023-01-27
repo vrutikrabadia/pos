@@ -1,13 +1,4 @@
 
-function getDaySalesUrl(){
-	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/day-sales";
-}
-
-function getReportsUrl(){
-	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/reports";
-}
 
 function displayBrand(data){
 	$("#brand-edit-form input[name=brand]").val(data.brand);	
@@ -75,7 +66,7 @@ function downloadReport(){
             a.click();
         },
         error: function (error) {
-            alert(error.responseJSON.message);
+            sweetAlert("Oops...", error.responseJSON.message, "error");
         }
     });
     //clear form using form id
@@ -113,7 +104,11 @@ function init(){
         },
             { "data": "itemsCount" },
             { "data": "orderCount" },
-            { "data": "totalRevenue" },
+            { 
+                "data":null,
+                "render":function(o){return parseFloat(o.totalRevenue).toFixed(2)} , 
+                className: "text-right" 
+            },
             
         ]
 	});

@@ -23,7 +23,7 @@ public class BrandService {
         dao.insert(p);
     }
 
-    public void bulkAdd(List<BrandPojo> list) throws ApiException {
+    public void bulkAdd(List<BrandPojo> list) {
 
         for (BrandPojo brand : list) {
                 add(brand); 

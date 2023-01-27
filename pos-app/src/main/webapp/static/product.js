@@ -1,13 +1,4 @@
 
-function getProductUrl(){
-	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/products";
-}
-
-function getBrandUrl(){
-	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/brands";
-}
 
 //BUTTON ACTIONS
 function addProduct(event){
@@ -24,7 +15,8 @@ function addProduct(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
-		$("#product-table").DataTable().ajax.reload() 
+		$("#product-table").DataTable().ajax.reload();
+		sweetAlert("Yay!!", "Product added successfully", "success");
 	   },
 	   error: handleAjaxError
 	});
@@ -73,7 +65,8 @@ function updateProduct(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
-		$("#product-table").DataTable().ajax.reload()   
+		$("#product-table").DataTable().ajax.reload();
+		sweetAlert("Yay!!", "Product updated successfully", "success"); 
 	   },
 	   error: handleAjaxError
 	});
@@ -82,20 +75,6 @@ function updateProduct(event){
 }
 
 
-
-
-function deleteProduct(id){
-	var url = getProductUrl() + "/" + id;
-
-	$.ajax({
-	   url: url,
-	   type: 'DELETE',
-	   success: function(data) {
-		$("#product-table").DataTable().ajax.reload()  
-	   },
-	   error: handleAjaxError
-	});
-}
 
 // FILE UPLOAD METHODS
 var fileData = [];
@@ -128,6 +107,7 @@ function uploadRows(){
 			processCount = fileData.length;
 			
 			updateUploadDialog();
+			sweetAlert("Yay!!", "Products uploaded successfully", "success");
 			return;	 
 		},
 		error: function(error){
@@ -137,6 +117,7 @@ function uploadRows(){
 			processCount = fileData.length;	 
 			
 			updateUploadDialog();
+			sweetAlert("Oops!!", "Error uploading products. Please download the error file and correct the errors.", "error");
 			return;
 		}
 	 });
@@ -200,6 +181,29 @@ function displayProduct(data){
 	$('#edit-product-modal').modal('toggle');
 }
 
+function getConditionalColumns(){
+	var columns = [
+		{ "data": "id" },
+		{ "data": "barcode" },
+		{ "data": "brand" },
+		{ "data": "category" },
+		{ "data": "name" },
+		{ 
+			"data":null,
+			"render":function(o){return parseFloat(o.mrp).toFixed(2)} , 
+			className: "text-right" 
+		},
+	];
+	if(user == 'supervisor'){
+		columns.push(
+			{
+				"data":null,
+				"render":function(o){return '<button class="btn" onclick="displayEditProduct(' + o.id + ')"><img src='+editButton+ '></button>'}
+			}
+		);
+	}
+	return columns;
+}
 
 //INITIALIZATION CODE
 function init(){
@@ -210,27 +214,17 @@ function init(){
 		"lengthMenu": [2,5,10,20, 40, 60, 80, 100],
 		"pageLength":10,
 		"ajax": {url : getProductUrl()},
-		"columns": [
-            { "data": "id" },
-            { "data": "barcode" },
-            { "data": "brand" },
-            { "data": "category" },
-            { "data": "name" },
-            { "data": "mrp" },
-			{
-				"data":null,
-				"render":function(o){return '<button onclick="displayEditProduct(' + o.id + ')">edit</button>'}
-			}
-        ]
+		"columns": getConditionalColumns()
 	});
     getBrandList();
 	$('#add-product').click(addProduct);
 	$('#update-product').click(updateProduct);
-	$('#refresh-data').click($("#product-table").DataTable().ajax.reload());
+	$('#refresh-data').click(function(){$("#product-table").DataTable().ajax.reload()});
 	$('#upload-data').click(displayUploadData);
 	$('#process-data').click(processData);
 	$('#download-errors').click(downloadErrors);
-    $('#productFile').on('change', updateFileName)
+    $('#productFile').on('change', updateFileName);
+	$('.select2').select2();
 }
 
 $(document).ready(init);
