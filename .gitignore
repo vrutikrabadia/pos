@@ -32,6 +32,6 @@ pdf.properties
 jetty.log
 
 
-*.xml
+/pdf-app/src/main/resources/com/increff/pdf/*.xml
 *.pdf
 
