@@ -39,7 +39,6 @@ public class BrandDto {
 
         ValidateUtil.validateForms(f);
         BrandPojo p = ConvertUtil.objectMapper(f, BrandPojo.class);
-
         try {
             service.getcheck(f.getBrand(), f.getCategory());
         } catch (ApiException e) {
@@ -52,13 +51,11 @@ public class BrandDto {
     }
 
     public void bulkAdd(List<BrandForm> list) throws ApiException {
-
         StringUtil.normaliseList(list, BrandForm.class);
         ValidateUtil.validateList(list);
+        checkFileDuplications(list);
 
         List<BrandPojo> pojoList = list.stream().map(e->ConvertUtil.objectMapper(e, BrandPojo.class)).collect(Collectors.toList());
-        //TODO: do file check on form level
-        checkFileDuplications(pojoList);
 
         checkDbDuplicate(pojoList);
 
@@ -66,24 +63,32 @@ public class BrandDto {
 
     }
     //TODO: ,ake it private
-    //REFACTOR:: Try creating generic functionn 
 
-    //TODO: pass list of failed pojos to generic function and create JSON there
-    protected void checkFileDuplications(List<BrandPojo> pojoList) throws ApiException {
+    protected void checkFileDuplications(List<BrandForm> formList) throws ApiException {
         JSONArray errorList = new JSONArray();
         Set<String> fileSet = new HashSet<String>();
 
-        Set<BrandPojo> repeatSet = pojoList.stream().filter(e -> !fileSet.add(e.getBrand() + e.getCategory()))
+
+        Set<BrandForm> repeatSet = formList.stream().filter(e -> !fileSet.add(e.getBrand() +"#"+ e.getCategory()))
                 .collect(Collectors.toSet());
 
-        if (repeatSet.size() > 0) {
 
+        if (repeatSet.size() > 0) {
+            Set<BrandForm> formSet = formList.stream().filter(e->!repeatSet.contains(e)).collect(Collectors.toSet());
+            
             repeatSet.forEach(e -> {
-                BrandForm repeated = ConvertUtil.objectMapper(e, BrandForm.class);
-                JSONObject error = new JSONObject(new Gson().toJson(repeated));
+                JSONObject error = new JSONObject(new Gson().toJson(e));
                 error.put("error", "DUPLICATE entries in file");
                 errorList.put(error);
             });
+
+
+            formSet.forEach(e->{
+                JSONObject error = new JSONObject(new Gson().toJson(e));
+                error.put("error", "");
+                errorList.put(error);
+            });
+
 
             throw new ApiException(errorList.toString());
         }
@@ -101,7 +106,16 @@ public class BrandDto {
         Set<BrandPojo> repeatSet = pojoList.stream().filter(e -> !finalDbSet.add(e.getBrand() + e.getCategory()))
                 .collect(Collectors.toSet());
 
+        
+
         if (repeatSet.size() > 0) {
+            Set<BrandPojo> formSet = pojoList.stream().filter(e->!repeatSet.contains(e)).collect(Collectors.toSet());
+            formSet.forEach(e->{
+                BrandForm repeated = ConvertUtil.objectMapper(e, BrandForm.class);
+                JSONObject error = new JSONObject(new Gson().toJson(repeated));
+                error.put("error", "");
+                errorList.put(error);
+            });
 
             repeatSet.forEach(e -> {
                 BrandForm repeated = ConvertUtil.objectMapper(e, BrandForm.class);

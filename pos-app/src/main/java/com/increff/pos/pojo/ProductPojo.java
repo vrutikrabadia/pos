@@ -11,8 +11,6 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.google.gson.annotations.Expose;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,22 +24,18 @@ public class ProductPojo extends AbstractPojo implements Serializable{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(nullable=false)
     private Integer id;
     
-    @Column(name = "barcode", nullable = false)
-    @Expose
+    @Column(nullable=false)
     private String barcode;
     
-    @Column(name = "brand_cat", nullable = false)
-    @Expose
+    @Column(nullable=false)
     private Integer brandCat;
     
-    @Column(name = "name", nullable = false)
-    @Expose
+    @Column(nullable=false)
     private String name;
     
-    @Column(name = "mrp", nullable = false)
-    @Expose
+    @Column(nullable=false)
     private Double mrp;
 }

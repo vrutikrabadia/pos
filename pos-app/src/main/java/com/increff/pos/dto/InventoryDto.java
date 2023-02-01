@@ -1,19 +1,16 @@
 package com.increff.pos.dto;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import javax.validation.ConstraintViolationException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.gson.GsonBuilder;
+import com.google.gson.Gson;
 import com.increff.pos.model.data.InventoryData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.InventoryForm;
@@ -23,7 +20,6 @@ import com.increff.pos.service.ApiException;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ConvertUtil;
-import com.increff.pos.util.ExceptionUtil;
 import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
 
@@ -47,75 +43,67 @@ public class InventoryDto {
             throw new ApiException("Product does not exist");
         }
 
-        p.setId(p1.getId());
+        p.setProductId(p1.getId());
 
         try {
-            service.getCheck(p.getId());
+            service.getCheck(p.getProductId());
         } catch (ApiException e) {
             service.add(p);
             return;
         }
-        InventoryPojo iPojo = service.get(p.getId());
-        service.increaseQuantity(iPojo.getId(), p.getQuantity());
+        InventoryPojo iPojo = service.get(p.getProductId());
+        service.increaseQuantity(iPojo.getProductId(), p.getQuantity());
 
     }
 
     //REFACTOR :  refactor bulk add
     public void bulkAdd(List<InventoryForm> list) throws ApiException{
-        JSONArray errorList = new JSONArray();
-        List<InventoryPojo> pojoList = new ArrayList<InventoryPojo>();
 
-        HashMap<String, Integer> barcodeToId = new HashMap<String, Integer>();
+        StringUtil.normaliseList(list, InventoryForm.class);
+        ValidateUtil.validateList(list);
 
-        for (InventoryForm form : list) {
-            
-            StringUtil.normalise(form, InventoryForm.class);
-            try {
-                ValidateUtil.validateForms(form);
-                
-            } catch (ConstraintViolationException e) {
-                JSONObject error = new JSONObject(new GsonBuilder()
-                        .excludeFieldsWithoutExposeAnnotation()
-                        .create()
-                        .toJson(form));
-                error.put("error", ExceptionUtil.getValidationMessage(e));
-                errorList.put(error);
-                continue;
-            }
+        List<InventoryPojo> pojoList = checkProductandConvert(list);
 
-            InventoryPojo pojo = ConvertUtil.objectMapper(form, InventoryPojo.class);
-
-            if (barcodeToId.containsKey(form.getBarcode())) {
-                pojo.setId(barcodeToId.get(form.getBarcode()));
-            } else {
-
-                ProductPojo product = new ProductPojo();
-
-                try {
-                    product = pService.get(form.getBarcode());
-                } catch (ApiException e) {
-                    JSONObject error = new JSONObject(new GsonBuilder()
-                            .excludeFieldsWithoutExposeAnnotation()
-                            .create()
-                            .toJson(form));
-                    error.put("error", "Brand and category does not exist");
-                    errorList.put(error);
-                    continue;
-                } finally {
-                    barcodeToId.put(product.getBarcode(), product.getId());
-                    pojo.setId(product.getId());
-                }
-            }
-
-            pojoList.add(pojo);
-        }
 
         service.bulkAdd(pojoList);
 
-        if (!errorList.isEmpty()) {
+        
+    }
+
+    public List<InventoryPojo> checkProductandConvert(List<InventoryForm> list) throws ApiException {
+        List<InventoryPojo> pojoList = new ArrayList<InventoryPojo>();
+        JSONArray errorList = new JSONArray();
+        Integer errorCount = 0;
+        for(InventoryForm form: list){
+
+            ProductPojo p1;
+            try {
+                p1 = pService.get(form.getBarcode());
+            } catch (ApiException e) {
+                JSONObject error = new JSONObject(new Gson().toJson(form));
+                error.put("error", e.getMessage());
+                errorList.put(error);
+                errorCount++;
+                continue;
+            }
+
+            JSONObject error = new JSONObject(new Gson().toJson(form));
+            error.put("error", "");
+
+            InventoryPojo p = ConvertUtil.objectMapper(form, InventoryPojo.class);
+
+            p.setProductId(p1.getId());
+
+            pojoList.add(p);
+        }
+
+        if(errorCount > 0){
             throw new ApiException(errorList.toString());
         }
+        return pojoList;
     }
+
+    
 
     public InventoryData get(String barcode) throws ApiException {
         barcode = StringUtil.toLowerCase(barcode);
@@ -153,7 +141,7 @@ public class InventoryDto {
         }
 
         for (InventoryPojo p : list1) {
-            ProductPojo prodPojo = pService.get(p.getId());
+            ProductPojo prodPojo = pService.get(p.getProductId());
             InventoryData iData = ConvertUtil.objectMapper(p, InventoryData.class);
             iData.setBarcode(prodPojo.getBarcode());
             list.add(iData);
@@ -174,12 +162,12 @@ public class InventoryDto {
 
         ProductPojo p1 = pService.get(form.getBarcode());
         InventoryPojo p = ConvertUtil.objectMapper(form, InventoryPojo.class);
-        p.setId(p1.getId());
+        p.setProductId(p1.getId());
 
-        InventoryPojo p2 = service.getCheck(p.getId());
+        InventoryPojo p2 = service.getCheck(p.getProductId());
         p2.setQuantity(p.getQuantity());
 
-        service.update(p.getId(), p2);
+        service.update(p.getProductId(), p2);
     }
 
 }

@@ -47,23 +47,28 @@ public class ValidateUtil {
      */
     public static <T> void validateList(List<T> formList) throws ApiException{
         JSONArray errorList = new JSONArray();
-
+        
+        Integer countErrors = 0;
 		for(T form: formList){
-
 
             try{
                 validateForms(form);
             }
             catch(ConstraintViolationException e){
+                countErrors++;
                 JSONObject error = new JSONObject(new Gson().toJson(form));
 
                 error.put("error", ExceptionUtil.getValidationMessage(e));
                 errorList.put(error);
-                
+                continue;
             }
+                JSONObject error = new JSONObject(new Gson().toJson(form));
+
+                error.put("error", "");
+                errorList.put(error);
 		}
 
-        if(errorList.length()>0)
+        if(countErrors>0)
             throw new ApiException(errorList.toString());
 	} 
     

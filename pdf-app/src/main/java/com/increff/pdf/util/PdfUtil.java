@@ -14,16 +14,22 @@ import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.increff.pdf.service.ApiException;
 
+@Component
 public class PdfUtil {
 
-    public static String generateInvoicePdf(Integer orderId) throws ApiException {
+    @Value("${cache.location}")
+    private String cacheLocation;
+
+    public  String generateInvoicePdf(Integer orderId) throws ApiException {
         File xsltFile = new File(new File("src/main/resources/com/increff/pdf/invoice.xsl").getAbsolutePath());
 
         StreamSource xmlSource = new StreamSource(
-                new File(new File("src/main/resources/com/increff/pdf/invoice" + orderId.toString() + ".xml")
+                new File(new File(cacheLocation+"/invoice" + orderId.toString() + ".xml")
                         .getAbsolutePath()));
 
         FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
@@ -50,11 +56,11 @@ public class PdfUtil {
 
     }
 
-    public static String generateBrandReportPdf() throws ApiException {
+    public  String generateBrandReportPdf() throws ApiException {
         File xsltFile = new File(new File("src/main/resources/com/increff/pdf/brandReport.xsl").getAbsolutePath());
 
         StreamSource xmlSource = new StreamSource(
-                new File(new File("src/main/resources/com/increff/pdf/brandReport.xml")
+                new File(new File(cacheLocation+"brandReport.xml")
                         .getAbsolutePath()));
 
         FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
@@ -81,11 +87,11 @@ public class PdfUtil {
 
     }
 
-    public static String generateInventoryReportPdf() throws ApiException {
+    public  String generateInventoryReportPdf() throws ApiException {
         File xsltFile = new File(new File("src/main/resources/com/increff/pdf/inventoryReport.xsl").getAbsolutePath());
 
         StreamSource xmlSource = new StreamSource(
-                new File(new File("src/main/resources/com/increff/pdf/inventoryReport.xml")
+                new File(new File(cacheLocation+"/inventoryReport.xml")
                         .getAbsolutePath()));
 
         FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
@@ -113,11 +119,11 @@ public class PdfUtil {
     }
 
 
-    public static String generateSalesReportPdf() throws ApiException {
+    public  String generateSalesReportPdf() throws ApiException {
         File xsltFile = new File(new File("src/main/resources/com/increff/pdf/salesReport.xsl").getAbsolutePath());
 
         StreamSource xmlSource = new StreamSource(
-                new File(new File("src/main/resources/com/increff/pdf/salesReport.xml")
+                new File(new File(cacheLocation+"/salesReport.xml")
                         .getAbsolutePath()));
 
         FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());

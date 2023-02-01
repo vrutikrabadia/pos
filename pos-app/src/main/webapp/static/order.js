@@ -30,7 +30,7 @@ function displayOrderItemList(data) {
     // logic is flawedshould be in a loop
     for (var i in wholeOrder) {
         var e = wholeOrder[i];
-        var buttonHtml = '<button class="btn" onclick="editOrderItem(' + i + ')" class="btn"><img src='+editButton+ '></button><button class="btn" onclick="deleteOrderItem(' + i + ')" class="btn"><img src='+deleteButton+ '></button>';
+        var buttonHtml = '<button class="btn" title="edit" onclick="editOrderItem(' + i + ')" class="btn"><img src='+editButton+ '></button><button class="btn" title="remove" onclick="deleteOrderItem(' + i + ')" class="btn"><img src='+deleteButton+ '></button>';
         var row = '<tr>' +
             '<td>' + wholeOrder[i].barcode + '</td>' +
             '<td>' + wholeOrder[i].quantity + '</td>' +
@@ -70,7 +70,12 @@ function changeQuantity(json) {
                 wholeOrder[i] = json;
             } else {
                 currentInventory.set(json.barcode, currentInventory.get(json.barcode) -  parseInt(prev));
-                sweetAlert("Oops...", "quantity not sufficient for this item", "error");
+                Swal.fire({
+                    title: 'Oops...',
+                    text: 'quantity not sufficient for this item',
+                    icon: 'error',
+                    
+                })
             }
 
         }
@@ -96,19 +101,31 @@ function addOrderItem(event) {
     var json = JSON.parse(toJson($form));
 
     if(json.barcode == "" || json.quantity == "" || json.sellingPrice == ""){
-        sweetAlert("Oops...", "Please enter the details", "error");
+        Swal.fire({
+            title: 'Oops...',
+            text: 'Please enter the details',
+            icon: 'error',
+        });
         return;
     }
 
     if(json.quantity <= 0 || json.sellingPrice <= 0){
-        sweetAlert("Oops...", "Please enter valid quantity and selling price", "error");
-        return;
+            Swal.fire({
+                title: 'Oops...',
+                text: 'Please enter valid quantity and selling price',
+                icon: 'error',
+            });
+            return;
     }
 
     if (checkOrderItemExist()) {
 
         if (checkSellingPrice(json) == false) {
-            sweetAlert("Oops...", "Selling price cannot be different", "error");
+            Swal.fire({
+                title: 'Oops...',
+                text: 'Selling price cannot be different',
+                icon: 'error',
+            });
         } else {
             changeQuantity(json);
         }
@@ -142,7 +159,11 @@ function getOrderItemList() {
 
 function insufficientQuantityAlert(input, inv){
     if(input.value >  inv|| input.value < 1){
-        sweetAlert("Oops...", "Insufficient inventory", "error");
+        Swal.fire({
+            title: 'Oops...',
+            text: 'Insufficient inventory',
+            icon: 'error',
+        });
         input.value = null;
     }
 }
@@ -184,7 +205,11 @@ function checkInventory() {
             });
         },
         error: function (error) {
-            sweetAlert("Oops...", error.responseJSON.message, "error");
+            Swal.fire({
+                title: 'Oops...',
+                text: 'Item not found',
+                icon: 'error',
+            });
         }
     });
 }
@@ -217,7 +242,11 @@ function displayOrder(id) {
             });
         },
         error: function (error) {
-            sweetAlert("Oops...", error.responseJSON.message, "error");
+            Swal.fire({
+                title: 'Oops...',
+                text: error.responseJSON.message,
+                icon: 'error',
+            });
         }
     });
 
@@ -249,7 +278,11 @@ function downloadInvoice(orderId) {
             a.click();
         },
         error: function (error) {
-            sweetAlert("Oops...", error.responseJSON.message, "error");
+            Swal.fire({
+                title: 'Oops...',
+                text: error.responseJSON.message,
+                icon: 'error',
+            });
         }
     });
 }
@@ -259,7 +292,12 @@ function placeOrder() {
     var url = getOrderUrl();
 
     if(wholeOrder.length == 0){
-        sweetAlert("Oops...", "Please add items to the order", "error");
+        Swal.fire({
+            title: 'Oops...',
+            text: 'Please add items to the order',
+            icon: 'error',
+        });
+        return;
     }
     // var jsonObj = arrayToJson();
     // console.log(jsonObj);
@@ -274,7 +312,12 @@ function placeOrder() {
             $('#add-order-item-modal').modal('toggle');
             wholeOrder = []
             $("#Order-table").DataTable().ajax.reload();
-            sweetAlert("Yay!!", "Order Placed Successfully", "success");
+            Swal.fire({
+                title: 'Yay!!',
+                text: 'Order Placed Successfully',
+                icon: 'success',
+                timer: 1500,
+            });
         },
         error: handleAjaxError
     });
@@ -283,6 +326,10 @@ function placeOrder() {
 }
 
 function init() {
+
+    $("#add-order").html('<img src='+addNewButton+ '>');
+    $('#refresh-data').html('<img src='+refreshButton+ '>');
+
     $('#Order-table').DataTable({
         "ordering": false,
         "processing": true,
@@ -304,7 +351,7 @@ function init() {
             {
                 "data": null,
                 "render": function (o) {
-                    return '<button class="btn" onclick="displayOrder(' + o.id + ')"><img src='+viewButton+ '></button><button class="btn" onclick="downloadInvoice(' + o.id + ')"><img src='+downloadButoon+ '></button>'
+                    return '<button class="btn" title="view" onclick="displayOrder(' + o.id + ')"><img src='+viewButton+ '></button><button class="btn" title="download invoice" onclick="downloadInvoice(' + o.id + ')"><img src='+downloadButoon+ '></button>'
                 }
             }
         ]

@@ -15,7 +15,12 @@ function addBrand(event){
        },	   
 	   success: function(response) {
 			$("#brand-table").DataTable().ajax.reload();
-			sweetAlert("Yay!!", "Brand added successfully", "success");
+			Swal.fire({
+				icon: "success",
+				title: "Yay!!",
+				text: "Brand added successfully",
+				timer: 1500,
+			})
 	   },
 	   error: handleAjaxError
 	});
@@ -42,7 +47,12 @@ function updateBrand(event){
        },	   
 	   success: function(response) {
 			$("#brand-table").DataTable().ajax.reload();
-			sweetAlert("Yay!!", "Brand updated successfully", "success");
+			Swal.fire({
+				icon: "success",
+				title: "Yay!!",
+				text: "Brand updated successfully",
+				timer: 1500,
+			});
 	   },
 	   error: handleAjaxError
 	});
@@ -84,7 +94,12 @@ function uploadRows(){
 			processCount = fileData.length;
 			
 			updateUploadDialog();
-			sweetAlert("Yay!!", "Brands uploaded successfully", "success");
+			Swal.fire({
+				icon: "success",
+				title: "Yay!!",
+				text: "Brands uploaded successfully",
+				timer: 1500,
+			});
 			return;	 
 		},
 		error: function(error){
@@ -94,7 +109,11 @@ function uploadRows(){
 			processCount = fileData.length;	 
 			
 			updateUploadDialog();
-			sweetAlert("Oops...", "Error uploading brands check error file.", "error");
+			Swal.fire({
+				icon: "error",
+				title: "Oops...",
+				text: "Error uploading brands check error file.",
+			});
 			return;
 		}
 	 });
@@ -150,6 +169,11 @@ function displayUploadData(){
 	$('#upload-brand-modal').modal('toggle');
 }
 
+function displayAddBrand(){
+	$("#brand-form").trigger("reset");
+	$('#add-brand-modal').modal('toggle');
+}
+
 function displayBrand(data){
 	console.log("here");
 	$("#brand-edit-form input[name=brand]").val(data.brand);	
@@ -185,7 +209,11 @@ function downloadReport(){
             a.click();
         },
         error: function (error) {
-			sweetAlert("Oops...", error.responseJSON.message, "error");
+			Swal.fire({
+				icon: "error",
+				title: "Oops...",
+				text: error.responseJSON.message,
+			});
         }
     });
 }
@@ -200,7 +228,7 @@ function getConditionalColumns(){
 		columns.push(
 			{
 				"data":null,
-				"render":function(o){return '<button class="btn" onclick="displayEditBrand(' + o.id + ')" ><img src='+editButton+ '></button>'}
+				"render":function(o){return '<button class="btn" title="edit" onclick="displayEditBrand(' + o.id + ')" ><img src='+editButton+ '></button>'}
 			}
 		);
 	}
@@ -210,6 +238,10 @@ function getConditionalColumns(){
 
 //INITIALIZATION CODE
 function init(){
+	$("#add-brand-modal-toggle").html('<img src='+addNewButton+ '>');
+	$("#refresh-data").html('<img src='+refreshButton+ '>');
+	$("#upload-data").html('<img src='+uploadFileButton+ '>');
+	$("#download-report").html('<img src='+downloadReportButton+ '>');
 	$('#brand-table').DataTable( {
         "ordering": false,
 		"processing": true,
@@ -220,6 +252,7 @@ function init(){
 		"columns": getConditionalColumns()
 	});
 
+	$("#add-brand-modal-toggle").click(displayAddBrand);
 	$('#add-brand').click(addBrand);
 	$('#update-brand').click(updateBrand);
 	$('#refresh-data').click(function(){$("#brand-table").DataTable().ajax.reload()});

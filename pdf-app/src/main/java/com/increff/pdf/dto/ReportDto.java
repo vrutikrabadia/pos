@@ -2,6 +2,7 @@ package com.increff.pdf.dto;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.increff.pdf.model.form.BrandReportForm;
@@ -14,40 +15,45 @@ import com.increff.pdf.util.XmlUtils;
 @Component
 public class ReportDto {
     
+    @Autowired
+    private XmlUtils xmlUtils;
+
+    @Autowired
+    private PdfUtil pdfUtil;
 
     public String generateBrandReport(List<BrandReportForm> form) throws ApiException{
         
         try {
-            XmlUtils.generateBrandReportXml(form);
+            xmlUtils.generateBrandReportXml(form);
         } catch (Exception e) {
 
             throw new ApiException("Error generating XML");
         }
 
-        return PdfUtil.generateBrandReportPdf();
+        return pdfUtil.generateBrandReportPdf();
     }
 
 
     public String generateInventoryReport(List<InventoryReportForm> form) throws ApiException{
         try {
-            XmlUtils.generateInventoryReportXml(form);
+            xmlUtils.generateInventoryReportXml(form);
         } catch (Exception e) {
 
             throw new ApiException("Error generating XML");
         }
 
-        return PdfUtil.generateInventoryReportPdf();
+        return pdfUtil.generateInventoryReportPdf();
     }
 
     public String generateSalesReport(List<SalesReportForm> form) throws ApiException{
         try {
-            XmlUtils.generateSalesReportXml(form);
+            xmlUtils.generateSalesReportXml(form);
         } catch (Exception e) {
 
             throw new ApiException("Error generating XML");
         }
 
-        return PdfUtil.generateSalesReportPdf();
+        return pdfUtil.generateSalesReportPdf();
     }
 
 

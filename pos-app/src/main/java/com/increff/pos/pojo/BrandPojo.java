@@ -15,8 +15,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "brands",
-        indexes ={@Index(name = "i_brand_category", columnList = "brand,category")},
+@Table( name = "brand",
+    indexes ={@Index(name = "i_brand_category", columnList = "brand,category")},
         uniqueConstraints = {@UniqueConstraint(name="unique_brand_category", columnNames = {"brand", "category"})})
 @Getter
 @Setter
@@ -24,13 +24,13 @@ public class BrandPojo extends AbstractPojo implements Serializable{
     
     @Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(nullable=false)
 	private Integer id;
     
-    @Column(name = "brand", nullable = false)
+    @Column(nullable=false)
     private String brand;
     
-    @Column(name = "category", nullable = false)
+    @Column(nullable=false)
     private String category;
 
     

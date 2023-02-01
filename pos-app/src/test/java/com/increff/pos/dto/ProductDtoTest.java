@@ -23,6 +23,9 @@ public class ProductDtoTest extends AbstractUnitTest{
     
     @Autowired
     private ProductDto dto;
+    
+    @Autowired
+    private TestUtil testUtil;
 
     private Optional<String> empty = Optional.empty();
 
@@ -32,13 +35,13 @@ public class ProductDtoTest extends AbstractUnitTest{
         String brand = "brand1";
         String category = "category1";
 
-        TestUtil.addBrand(brand, category);
+        testUtil.addBrand(brand, category);
 
         String barcode = "1A3T5tq8";
         String name = "naMe1";
         Double mrp = 18.88;
 
-        ProductForm form = TestUtil.getProductForm(barcode, brand, category, name, mrp);
+        ProductForm form = testUtil.getProductForm(barcode, brand, category, name, mrp);
 
         dto.add(form);
 
@@ -61,7 +64,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         String name = "naMe1";
         Double mrp = 18.88;
 
-        ProductForm form = TestUtil.getProductForm(barcode, name, barcode, name, mrp);
+        ProductForm form = testUtil.getProductForm(barcode, name, barcode, name, mrp);
         try{
             dto.add(form);
         }
@@ -77,18 +80,18 @@ public class ProductDtoTest extends AbstractUnitTest{
         String brand  = "brand1";
         String category = "category1";
 
-        TestUtil.addBrand(brand, category);
+        testUtil.addBrand(brand, category);
 
         String brand1  = "brand2";
         String category1 = "category2";
 
-        TestUtil.addBrand(brand1, category1);
+        testUtil.addBrand(brand1, category1);
 
         String barcode = "1a3t5tq8";
         String name = "name1";
         Double mrp = 18.88;
 
-        ProductForm f1 = TestUtil.getProductForm(barcode, brand, category, name, mrp);
+        ProductForm f1 = testUtil.getProductForm(barcode, brand, category, name, mrp);
         
         dto.add(f1);
 
@@ -120,7 +123,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
     @Test
     public void testGetById() throws ApiException{
-        TestUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "p1", 10.00);
+        testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "p1", 10.00);
         List<ProductData> d = dto.getAll(0,1,1,empty).getData();
         ProductData p = dto.get(d.get(0).getId());
         assertEquals(p.getBarcode(), d.get(0).getBarcode());
@@ -131,20 +134,20 @@ public class ProductDtoTest extends AbstractUnitTest{
         String brand  = "brand1";
         String category = "category1";
 
-       TestUtil.addBrand(brand, category);
+       testUtil.addBrand(brand, category);
 
         String barcode = "1a3t5tq8";
         String name = "name1";
         Double mrp = 18.88;
 
-        ProductForm form = TestUtil.getProductForm(barcode, brand, category, name, mrp);
+        ProductForm form = testUtil.getProductForm(barcode, brand, category, name, mrp);
         dto.add(form);
     
         String barcode1 = "1a3t5tq5";
         String name1 = "name2";
         Double mrp1 = 18.88;
 
-        ProductForm form1 = TestUtil.getProductForm(barcode1, brand, category, name1, mrp1);
+        ProductForm form1 = testUtil.getProductForm(barcode1, brand, category, name1, mrp1);
         dto.add(form1);
 
         List<ProductData> d = dto.getAll(0,10,1,empty).getData();
@@ -160,20 +163,20 @@ public class ProductDtoTest extends AbstractUnitTest{
         String brand  = "brand1";
         String category = "category1";
 
-        TestUtil.addBrand(brand, category);
+        testUtil.addBrand(brand, category);
 
         String barcode = "1a3t5tq8";
         String name = "name1";
         Double mrp = 18.88;
 
-        ProductForm form = TestUtil.getProductForm(barcode, brand, category, name, mrp);
+        ProductForm form = testUtil.getProductForm(barcode, brand, category, name, mrp);
         dto.add(form);
         
         String barcode1 = "1a3t5tq8";
         String name1 = "name2";
         Double mrp1 = 18.88;
 
-        ProductForm form1 = TestUtil.getProductForm(barcode1, brand, category, name1, mrp1);
+        ProductForm form1 = testUtil.getProductForm(barcode1, brand, category, name1, mrp1);
         try{
             dto.add(form1);
         }
@@ -189,13 +192,13 @@ public class ProductDtoTest extends AbstractUnitTest{
         String brand = "brand1";
         String category = "category1";
 
-        TestUtil.addBrand(brand, category);
+        testUtil.addBrand(brand, category);
 
         String barcode = "1A3T5tq8";
         String name = "naMe1";
         Double mrp = -18.88;
 
-        ProductForm form = TestUtil.getProductForm(barcode, brand, category, name, mrp);
+        ProductForm form = testUtil.getProductForm(barcode, brand, category, name, mrp);
 
         try{
             dto.add(form);
@@ -212,18 +215,18 @@ public class ProductDtoTest extends AbstractUnitTest{
         String brand  = "brand1";
         String category = "category1";
 
-        TestUtil.addBrand(brand, category);
+        testUtil.addBrand(brand, category);
 
         String brand1  = "brand2";
         String category1 = "category2";
 
-        TestUtil.addBrand(brand1, category1);
+        testUtil.addBrand(brand1, category1);
 
         String barcode = "1a3t5tq8";
         String name = "name1";
         Double mrp = 18.88;
 
-        ProductForm f1 = TestUtil.getProductForm(barcode, brand, category, name, mrp);
+        ProductForm f1 = testUtil.getProductForm(barcode, brand, category, name, mrp);
         
         dto.add(f1);
 
@@ -256,7 +259,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         String name = "name1";
         Double mrp = 18.88;
 
-        TestUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
+        testUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
 
         SelectData<ProductData> list = new SelectData<ProductData>();
 

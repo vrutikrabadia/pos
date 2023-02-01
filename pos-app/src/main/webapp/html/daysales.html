@@ -4,7 +4,7 @@
 
 <head th:replace="snippets.html :: name_head"></head>
 
-<body>
+<body th:if="${info.getRole() == 'supervisor'}">
 
 <nav th:replace="snippets.html :: name_app_navbar"></nav>
 
@@ -15,7 +15,7 @@
  <!-- Top row with form-->
  <div class="row">
 	 <div class="col-12">
-			<form class="form-inline" id="day-sales-form">
+			<form class="form-inline" id="day-sales-form" style="justify-content: flex-end;">
 			  <div class="form-group">
 			    <label for="inputStartDate" class="col-sm-2 col-form-label">Start Date: </label>
 			    <div class="col-sm-10">
@@ -28,11 +28,11 @@
 			      <input type="date" class="form-control" name="endDate" id="inputEndDate" placeholder="enter endDate">
 			    </div>
 			  </div>
-			  <button type="button" class="btn primary-btn " id="search-date-range">Search</button>
+			  <button type="button" class="btn " id="search-date-range">Search</button>
 			  &nbsp;
-			  <button type="button" class="btn primary-btn " id="refresh-data">All</button>
+			  <button type="button" class="btn " id="refresh-data">All</button>
 			  &nbsp;
-			  <button type="button" class="btn primary-btn " id="download-report-button">Download Sales Report</button>
+			  <button type="button" class="btn " id="download-report-button">Download Sales Report</button>
 			</form>
 	 </div>	
 </div> 
@@ -65,8 +65,6 @@
 </div>
 </div>
 
-
-<!-- View order Model-->
 <div class="modal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" id="download-report-modal">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
@@ -104,7 +102,6 @@
 						  <input type="text" class="form-control" name="category" id="inputCategory" placeholder="category">
 						</div>
 					</div>
-					<button type="button" class="btn primary-btn " id="download-report">Download</button>
 					&nbsp;
 				  </form>
 				
@@ -112,6 +109,8 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn secondary-btn" data-dismiss="modal">Close</button>
+				
+				<button type="button" class="btn primary-btn " id="download-report">Download</button>
 			</div>
 		</div>
 	</div>
@@ -123,6 +122,14 @@
 </div> <!-- Container end-->
 
 <footer th:replace="snippets.html :: name_footer"></footer>
+
+<script th:inline="javascript">
+	/*<![CDATA[*/
+	
+		var user = /*[[${info.getRole()}]]*/ 'operator';
+	
+	/*]]>*/
+</script>
 
 <script th:src="@{/static/daysales.js}"/></script>
 

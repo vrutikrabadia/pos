@@ -16,11 +16,14 @@ public class BrandServiceTest extends AbstractUnitTest {
 
     @Autowired
     private BrandService service;
+    
+    @Autowired
+    private TestUtil testUtil;
 
     
     @Test
     public void testAddAndGet() throws ApiException {
-        Integer id = TestUtil.addBrand("brand", "category");
+        Integer id = testUtil.addBrand("brand", "category");
         BrandPojo p1 = service.get(id);
         assertEquals("brand", p1.getBrand());
         assertEquals("category", p1.getCategory());
@@ -28,15 +31,15 @@ public class BrandServiceTest extends AbstractUnitTest {
 
     @Test
     public void testGetAllPaginated() throws ApiException {
-        TestUtil.addBrand("brand1", "category1");
-        TestUtil.addBrand("brand2", "category2");
+        testUtil.addBrand("brand1", "category1");
+        testUtil.addBrand("brand2", "category2");
         assertEquals(1, service.getAllPaginated(0, 1).size());
         assertEquals(1, service.getAllPaginated(1, 1).size());
     }
 
     @Test
     public void testUpdate() throws ApiException {
-        Integer id = TestUtil.addBrand("brand", "category");
+        Integer id = testUtil.addBrand("brand", "category");
         BrandPojo p1 = service.get(id);
         p1.setBrand("brand1");
         p1.setCategory("category1");
@@ -48,7 +51,7 @@ public class BrandServiceTest extends AbstractUnitTest {
 
     @Test
     public void testGetByBrandCategory() throws ApiException {
-        TestUtil.addBrand("brand", "category");
+        testUtil.addBrand("brand", "category");
         BrandPojo p1 = service.get("brand", "category");
         assertEquals("brand", p1.getBrand());
         assertEquals("category", p1.getCategory());
@@ -68,7 +71,7 @@ public class BrandServiceTest extends AbstractUnitTest {
 
     @Test
     public void testGetCheck() throws ApiException {
-        Integer id = TestUtil.addBrand("brand", "category");
+        Integer id = testUtil.addBrand("brand", "category");
         BrandPojo p1 = service.getCheck(id);
         assertEquals("brand", p1.getBrand());
         assertEquals("category", p1.getCategory());
@@ -85,7 +88,7 @@ public class BrandServiceTest extends AbstractUnitTest {
 
     @Test
     public void testGetByBrandCategoryCheck() throws ApiException {
-        TestUtil.addBrand("brand", "category");
+        testUtil.addBrand("brand", "category");
         BrandPojo p1 = service.getcheck("brand", "category");
         assertEquals("brand", p1.getBrand());
         assertEquals("category", p1.getCategory());
@@ -101,7 +104,7 @@ public class BrandServiceTest extends AbstractUnitTest {
 
     @Test
     public void testSearchQueryString() {
-        TestUtil.addBrand("brand", "category");
+        testUtil.addBrand("brand", "category");
         assertEquals(1, service.searchQueryString(0, 5, "brand").size());
         assertEquals(1, service.searchQueryString(0, 5, "category").size());
         assertEquals(0, service.searchQueryString(0, 5, "brand1").size());
@@ -109,8 +112,8 @@ public class BrandServiceTest extends AbstractUnitTest {
 
     @Test
     public void testGetTotalEntries() {
-        TestUtil.addBrand("brand", "category");
-        TestUtil.addBrand("brand1", "category1");
+        testUtil.addBrand("brand", "category");
+        testUtil.addBrand("brand1", "category1");
 
         Integer expectedEntries = 2;
         assertEquals(expectedEntries, service.getTotalEntries());
@@ -118,8 +121,8 @@ public class BrandServiceTest extends AbstractUnitTest {
 
     @Test
     public void testGetInColumn() {
-        TestUtil.addBrand("brand", "category");
-        TestUtil.addBrand("brand", "category1");
+        testUtil.addBrand("brand", "category");
+        testUtil.addBrand("brand", "category1");
 
         assertEquals(2, service.getInColumn(Arrays.asList("brand"), Arrays.asList(Arrays.asList("brand"))).size());
         assertEquals(1,

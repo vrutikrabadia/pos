@@ -20,7 +20,7 @@ public class UserDtoTest extends AbstractUnitTest {
     public void testAdd() throws ApiException {
         String email = "email";
         String password = "password";
-        String role = "role";
+        String role = "operator";
         UserForm form = new UserForm();
         form.setEmail(email);
         form.setPassword(password);
@@ -35,7 +35,7 @@ public class UserDtoTest extends AbstractUnitTest {
     public void testAddDuplicateUser() throws ApiException {
         String email = "email";
         String password = "password";
-        String role = "role";
+        String role = "operator";
         UserForm form = new UserForm();
         form.setEmail(email);
         form.setPassword(password);
@@ -48,7 +48,7 @@ public class UserDtoTest extends AbstractUnitTest {
     public void testGetAll() throws ApiException {
         String email = "email";
         String password = "password";
-        String role = "role";
+        String role = "operator";
         UserForm form = new UserForm();
         form.setEmail(email);
         form.setPassword(password);
@@ -61,7 +61,7 @@ public class UserDtoTest extends AbstractUnitTest {
     public void testDelete() throws ApiException {
         String email = "email";
         String password = "password";
-        String role = "role";
+        String role = "operator";
         UserForm form = new UserForm();
         form.setEmail(email);
         form.setPassword(password);

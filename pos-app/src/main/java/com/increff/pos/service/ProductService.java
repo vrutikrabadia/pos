@@ -27,23 +27,13 @@ public class ProductService {
     }
 
     //REFACTOR:Refactor after review
-    public JSONArray bulkAdd(List<ProductPojo> list) throws ApiException{
-        JSONArray errorList = new JSONArray();
-
+    public void bulkAdd(List<ProductPojo> list) throws ApiException{
+        
         for (ProductPojo prod : list) {
-            if (checkBarCode(0, prod.getBarcode())) {
-                JSONObject error = new JSONObject(new GsonBuilder()
-                        .excludeFieldsWithoutExposeAnnotation()
-                        .create()
-                        .toJson(prod));
-                error.put("error", "DUPLICATE BARCODE: Product with barcode already exists.");
-                errorList.put(error);
-                continue;
-            }
+           
             add(prod);
         }
 
-        return errorList;
     }
 
     public ProductPojo get(Integer id) throws ApiException {

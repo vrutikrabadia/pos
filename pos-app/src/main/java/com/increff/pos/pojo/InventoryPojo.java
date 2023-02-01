@@ -17,9 +17,9 @@ import lombok.Setter;
 public class InventoryPojo extends AbstractPojo implements Serializable{
     
     @Id
-    @Column(name = "id", nullable = false)
-    private Integer id;
+    @Column(nullable=false)
+    private Integer productId;
     
-    @Column(name = "quantity", nullable = false)
+    @Column(nullable=false)
     private Integer quantity;
 }

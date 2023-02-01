@@ -72,8 +72,11 @@
       /*]]>*/
 
       if (message != "No message") {
-		sweetAlert("Error", message, "error");
-        
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: message,
+        });
       }
     </script>
   </body>

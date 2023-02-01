@@ -66,7 +66,11 @@ function downloadReport(){
             a.click();
         },
         error: function (error) {
-            sweetAlert("Oops...", error.responseJSON.message, "error");
+            Swal.fire({
+                title: 'Oops...',
+                text: error.responseJSON.message,
+                type: 'error',
+            });
         }
     });
     //clear form using form id
@@ -75,6 +79,10 @@ function downloadReport(){
 
 //INITIALIZATION CODE
 function init(){
+
+    $('#search-date-range').html('<img src='+filterButton+' />');
+    $('#refresh-data').html('<img src='+clearFilterButton+' />');
+    $('#download-report-button').html('<img src='+downloadReportButton+' />');
 
 	$('#day-sales-table').DataTable( {
         "ordering": false,

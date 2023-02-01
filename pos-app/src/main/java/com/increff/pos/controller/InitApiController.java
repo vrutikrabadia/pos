@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.increff.pos.model.Roles;
 import com.increff.pos.model.data.InfoData;
 import com.increff.pos.model.form.UserForm;
 import com.increff.pos.pojo.UserPojo;
@@ -51,7 +52,7 @@ public class InitApiController extends AbstractUiController {
 	private static UserPojo convert(UserForm f) {
 		UserPojo p = new UserPojo();
 		p.setEmail(f.getEmail());
-		p.setRole(f.getRole());
+		p.setRole(Roles.operator);
 		p.setPassword(f.getPassword());
 		return p;
 	}

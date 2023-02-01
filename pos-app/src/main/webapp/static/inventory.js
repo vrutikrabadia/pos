@@ -17,7 +17,12 @@ function addInventory(event){
        },	   
 	   success: function(response) {
 		$("#inventory-table").DataTable().ajax.reload();
-		sweetAlert("Yay!!", "Inventory added successfully", "success");
+		Swal.fire({
+			icon: "success",
+			title: "Yay!!",
+			text: "Inventory added successfully",
+			timer: 1500,
+		})
 	   },
 	   error: handleAjaxError
 	});
@@ -43,7 +48,12 @@ function updateInventory(event){
        },	   
 	   success: function(response) {
 		$("#inventory-table").DataTable().ajax.reload();
-		sweetAlert("Yay!!", "Inventory updated successfully", "success");
+		Swal.fire({
+			icon: "success",
+			title: "Yay!!",
+			text: "Inventory updated successfully",
+			timer: 1500,
+		});
 	   },
 	   error: handleAjaxError
 	});
@@ -83,7 +93,12 @@ function uploadRows(){
 			processCount = fileData.length;
 			
 			updateUploadDialog();
-			sweetAlert("Yay!!", "Inventory uploaded successfully", "success");
+			Swal.fire({
+				icon: "success",
+				title: "Yay!!",
+				text: "Inventory uploaded successfully",
+				timer: 1500,
+			});
 			return;
 
 		},
@@ -94,7 +109,12 @@ function uploadRows(){
 			processCount = fileData.length;	 
 			
 			updateUploadDialog();
-			sweetAlert("Oops...", "Error uploading inventory check error file.", "error");
+			Swal.fire({
+				icon: "error",
+				title: "Oops...",
+				text: "Error uploading inventory check error file.",
+				timer: 1500,
+			});
 			return;
 		}
 	 });
@@ -145,6 +165,11 @@ function updateFileName(){
 	$('#inventoryFileName').html(fileName);
 }
 
+function displayAddInventory(){
+	$("#inventory-form").trigger("reset");
+	$('#add-inventory-modal').modal('toggle');
+}
+
 function displayUploadData(){
  	resetUploadDialog(); 	
 	$('#upload-inventory-modal').modal('toggle');
@@ -184,7 +209,12 @@ function downloadReport(){
             a.click();
         },
         error: function (error) {
-			sweetAlert("Oops...", error.responseJSON.message, "error");
+			Swal.fire({
+				icon: "error",
+				title: "Oops...",
+				text: error.responseJSON.message,
+				timer: 1500,
+			});
         }
     });
 }
@@ -198,7 +228,7 @@ function getConditionalColumns(){
 	if(user == 'supervisor'){
 		columns.push({
 				"data":null,
-				"render":function(o){return '<button class="btn" onclick="displayEditInventory(\'' + o.barcode + '\')"><img src='+editButton+ '></button>'}
+				"render":function(o){return '<button class="btn" title="edit" onclick="displayEditInventory(\'' + o.barcode + '\')"><img src='+editButton+ '></button>'}
 			}
 		);
 	}
@@ -208,7 +238,10 @@ function getConditionalColumns(){
 
 //INITIALIZATION CODE
 function init(){
-
+	$('#add-inventory-modal-toggle').html('<img src='+addNewButton+'></img>');
+	$('#upload-data').html('<img src='+uploadFileButton+'></img>');
+	$('#refresh-data').html('<img src='+refreshButton+'></img>');
+	$('#download-report').html('<img src='+downloadReportButton+'></img>');
 	$('#inventory-table').DataTable( {
 		"ordering": false,
 		"processing": true,
@@ -219,6 +252,7 @@ function init(){
 		"columns": getConditionalColumns()
 	});
 
+	$('#add-inventory-modal-toggle').click(displayAddInventory);
 	$('#add-inventory').click(addInventory);
 	$('#update-inventory').click(updateInventory);
 	$('#refresh-data').click(function(){$("#inventory-table").DataTable().ajax.reload()});

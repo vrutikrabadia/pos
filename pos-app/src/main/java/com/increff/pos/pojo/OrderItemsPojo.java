@@ -15,21 +15,25 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "order_items",
-        indexes ={@Index(name = "i_order_items_order_id", columnList = "order_id")})
+        indexes ={@Index(name = "i_order_items_order_id", columnList = "orderId")})
 @Getter
 @Setter
 public class OrderItemsPojo extends AbstractPojo implements Serializable {
     
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(nullable=false)
     private Integer id;
-    @Column(name = "order_id", nullable = false)
+
+    @Column(nullable=false)
     private Integer orderId;
-    @Column(name = "product_id", nullable = false)
+    
+    @Column(nullable=false)
     private Integer productId;
-    @Column(name = "quantity", nullable = false)
+    
+    @Column(nullable=false)
     private Integer quantity;
-    @Column(name = "selling_price", nullable = false)
+    
+    @Column(nullable=false)
     private Double sellingPrice;
 }    

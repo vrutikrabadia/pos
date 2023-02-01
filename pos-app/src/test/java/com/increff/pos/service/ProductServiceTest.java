@@ -17,10 +17,13 @@ public class ProductServiceTest extends AbstractUnitTest {
 
     @Autowired
     private ProductService service;
+    
+    @Autowired
+    private TestUtil testUtil;
 
     @Test
     public void testAdd() throws ApiException {
-        Integer id = TestUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
+        Integer id = testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
         ProductPojo p1 = service.get(id);
         assertEquals("n1", p1.getName());
         assertEquals("abcdefgh", p1.getBarcode());
@@ -29,22 +32,22 @@ public class ProductServiceTest extends AbstractUnitTest {
 
     @Test
     public void testGetAll() throws ApiException {
-        TestUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
-        TestUtil.addBrandAndProduct("b2", "c2", "abcdefg1", "n2", 10.00);
+        testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
+        testUtil.addBrandAndProduct("b2", "c2", "abcdefg1", "n2", 10.00);
         assertEquals(2, service.getAll().size());
     }
 
     @Test
     public void testGetAllPaginated() throws ApiException {
-        TestUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
-        TestUtil.addBrandAndProduct("b2", "c2", "abcdefg1", "n2", 10.00);
+        testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
+        testUtil.addBrandAndProduct("b2", "c2", "abcdefg1", "n2", 10.00);
         assertEquals(1, service.getAllPaginated(0, 1).size());
         assertEquals(1, service.getAllPaginated(1, 1).size());
     }
 
     @Test
     public void testUpdate() throws ApiException {
-        Integer id = TestUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
+        Integer id = testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
         ProductPojo p1 = service.get(id);
         p1.setName("name1");
         p1.setBarcode("barcode1");
@@ -58,7 +61,7 @@ public class ProductServiceTest extends AbstractUnitTest {
 
     @Test
     public void testGetByBarcode() throws ApiException {
-        TestUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
+        testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
         ProductPojo p1 = service.get("abcdefgh");
         assertEquals("n1", p1.getName());
         assertEquals("abcdefgh", p1.getBarcode());
@@ -67,7 +70,7 @@ public class ProductServiceTest extends AbstractUnitTest {
 
     @Test
     public void testGetById() throws ApiException {
-        Integer id = TestUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
+        Integer id = testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
         ProductPojo p1 = service.get(id);
         assertEquals("n1", p1.getName());
         assertEquals("abcdefgh", p1.getBarcode());
@@ -76,9 +79,9 @@ public class ProductServiceTest extends AbstractUnitTest {
 
     @Test
     public void testGetByBrandCategory() {
-        Integer brandId = TestUtil.addBrand("b1", "c1");
-        TestUtil.addProduct("abcdefgh", brandId, "n1", 10.00);
-        TestUtil.addProduct("abcdefg1", brandId, "n2", 10.00);
+        Integer brandId = testUtil.addBrand("b1", "c1");
+        testUtil.addProduct("abcdefgh", brandId, "n1", 10.00);
+        testUtil.addProduct("abcdefg1", brandId, "n2", 10.00);
         List<ProductPojo> p1 = service.getByBrandCat(brandId);
 
         assertEquals(2, p1.size());
@@ -86,9 +89,9 @@ public class ProductServiceTest extends AbstractUnitTest {
 
     @Test
     public void testGetByQueryString() {
-        Integer brandId = TestUtil.addBrand("b1", "c1");
-        TestUtil.addProduct("abcdefgh", brandId, "n1", 10.00);
-        TestUtil.addProduct("a1cdefgh", brandId, "n2", 10.00);
+        Integer brandId = testUtil.addBrand("b1", "c1");
+        testUtil.addProduct("abcdefgh", brandId, "n1", 10.00);
+        testUtil.addProduct("a1cdefgh", brandId, "n2", 10.00);
         List<ProductPojo> p1 = service.getByQueryString(0, 5, "n1");
 
         assertEquals(1, p1.size());
@@ -99,9 +102,9 @@ public class ProductServiceTest extends AbstractUnitTest {
 
     @Test
     public void testGetTotalEntries() {
-        Integer brandId = TestUtil.addBrand("b1", "c1");
-        TestUtil.addProduct("abcdefgh", brandId, "n1", 10.00);
-        TestUtil.addProduct("a1cdefgh", brandId, "n2", 10.00);
+        Integer brandId = testUtil.addBrand("b1", "c1");
+        testUtil.addProduct("abcdefgh", brandId, "n1", 10.00);
+        testUtil.addProduct("a1cdefgh", brandId, "n2", 10.00);
 
         Integer expectedCount = 2;
         assertEquals(expectedCount, service.getTotalEntries());
@@ -109,9 +112,9 @@ public class ProductServiceTest extends AbstractUnitTest {
 
     @Test
     public void testGetInColumn() {
-        Integer brandId = TestUtil.addBrand("b1", "c1");
-        TestUtil.addProduct("abcdefgh", brandId, "n1", 10.00);
-        TestUtil.addProduct("a1cdefgh", brandId, "n2", 10.00);
+        Integer brandId = testUtil.addBrand("b1", "c1");
+        testUtil.addProduct("abcdefgh", brandId, "n1", 10.00);
+        testUtil.addProduct("a1cdefgh", brandId, "n2", 10.00);
 
         List<ProductPojo> p1 = service.getInColumn(Arrays.asList("name"), Arrays.asList(Arrays.asList("n1", "n2")));
         assertEquals(2, p1.size());
@@ -119,7 +122,7 @@ public class ProductServiceTest extends AbstractUnitTest {
 
     @Test
     public void testGetBarcodeNotExists() {
-        Integer id = TestUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
+        Integer id = testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
 
         try {
             ProductPojo p1 = service.get("abcdefg1");
@@ -132,7 +135,7 @@ public class ProductServiceTest extends AbstractUnitTest {
 
     @Test 
     public void testGeProductNotExists(){
-        Integer id = TestUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
+        Integer id = testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
         try{
             service.get(99999999);
         }

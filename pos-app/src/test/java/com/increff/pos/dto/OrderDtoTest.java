@@ -22,19 +22,22 @@ import com.increff.pos.service.ApiException;
 public class OrderDtoTest extends AbstractUnitTest{
     @Autowired
     private OrderDto dto;
+    
+    @Autowired
+    private TestUtil testUtil;
 
     private Optional<String> empty = Optional.empty();
 
     @Test
     public void testAddAndGet() throws ApiException{
         
-        TestUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
-        TestUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
+        testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
+        testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
 
         List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
         
-        itemsList.add(TestUtil.getItemsForm("abcdefgh", 5, 15.00));
-        itemsList.add(TestUtil.getItemsForm("abcdefg1", 5, 15.00));
+        itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
+        itemsList.add(testUtil.getItemsForm("abcdefg1", 5, 15.00));
        
         dto.add(itemsList);
 
@@ -50,14 +53,14 @@ public class OrderDtoTest extends AbstractUnitTest{
     @Test
     public void testDuplicateProductAddition(){
         
-        TestUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
-        TestUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
+        testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
+        testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
 
         
         List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
         
-        itemsList.add(TestUtil.getItemsForm("abcdefgh", 5, 15.00));
-        itemsList.add(TestUtil.getItemsForm("abcdefgh", 5, 15.00));
+        itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
+        itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
 
         try{
             dto.add(itemsList);
@@ -72,12 +75,12 @@ public class OrderDtoTest extends AbstractUnitTest{
     @Test 
     public void testBarCodeNotExists(){
         
-        TestUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
+        testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
 
         List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
         
-        itemsList.add(TestUtil.getItemsForm("abcdefgh", 5, 15.00));
-        itemsList.add(TestUtil.getItemsForm("abcdefg1", 5, 15.00));
+        itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
+        itemsList.add(testUtil.getItemsForm("abcdefg1", 5, 15.00));
 
         try{
             dto.add(itemsList);
@@ -92,13 +95,13 @@ public class OrderDtoTest extends AbstractUnitTest{
     @Test
     public void testQuantityNotAvailable(){
         
-        TestUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
-        TestUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
+        testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
+        testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
 
         List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
         
-        itemsList.add(TestUtil.getItemsForm("abcdefgh", 15, 15.00));
-        itemsList.add(TestUtil.getItemsForm("abcdefg1", 5, 15.00));
+        itemsList.add(testUtil.getItemsForm("abcdefgh", 15, 15.00));
+        itemsList.add(testUtil.getItemsForm("abcdefg1", 5, 15.00));
 
         try{
             dto.add(itemsList);
@@ -112,13 +115,13 @@ public class OrderDtoTest extends AbstractUnitTest{
     @Test
     public void testGenerateInvoice() throws ApiException{
             
-            TestUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
-            TestUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
+            testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
+            testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
     
             List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
             
-            itemsList.add(TestUtil.getItemsForm("abcdefgh", 5, 15.00));
-            itemsList.add(TestUtil.getItemsForm("abcdefg1", 5, 15.00));
+            itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
+            itemsList.add(testUtil.getItemsForm("abcdefg1", 5, 15.00));
     
             dto.add(itemsList);
             
@@ -137,13 +140,13 @@ public class OrderDtoTest extends AbstractUnitTest{
     @Test
     public void testGetById() throws ApiException{
             
-            TestUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
-            TestUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
+            testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
+            testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
     
             List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
             
-            itemsList.add(TestUtil.getItemsForm("abcdefgh", 5, 15.00));
-            itemsList.add(TestUtil.getItemsForm("abcdefg1", 5, 15.00));
+            itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
+            itemsList.add(testUtil.getItemsForm("abcdefg1", 5, 15.00));
         
             try{
                 dto.add(itemsList);
@@ -163,13 +166,13 @@ public class OrderDtoTest extends AbstractUnitTest{
     @Test
     public void testSearchByValue(){
             
-            TestUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
-            TestUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
+            testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
+            testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
     
             List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
             
-            itemsList.add(TestUtil.getItemsForm("abcdefgh", 5, 15.00));
-            itemsList.add(TestUtil.getItemsForm("abcdefg1", 5, 15.00));
+            itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
+            itemsList.add(testUtil.getItemsForm("abcdefg1", 5, 15.00));
         
             try{
                 dto.add(itemsList);

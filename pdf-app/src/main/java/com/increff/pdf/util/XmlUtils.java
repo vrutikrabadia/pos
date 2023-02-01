@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -16,6 +15,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -25,10 +26,16 @@ import com.increff.pdf.model.form.InvoiceForm;
 import com.increff.pdf.model.form.InvoiceItemsForm;
 import com.increff.pdf.model.form.SalesReportForm;
 
-
+@Component
 public class XmlUtils {
 
-    public static void generateInvoiceXml(InvoiceForm invoiceData) throws Exception {
+    
+    @Value("${cache.location}")
+    private String cacheLocation;
+
+    
+
+    public  void generateInvoiceXml(InvoiceForm invoiceData) throws Exception {
         
         double subTotal = 0.0;
 
@@ -166,7 +173,9 @@ public class XmlUtils {
             recordCount++;
         }
 
-        try (FileOutputStream output = new FileOutputStream(new File("src/main/resources/com/increff/pdf/invoice"+invoiceData.getId().toString()+".xml").getAbsolutePath())) {
+        System.out.println(cacheLocation);
+
+        try (FileOutputStream output = new FileOutputStream(new File(cacheLocation+"/invoice"+invoiceData.getId().toString()+".xml").getAbsolutePath())) {
             writeXml(doc, output);
         } catch (IOException e) {
             e.printStackTrace();
@@ -174,7 +183,7 @@ public class XmlUtils {
     }
 
 
-    public static void generateBrandReportXml(List<BrandReportForm> brands) throws Exception{
+    public  void generateBrandReportXml(List<BrandReportForm> brands) throws Exception{
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -250,7 +259,7 @@ public class XmlUtils {
             recordCount++;
         }
 
-        try (FileOutputStream output = new FileOutputStream(new File("src/main/resources/com/increff/pdf/brandReport.xml").getAbsolutePath())) {
+        try (FileOutputStream output = new FileOutputStream(new File(cacheLocation+"/brandReport.xml").getAbsolutePath())) {
             writeXml(doc, output);
         } catch (IOException e) {
             e.printStackTrace();
@@ -258,7 +267,7 @@ public class XmlUtils {
     }
 
 
-    public static void generateInventoryReportXml(List<InventoryReportForm> inventory) throws Exception{
+    public  void generateInventoryReportXml(List<InventoryReportForm> inventory) throws Exception{
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -339,14 +348,14 @@ public class XmlUtils {
             recordCount++;
         }
 
-        try (FileOutputStream output = new FileOutputStream(new File("src/main/resources/com/increff/pdf/inventoryReport.xml").getAbsolutePath())) {
+        try (FileOutputStream output = new FileOutputStream(new File(cacheLocation+"/inventoryReport.xml").getAbsolutePath())) {
             writeXml(doc, output);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void generateSalesReportXml(List<SalesReportForm> sales) throws Exception{
+    public  void generateSalesReportXml(List<SalesReportForm> sales) throws Exception{
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -432,7 +441,7 @@ public class XmlUtils {
             recordCount++;
         }
 
-        try (FileOutputStream output = new FileOutputStream(new File("src/main/resources/com/increff/pdf/salesReport.xml").getAbsolutePath())) {
+        try (FileOutputStream output = new FileOutputStream(new File(cacheLocation+"/salesReport.xml").getAbsolutePath())) {
             writeXml(doc, output);
         } catch (IOException e) {
             e.printStackTrace();
@@ -440,7 +449,7 @@ public class XmlUtils {
     }
 
 
-    private static void writeXml(Document doc, OutputStream output) throws TransformerException {
+    private  void writeXml(Document doc, OutputStream output) throws TransformerException {
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();

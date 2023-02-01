@@ -102,12 +102,12 @@ public class LoginController {
 		// Create principal
 		UserPrincipal principal = new UserPrincipal();
 		principal.setEmail(p.getEmail());
-		principal.setRole(p.getRole());
+		principal.setRole(String.valueOf(p.getRole()));
 		principal.setId(p.getId());
 
 		// Create Authorities
 		ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
-		authorities.add(new SimpleGrantedAuthority(p.getRole()));
+		authorities.add(new SimpleGrantedAuthority(String.valueOf(p.getRole())));
 		// you can add more roles if required
 
 		// Create Authentication

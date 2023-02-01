@@ -20,8 +20,10 @@ public class OrderPojo extends AbstractPojo implements Serializable{
     
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(nullable=false)
     private Integer id;
-    @Column(name = "editable", nullable = false)
+    
+    
+    @Column(nullable=false)
     private boolean editable;
 }

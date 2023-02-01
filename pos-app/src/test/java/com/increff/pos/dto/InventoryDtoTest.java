@@ -22,6 +22,9 @@ public class InventoryDtoTest extends AbstractUnitTest{
     
     @Autowired
     private InventoryDto dto;
+    
+    @Autowired
+    private TestUtil testUtil;
 
     private Optional<String> empty = Optional.empty();
 
@@ -33,11 +36,11 @@ public class InventoryDtoTest extends AbstractUnitTest{
         String name = "name1";
         Double mrp = 18.88;
 
-        TestUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
+        testUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
 
         Integer quantity = 5;
 
-        InventoryForm f = TestUtil.getInventoryForm(barcode, quantity);
+        InventoryForm f = testUtil.getInventoryForm(barcode, quantity);
         
         dto.add(f);
 
@@ -56,12 +59,12 @@ public class InventoryDtoTest extends AbstractUnitTest{
         String name = "name1";
         Double mrp = 18.88;
 
-        Integer brandId = TestUtil.addBrand(brand, category);
-        TestUtil.addProduct(barcode, brandId, name, mrp);
+        Integer brandId = testUtil.addBrand(brand, category);
+        testUtil.addProduct(barcode, brandId, name, mrp);
 
         Integer quantity = 5;
 
-        InventoryForm f = TestUtil.getInventoryForm(barcode, quantity);
+        InventoryForm f = testUtil.getInventoryForm(barcode, quantity);
 
         dto.add(f);
 
@@ -69,9 +72,9 @@ public class InventoryDtoTest extends AbstractUnitTest{
         String name1 = "name1";
         Double mrp1 = 18.88;
 
-        TestUtil.addProduct(barcode1, brandId, name1, mrp1);
+        testUtil.addProduct(barcode1, brandId, name1, mrp1);
 
-        InventoryForm f1 = TestUtil.getInventoryForm(barcode1, quantity);
+        InventoryForm f1 = testUtil.getInventoryForm(barcode1, quantity);
 
         dto.add(f1);
 
@@ -89,11 +92,11 @@ public class InventoryDtoTest extends AbstractUnitTest{
         String name = "name1";
         Double mrp = 18.88;
 
-        TestUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
+        testUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
 
         Integer quantity = 5;
 
-        InventoryForm f = TestUtil.getInventoryForm(barcode, quantity);
+        InventoryForm f = testUtil.getInventoryForm(barcode, quantity);
 
         dto.add(f);
 
@@ -112,7 +115,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         Integer quantity = 5;
 
-        InventoryForm f = TestUtil.getInventoryForm(barcode, quantity);
+        InventoryForm f = testUtil.getInventoryForm(barcode, quantity);
 
         try{
             dto.add(f);
@@ -131,11 +134,11 @@ public class InventoryDtoTest extends AbstractUnitTest{
         String name = "name1";
         Double mrp = 18.88;
 
-        TestUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
+        testUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
 
         Integer quantity = 5;
 
-        InventoryForm f = TestUtil.getInventoryForm(barcode, quantity);
+        InventoryForm f = testUtil.getInventoryForm(barcode, quantity);
 
         dto.add(f);
         dto.add(f);
@@ -155,7 +158,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         Integer quantity = 5;
 
-        InventoryForm f = TestUtil.getInventoryForm(barcode, quantity);
+        InventoryForm f = testUtil.getInventoryForm(barcode, quantity);
 
         try{
             dto.update(f);
@@ -174,11 +177,11 @@ public class InventoryDtoTest extends AbstractUnitTest{
         String name = "name1";
         Double mrp = 18.88;
 
-        TestUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
+        testUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
 
         Integer quantity = -5;
 
-        InventoryForm f = TestUtil.getInventoryForm(barcode, quantity);
+        InventoryForm f = testUtil.getInventoryForm(barcode, quantity);
 
         try{
             dto.add(f);
@@ -197,11 +200,11 @@ public class InventoryDtoTest extends AbstractUnitTest{
         String name = "name1";
         Double mrp = 18.88;
 
-        TestUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
+        testUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
 
         Integer quantity = 5;
 
-        InventoryForm f = TestUtil.getInventoryForm(barcode, quantity);
+        InventoryForm f = testUtil.getInventoryForm(barcode, quantity);
 
         dto.add(f);
 
@@ -226,11 +229,11 @@ public class InventoryDtoTest extends AbstractUnitTest{
         String name = "name1";
         Double mrp = 18.88;
 
-        TestUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
+        testUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
 
         Integer quantity = 5;
 
-        InventoryForm f = TestUtil.getInventoryForm(barcode, quantity);
+        InventoryForm f = testUtil.getInventoryForm(barcode, quantity);
 
         dto.add(f);
 
@@ -248,11 +251,11 @@ public class InventoryDtoTest extends AbstractUnitTest{
         String name = "name1";
         Double mrp = 18.88;
 
-        TestUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
+        testUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
 
         Integer quantity = 5;
 
-        InventoryForm f = TestUtil.getInventoryForm(barcode, quantity);
+        InventoryForm f = testUtil.getInventoryForm(barcode, quantity);
 
         dto.add(f);
 

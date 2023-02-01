@@ -18,10 +18,13 @@ public class OrderServiceTest extends AbstractUnitTest{
     
     @Autowired
     private OrderService service;
+    
+    @Autowired
+    private TestUtil testUtil;
 
     @Test
     public void testAddAndGet() throws ApiException{
-        Integer orderId = TestUtil.addOrder();
+        Integer orderId = testUtil.addOrder();
 
         OrderPojo p = service.get(orderId);
 
@@ -30,8 +33,8 @@ public class OrderServiceTest extends AbstractUnitTest{
 
     @Test
     public void testGetAll(){
-        Integer orderId = TestUtil.addOrder();
-        Integer orderId2 = TestUtil.addOrder();
+        Integer orderId = testUtil.addOrder();
+        Integer orderId2 = testUtil.addOrder();
 
         List<OrderPojo> list = service.getAll();
 
@@ -40,8 +43,8 @@ public class OrderServiceTest extends AbstractUnitTest{
 
     @Test
     public void testGetAllPaginated(){
-        Integer orderId = TestUtil.addOrder();
-        Integer orderId2 = TestUtil.addOrder();
+        Integer orderId = testUtil.addOrder();
+        Integer orderId2 = testUtil.addOrder();
 
         List<OrderPojo> list = service.getAllPaginated(0, 1);
 
@@ -50,7 +53,7 @@ public class OrderServiceTest extends AbstractUnitTest{
 
     @Test
     public void testGetCheck() throws ApiException{
-        Integer orderId = TestUtil.addOrder();
+        Integer orderId = testUtil.addOrder();
 
         OrderPojo p = service.getCheck(orderId);
 
@@ -64,13 +67,13 @@ public class OrderServiceTest extends AbstractUnitTest{
 
     @Test
     public void testGetInDateRange(){
-        Integer orderId = TestUtil.addOrder();
-        Integer orderId2 = TestUtil.addOrder();
+        Integer orderId = testUtil.addOrder();
+        Integer orderId2 = testUtil.addOrder();
 
         ZonedDateTime customAppTime = DateTimeProvider.getInstance().timeNow().plusDays(2).withHour(12).withMinute(0).withSecond(0).withNano(0);
         DateTimeProvider.getInstance().setTime(customAppTime);
 
-        Integer orderId3 = TestUtil.addOrder();
+        Integer orderId3 = testUtil.addOrder();
 
         customAppTime = DateTimeProvider.getInstance().timeNow().minusDays(2).withHour(12).withMinute(0).withSecond(0).withNano(0);
         DateTimeProvider.getInstance().setTime(customAppTime);

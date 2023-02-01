@@ -50,14 +50,18 @@ function deleteUser(id){
 
 //UI DISPLAY METHODS
 
+function displayAddUserForm(){
+	$('#user-form').trigger("reset");
+	$('#add-user-modal').modal('toggle');
+}
+
 function displayUserList(data){
 	console.log('Printing user data');
 	var $tbody = $('#user-table').find('tbody');
 	$tbody.empty();
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = '<button class="btn" onclick="deleteUser(' + e.id + ')"><img src='+deleteButton+ '></button>'
-		buttonHtml += ' <button class="btn" onclick="displayEditUser(' + e.id + ')"><img src='+editButton+ '></button>'
+		var buttonHtml = '<button class="btn" title="delete user" onclick="deleteUser(' + e.id + ')"><img src='+deleteButton+ '></button>';
 		var row = '<tr>'
 		+ '<td>' + e.id + '</td>'
 		+ '<td>' + e.email + '</td>'
@@ -70,6 +74,9 @@ function displayUserList(data){
 
 //INITIALIZATION CODE
 function init(){
+	$('#add-user-modal-toggle').html('<img src='+addNewButton+'>');
+	$('#refresh-data').html('<img src='+refreshButton+'>');
+	$("#add-user-modal-toggle").click(displayAddUserForm);
 	$('#add-user').click(addUser);
 	$('#refresh-data').click(getUserList);
 }

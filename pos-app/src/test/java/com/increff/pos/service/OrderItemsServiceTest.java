@@ -18,21 +18,24 @@ public class OrderItemsServiceTest extends AbstractUnitTest{
     
     @Autowired
     private OrderItemsService service;
+    
+    @Autowired
+    private TestUtil testUtil;
 
     @Test
     public void testAddAndGet() throws ApiException{
-        Integer orderId = TestUtil.addOrder();
+        Integer orderId = testUtil.addOrder();
 
         List<OrderItemsPojo> itemsList = new ArrayList<OrderItemsPojo>();
 
         for(int i=1; i<=5; i++){
-            Integer prodId = TestUtil.addBrandAndProduct("b"+i, "c"+i, "abcdefg"+i, "p"+i, 10.00);
-            TestUtil.addInventory(prodId,10);
-            OrderItemsPojo item = TestUtil.getItemsPojo(orderId, prodId, 5, 15.00);
+            Integer prodId = testUtil.addBrandAndProduct("b"+i, "c"+i, "abcdefg"+i, "p"+i, 10.00);
+            testUtil.addInventory(prodId,10);
+            OrderItemsPojo item = testUtil.getItemsPojo(orderId, prodId, 5, 15.00);
             itemsList.add(item);
         }
 
-        service.add(TestUtil.getItemsPojo(orderId, 1, 5, 15.00));
+        service.add(testUtil.getItemsPojo(orderId, 1, 5, 15.00));
 
         service.add(orderId,itemsList);
 
@@ -44,26 +47,26 @@ public class OrderItemsServiceTest extends AbstractUnitTest{
 
     @Test(expected = ApiException.class)
     public void testAddAndInsufficientQuntity() throws ApiException{
-        Integer orderId = TestUtil.addOrder();
+        Integer orderId = testUtil.addOrder();
 
         List<OrderItemsPojo> itemsList = new ArrayList<OrderItemsPojo>();
 
         for(int i=1; i<=5; i++){
-            Integer prodId = TestUtil.addBrandAndProduct("b"+i, "c"+i, "abcdefg"+i, "p"+i, 10.00);
-            TestUtil.addInventory(prodId,10);
+            Integer prodId = testUtil.addBrandAndProduct("b"+i, "c"+i, "abcdefg"+i, "p"+i, 10.00);
+            testUtil.addInventory(prodId,10);
             OrderItemsPojo item;
             if(i==4){
-                item = TestUtil.getItemsPojo(orderId, prodId, 15, 15.00);
+                item = testUtil.getItemsPojo(orderId, prodId, 15, 15.00);
             }
             else{
-                item = TestUtil.getItemsPojo(orderId, prodId, 5, 15.00);
+                item = testUtil.getItemsPojo(orderId, prodId, 5, 15.00);
             }
             itemsList.add(item);
         }
 
 
 
-        service.add(TestUtil.getItemsPojo(orderId, 1, 5, 15.00));
+        service.add(testUtil.getItemsPojo(orderId, 1, 5, 15.00));
 
         service.add(orderId,itemsList);
 
@@ -75,14 +78,14 @@ public class OrderItemsServiceTest extends AbstractUnitTest{
 
     @Test
     public void testSelectById() throws  ApiException{
-        Integer orderId = TestUtil.addOrder();
+        Integer orderId = testUtil.addOrder();
 
         List<OrderItemsPojo> itemsList = new ArrayList<OrderItemsPojo>();
 
         for(int i=1; i<=5; i++){
-            Integer prodId = TestUtil.addBrandAndProduct("b"+i, "c"+i, "abcdefg"+i, "p"+i, 10.00);
-            TestUtil.addInventory(prodId,10);
-            OrderItemsPojo item = TestUtil.getItemsPojo(orderId, prodId, 5, 15.00);
+            Integer prodId = testUtil.addBrandAndProduct("b"+i, "c"+i, "abcdefg"+i, "p"+i, 10.00);
+            testUtil.addInventory(prodId,10);
+            OrderItemsPojo item = testUtil.getItemsPojo(orderId, prodId, 5, 15.00);
             itemsList.add(item);
         }
 
@@ -100,14 +103,14 @@ public class OrderItemsServiceTest extends AbstractUnitTest{
 
     @Test
     public void testGetInColumn() throws ApiException{
-        Integer orderId = TestUtil.addOrder();
+        Integer orderId = testUtil.addOrder();
 
         List<OrderItemsPojo> itemsList = new ArrayList<OrderItemsPojo>();
 
         for(int i=1; i<=5; i++){
-            Integer prodId = TestUtil.addBrandAndProduct("b"+i, "c"+i, "abcdefg"+i, "p"+i, 10.00);
-            TestUtil.addInventory(prodId,10);
-            OrderItemsPojo item = TestUtil.getItemsPojo(orderId, prodId, 5, 15.00);
+            Integer prodId = testUtil.addBrandAndProduct("b"+i, "c"+i, "abcdefg"+i, "p"+i, 10.00);
+            testUtil.addInventory(prodId,10);
+            OrderItemsPojo item = testUtil.getItemsPojo(orderId, prodId, 5, 15.00);
             itemsList.add(item);
         }
 

@@ -11,20 +11,20 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.stereotype.Repository;
 
-import com.increff.pos.pojo.DaySalesPojo;
+import com.increff.pos.pojo.PosDaySales;
 
 @Repository
-public class DaySalesDao extends AbstractDao<DaySalesPojo>{
+public class DaySalesDao extends AbstractDao<PosDaySales>{
     
-    public List<DaySalesPojo> selectInDateRange(ZonedDateTime startDate, ZonedDateTime endDate, Integer offset, Integer pageSize){
+    public List<PosDaySales> selectInDateRange(ZonedDateTime startDate, ZonedDateTime endDate, Integer offset, Integer pageSize){
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
-        CriteriaQuery<DaySalesPojo> cq = cb.createQuery(DaySalesPojo.class);
-        Root<DaySalesPojo> root = cq.from(DaySalesPojo.class);
+        CriteriaQuery<PosDaySales> cq = cb.createQuery(PosDaySales.class);
+        Root<PosDaySales> root = cq.from(PosDaySales.class);
 
         Predicate datePredicate = cb.between(root.get("date"), startDate, endDate);
         cq.where(datePredicate);
-        TypedQuery<DaySalesPojo> query = em.createQuery(cq);
+        TypedQuery<PosDaySales> query = em.createQuery(cq);
 
         return query.setFirstResult(offset).setMaxResults(pageSize).getResultList();
     }
@@ -33,7 +33,7 @@ public class DaySalesDao extends AbstractDao<DaySalesPojo>{
     public Integer getTotalEntriesInDateRange(ZonedDateTime startDate, ZonedDateTime endDate){
 		CriteriaBuilder cb = em.getCriteriaBuilder();
     	CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<DaySalesPojo> root = cq.from(DaySalesPojo.class);
+        Root<PosDaySales> root = cq.from(PosDaySales.class);
     	cq.select(cb.count(root));
     	Predicate datePredicate = cb.between(root.get("date"), startDate, endDate);
         cq.where(datePredicate);

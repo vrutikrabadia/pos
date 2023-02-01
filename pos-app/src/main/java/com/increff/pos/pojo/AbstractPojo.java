@@ -20,14 +20,13 @@ public abstract class AbstractPojo {
 
     //TODO: Implement physical naming startergy
 
-    @Column(name = "created", nullable = false)
+    @Column(nullable = false)
     private ZonedDateTime created;
 
-    @Column(name = "updated", nullable = false)
+    @Column(nullable = false)
     private ZonedDateTime updated;
 
     @Version
-    @Column(name = "version")
     private long version;
 
     @PrePersist

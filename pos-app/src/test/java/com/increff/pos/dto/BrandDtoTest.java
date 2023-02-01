@@ -26,6 +26,9 @@ public class BrandDtoTest extends AbstractUnitTest{
     @Autowired 
     private BrandDto dto;
 
+    @Autowired
+    private TestUtil testUtil;
+
     //TODO : put it in test util 
     private Optional<String> empty = Optional.empty();
 
@@ -36,7 +39,7 @@ public class BrandDtoTest extends AbstractUnitTest{
         String brand  = "Brand1 ";
         String category = " caTegory1";
 
-        BrandForm form = TestUtil.getBrandForm(brand, category);
+        BrandForm form = testUtil.getBrandForm(brand, category);
         
         dto.add(form);
 
@@ -51,8 +54,8 @@ public class BrandDtoTest extends AbstractUnitTest{
         String brand  = "brand1";
         String category = "category1";
 
-        TestUtil.addBrand(brand, category);
-        BrandForm f = TestUtil.getBrandForm(brand, category);
+        testUtil.addBrand(brand, category);
+        BrandForm f = testUtil.getBrandForm(brand, category);
 
         f.setCategory("category2");
         f.setBrand("brand2");
@@ -72,9 +75,9 @@ public class BrandDtoTest extends AbstractUnitTest{
 
     @Test
     public void testGetAll() throws ApiException{
-        TestUtil.addBrand("brand1", "category1");
-        TestUtil.addBrand("brand2", "category2");
-        TestUtil.addBrand("brand3", "category3");
+        testUtil.addBrand("brand1", "category1");
+        testUtil.addBrand("brand2", "category2");
+        testUtil.addBrand("brand3", "category3");
 
         List<BrandData> d = dto.getAll(0,5,1,empty).getData();
 
@@ -84,9 +87,9 @@ public class BrandDtoTest extends AbstractUnitTest{
     @Test 
     public void testDupicateInsertion() throws ApiException{
         
-        TestUtil.addBrand("brand1", "category1");
+        testUtil.addBrand("brand1", "category1");
 
-        BrandForm form = TestUtil.getBrandForm("brand1", "category1");
+        BrandForm form = testUtil.getBrandForm("brand1", "category1");
         
         //TODO: assert with message
         try{
@@ -103,7 +106,7 @@ public class BrandDtoTest extends AbstractUnitTest{
         String brand  = "brand1";
         String category = "category1";
 
-        TestUtil.addBrand(brand, category);
+        testUtil.addBrand(brand, category);
 
         List<BrandData> d = dto.getAll(0,1,1,empty).getData();
 
@@ -119,7 +122,7 @@ public class BrandDtoTest extends AbstractUnitTest{
         String category = "category1";
 
         
-        TestUtil.addBrand(brand, category);
+        testUtil.addBrand(brand, category);
 
         BrandData d = dto.get(brand, category);
 
@@ -138,24 +141,24 @@ public class BrandDtoTest extends AbstractUnitTest{
     public void testBrandValidation(){
         List<BrandForm> brandList = new ArrayList<BrandForm>();
 
-        brandList.add(TestUtil.getBrandForm(null, "hello"));
+        brandList.add(testUtil.getBrandForm(null, "hello"));
 
         try{
             ValidateUtil.validateList(brandList);
         }catch(ApiException e){
-            brandList.add(TestUtil.getBrandForm("", "hello"));
+            brandList.add(testUtil.getBrandForm("", "hello"));
             try{
                 ValidateUtil.validateList(brandList);
             }catch(ApiException e1){
-                brandList.add(TestUtil.getBrandForm("hello", null));
+                brandList.add(testUtil.getBrandForm("hello", null));
                 try{
                     ValidateUtil.validateList(brandList);
                 }catch(ApiException e2){
-                    brandList.add(TestUtil.getBrandForm( "hello", ""));
+                    brandList.add(testUtil.getBrandForm( "hello", ""));
                     try{
                         ValidateUtil.validateList(brandList);
                     }catch(ApiException e3){
-                        brandList.add(TestUtil.getBrandForm("", ""));
+                        brandList.add(testUtil.getBrandForm("", ""));
                         return;
                     }                   
                 }
@@ -170,36 +173,32 @@ public class BrandDtoTest extends AbstractUnitTest{
         
         List<BrandForm> brandList = new ArrayList<BrandForm>();
 
-        BrandForm f1 = TestUtil.getBrandForm("b1", "c1");
+        BrandForm f1 = testUtil.getBrandForm("b1", "c1");
         brandList.add(f1);
 
-        BrandForm f2 = TestUtil.getBrandForm("b2", "c2");
+        BrandForm f2 = testUtil.getBrandForm("b2", "c2");
         brandList.add(f2);
 
-        List<BrandPojo> pojoList = brandList.stream().map(e->ConvertUtil.objectMapper(e, BrandPojo.class)).collect(Collectors.toList());
-
-
-        dto.checkFileDuplications(pojoList);
+        dto.checkFileDuplications(brandList);
 
 
         brandList.add(f2);
-        pojoList = brandList.stream().map(e->ConvertUtil.objectMapper(e, BrandPojo.class)).collect(Collectors.toList());
 
-        dto.checkFileDuplications(pojoList);
+        dto.checkFileDuplications(brandList);
 
     }
 
 
     @Test(expected = ApiException.class)
     public void testDbDuplicate() throws ApiException{
-        TestUtil.addBrand("b2", "c2");
+        testUtil.addBrand("b2", "c2");
 
         List<BrandForm> brandList = new ArrayList<BrandForm>();
 
-        BrandForm f1 = TestUtil.getBrandForm("b1", "c1");
+        BrandForm f1 = testUtil.getBrandForm("b1", "c1");
         brandList.add(f1);
 
-        BrandForm f2 = TestUtil.getBrandForm("b2", "c2");
+        BrandForm f2 = testUtil.getBrandForm("b2", "c2");
         brandList.add(f2);
 
         List<BrandPojo> pojoList = brandList.stream().map(e->ConvertUtil.objectMapper(e, BrandPojo.class)).collect(Collectors.toList());
@@ -212,10 +211,10 @@ public class BrandDtoTest extends AbstractUnitTest{
     public void testBulkAdd(){
         List<BrandForm> brandList = new ArrayList<BrandForm>();
 
-        BrandForm f1 = TestUtil.getBrandForm("b1", "c1");
+        BrandForm f1 = testUtil.getBrandForm("b1", "c1");
         brandList.add(f1);
 
-        BrandForm f2 = TestUtil.getBrandForm("b2", "c2");
+        BrandForm f2 = testUtil.getBrandForm("b2", "c2");
         brandList.add(f2);
 
         try{
@@ -231,12 +230,12 @@ public class BrandDtoTest extends AbstractUnitTest{
 
     @Test(expected = ApiException.class)
     public void testUpdateAreadyExists() throws ApiException{
-        TestUtil.addBrand("b1", "c1");
-        TestUtil.addBrand("b2", "c2");
+        testUtil.addBrand("b1", "c1");
+        testUtil.addBrand("b2", "c2");
 
         List<BrandData> d = dto.getAll(0, 2, 0, empty).getData();
 
-        BrandForm f = TestUtil.getBrandForm("b1", "c1");
+        BrandForm f = testUtil.getBrandForm("b1", "c1");
         f.setBrand("b2");
         f.setCategory("c2");
 
@@ -245,9 +244,9 @@ public class BrandDtoTest extends AbstractUnitTest{
 
     @Test
     public  void testGetAllSearchValue(){
-        TestUtil.addBrand("b1", "c1");
-        TestUtil.addBrand("b2", "c2");
-        TestUtil.addBrand("b3", "c3");
+        testUtil.addBrand("b1", "c1");
+        testUtil.addBrand("b2", "c2");
+        testUtil.addBrand("b3", "c3");
 
         SelectData<BrandData> d = dto.getAll(0, 3, 0, Optional.of("b1"));
 

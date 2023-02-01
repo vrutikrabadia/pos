@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.increff.pos.model.data.DaySalesData;
 import com.increff.pos.model.data.SelectData;
-import com.increff.pos.pojo.DaySalesPojo;
+import com.increff.pos.pojo.PosDaySales;
 import com.increff.pos.pojo.OrderItemsPojo;
 import com.increff.pos.pojo.OrderPojo;
 import com.increff.pos.service.ApiException;
@@ -39,9 +39,9 @@ public class DaySalesDto {
     public SelectData<DaySalesData> getAll(Integer start, Integer length, Integer draw) throws ApiException{
         List<DaySalesData> dataList = new ArrayList<DaySalesData>();
 
-        List<DaySalesPojo> pojoList = service.getAllPaginated(start, length);
+        List<PosDaySales> pojoList = service.getAllPaginated(start, length);
     
-        for(DaySalesPojo pojo: pojoList){
+        for(PosDaySales pojo: pojoList){
             DaySalesData data = ConvertUtil.objectMapper(pojo, DaySalesData.class); 
             
             dataList.add(data);
@@ -65,10 +65,10 @@ public class DaySalesDto {
         if(sDate.compareTo(eDate)>0){
             throw new ApiException("start date should be less than end date");
         }
-        List<DaySalesPojo> pojoList = service.getByDateRange(sDate, eDate,start, length);
+        List<PosDaySales> pojoList = service.getByDateRange(sDate, eDate,start, length);
 
         
-        for(DaySalesPojo pojo: pojoList){
+        for(PosDaySales pojo: pojoList){
             DaySalesData data = ConvertUtil.objectMapper(pojo, DaySalesData.class);
             
             dataList.add(data);
@@ -86,30 +86,38 @@ public class DaySalesDto {
 
     
     
-    @Scheduled(cron = "0 44 11 * * *")
+    @Scheduled(fixedDelay = 1000*60*60*24)
     public void scheduler(){
         //get start of day and end of day of previous day
         ZonedDateTime start = DateTimeProvider.getInstance().timeNow().minusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
         ZonedDateTime end = DateTimeProvider.getInstance().timeNow().minusDays(1).withHour(23).withMinute(59).withSecond(59).withNano(999999999);
 
-        
-        //get total sales of previous day
+        PosDaySales daySalesPojo = service.getByDate(start);
+
+        Integer currentItemCount = 0;
+        Double currentTotalRevenue = 0.0;
+        Integer currentOrderCount = 0;
+        if(daySalesPojo!=null){
+            currentItemCount = daySalesPojo.getInvoicedItemsCount();
+            currentTotalRevenue = daySalesPojo.getTotalRevenue();
+            currentOrderCount = daySalesPojo.getInvoicedOrderCount();
+        }
+
         List<OrderPojo> orderList = oService.getInDateRange(start, end);
 
         List<Integer> orderId = orderList.stream().map(OrderPojo::getId).collect(Collectors.toList());
 
         List<OrderItemsPojo> itemsList = oItemsService.getInColumn(Arrays.asList("orderId"), Arrays.asList(orderId));
-        System.out.println(itemsList.stream().map(OrderItemsPojo::getId).collect(Collectors.toList()));
         
         Integer itemCount = itemsList.stream().collect(Collectors.summingInt(OrderItemsPojo::getQuantity));
         Double totalRevenue = itemsList.stream().mapToDouble(i->i.getQuantity()*i.getSellingPrice()).sum();
 
-        DaySalesPojo daySales = new DaySalesPojo();
+        PosDaySales daySales = new PosDaySales();
 
         daySales.setDate(start);
-        daySales.setItemsCount(itemCount);
-        daySales.setTotalRevenue(totalRevenue);
-        daySales.setOrderCount(orderId.size());
+        daySales.setInvoicedItemsCount(itemCount-currentItemCount);
+        daySales.setTotalRevenue(totalRevenue-currentTotalRevenue);
+        daySales.setInvoicedOrderCount(orderId.size()-currentOrderCount);
 
         service.add(daySales);
 

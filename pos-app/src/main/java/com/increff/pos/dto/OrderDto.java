@@ -10,6 +10,7 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +54,9 @@ public class OrderDto {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Value("${cache.location}")
+    private String cacheLocation;
 
     public OrderData add(List<OrderItemsForm> list) throws ApiException {
         List<OrderItemsPojo> list1 = new ArrayList<OrderItemsPojo>();
@@ -162,7 +166,7 @@ public class OrderDto {
 
     public String generateInvoice(Integer orderId) throws ApiException, Exception {
 
-        String filePath = new File("src/main/resources/com/increff/pos/invoice/invoice"+orderId+".pdf").getAbsolutePath();
+        String filePath = new File(cacheLocation+"/invoice"+orderId+".pdf").getAbsolutePath();
         File file = new File(filePath);
 
         if (file.exists()){

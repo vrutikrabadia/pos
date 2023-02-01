@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.increff.pos.model.Roles;
 import com.increff.pos.model.data.UserData;
 import com.increff.pos.model.form.LoginForm;
 import com.increff.pos.model.form.UserForm;
@@ -15,6 +16,7 @@ import com.increff.pos.service.ApiException;
 import com.increff.pos.service.UserService;
 import com.increff.pos.util.ConvertUtil;
 import com.increff.pos.util.StringUtil;
+import com.increff.pos.util.ValidateUtil;
 
 @Component
 public class UserDto {
@@ -26,6 +28,7 @@ public class UserDto {
     private String supEmail;
 
     public void add(UserForm form) throws ApiException {
+        ValidateUtil.validateForms(form);
         StringUtil.normalise(form, UserForm.class);
         
         UserPojo p = ConvertUtil.objectMapper(form, UserPojo.class);
@@ -33,13 +36,14 @@ public class UserDto {
     }
 
     public void add(LoginForm form) throws ApiException {
+        ValidateUtil.validateForms(form);
         StringUtil.normalise(form, LoginForm.class);
         UserPojo p = ConvertUtil.objectMapper(form, UserPojo.class);
         if(p.getEmail().equals(supEmail)){
-            p.setRole("supervisor");
+            p.setRole(Roles.supervisor);
         }
         else{
-            p.setRole("operator");
+            p.setRole(Roles.operator);
         }
         service.add(p);
     }

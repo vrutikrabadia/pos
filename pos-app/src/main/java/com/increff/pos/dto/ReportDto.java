@@ -94,7 +94,7 @@ public class ReportDto {
     }
 
     protected HashMap<Integer, Integer> getProductIdToBrandCatMap(List<InventoryPojo> iList) {
-        List<Integer> idList = iList.stream().map(InventoryPojo::getId).collect(Collectors.toList());
+        List<Integer> idList = iList.stream().map(InventoryPojo::getProductId).collect(Collectors.toList());
         List<ProductPojo> productList = pService.getInColumn(Arrays.asList("id"), Arrays.asList(idList));
 
         HashMap<Integer, Integer> prodIdtoBrandCat = (HashMap<Integer, Integer>) productList.stream()
@@ -110,8 +110,8 @@ public class ReportDto {
 
         for (InventoryPojo inv : iList) {
 
-            Integer newQuantity = resultMap.get(prodIdtoBrandCat.get(inv.getId())) + inv.getQuantity();
-            resultMap.put(prodIdtoBrandCat.get(inv.getId()), newQuantity);
+            Integer newQuantity = resultMap.get(prodIdtoBrandCat.get(inv.getProductId())) + inv.getQuantity();
+            resultMap.put(prodIdtoBrandCat.get(inv.getProductId()), newQuantity);
 
         }
 

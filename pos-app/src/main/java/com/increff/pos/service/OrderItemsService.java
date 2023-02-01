@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.increff.pos.dao.OrderItemsDao;
 import com.increff.pos.pojo.OrderItemsPojo;
-import com.increff.pos.pojo.OrderPojo;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
@@ -20,9 +19,6 @@ public class OrderItemsService {
 
     @Autowired 
     private InventoryService iService;
-
-    @Autowired
-    private OrderService oService;
 
     @Autowired 
     DaySalesService sService;

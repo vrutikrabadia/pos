@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.protobuf.Api;
 import com.increff.pos.dao.InventoryDao;
 import com.increff.pos.pojo.InventoryPojo;
 
@@ -23,11 +22,10 @@ public class InventoryService {
         dao.insert(p);
     }
 
-    //REFACTOR: after review
     public void bulkAdd(List<InventoryPojo> list){
         for(InventoryPojo inv: list){
             try{
-                getCheck(inv.getId());
+                getCheck(inv.getProductId());
             }
             catch(ApiException e){
                 add(inv);
@@ -35,7 +33,7 @@ public class InventoryService {
             }
 
             try{
-                increaseQuantity(inv.getId(), inv.getQuantity());
+                increaseQuantity(inv.getProductId(), inv.getQuantity());
             }
             catch(ApiException e){
                 continue;
@@ -63,7 +61,7 @@ public class InventoryService {
 
     
     public InventoryPojo getCheck(Integer id) throws ApiException{
-        InventoryPojo p = dao.selectByColumn("id", id, InventoryPojo.class);
+        InventoryPojo p = dao.selectByColumn("productId", id, InventoryPojo.class);
         if(p == null){
             throw new ApiException("Inventory does not exist for thr product");
         }
