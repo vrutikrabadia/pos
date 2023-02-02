@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="baseUrl" th:attr="content=${baseUrl}">
 
+
+
 <script src="https://kit.fontawesome.com/c30beb553f.js" crossorigin="anonymous"></script>
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -16,7 +18,7 @@
 
 </head>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light  mb-1" th:fragment="name_app_navbar">
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top mb-1" th:fragment="name_app_navbar">
   <a class="navbar-brand" th:href="@{/ui/home}">
     <img th:src="@{/static/logo.webp}" class="d-inline-block align-top" alt="">
   </a>
@@ -74,7 +76,6 @@
 
   
  
-
   
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>  
