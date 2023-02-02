@@ -60,7 +60,7 @@ public class PdfUtil {
         File xsltFile = new File(new File("src/main/resources/com/increff/pdf/brandReport.xsl").getAbsolutePath());
 
         StreamSource xmlSource = new StreamSource(
-                new File(new File(cacheLocation+"brandReport.xml")
+                new File(new File(cacheLocation+"/brandReport.xml")
                         .getAbsolutePath()));
 
         FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());

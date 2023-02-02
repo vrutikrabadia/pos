@@ -11,6 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +59,9 @@ public class ReportDto {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Value("${pdfapp.url}")
+    private String pdfAppUrl;
 
 
     //functions for inventory report
@@ -258,7 +262,7 @@ public class ReportDto {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String apiUrl = "http://localhost:9500/pdf/api/reports" + path;
+        String apiUrl = pdfAppUrl + "/api/reports" + path;
         ResponseEntity<String> apiResponse = restTemplate.postForEntity(apiUrl, result, String.class);
         String responseBody = apiResponse.getBody();
 

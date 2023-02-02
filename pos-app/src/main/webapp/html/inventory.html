@@ -40,7 +40,7 @@
 	<table class="table table-striped" id="inventory-table">
 	  <thead>
 	    <tr>
-	      <th scope="col">BarCode</th>
+	      <th scope="col">Barcode</th>
 	      <th scope="col">Quantity</th>
 	      <th scope="col" th:if="${info.getRole() == 'supervisor'}">Actions</th>
 	    </tr>
@@ -70,15 +70,15 @@
 		<div class="modal-body">
 			<form class="form-inline" id="inventory-form">
 				<div class="form-group">
-				  <label for="inputBarCode" class="col-sm-2 col-form-label">BarCode</label>
+				  <label for="inputBarCode" class="col-sm-2 col-form-label">Barcode</label>
 				  <div class="col-sm-10">
-					<input type="text" class="form-control" name="barcode" id="inputBarCode" placeholder="enter BarCode">
+					<input type="text" class="form-control" name="barcode" id="inputBarCode" placeholder="Enter Barcode" required>
 				  </div>
 				</div>
 				<div class="form-group">
-				  <label for="inputQuantity" class="col-sm-2 col-form-label">Category</label>
+				  <label for="inputQuantity" class="col-sm-2 col-form-label">Quantity/label>
 				  <div class="col-sm-10">
-					<input type="number" class="form-control" name="quantity" id="inputQuantity" placeholder="enter quantity">
+					<input type="number" class="form-control" name="quantity" id="inputQuantity" min="1" placeholder="Enter Quantity" required>
 				  </div>
 				</div>
 			  </form>       
@@ -105,13 +105,13 @@
 			<form class="form-inline" id="inventory-edit-form">
 			  <div class="form-group">
 			    <div class="col-sm-10">
-			      <input type="text" class="form-control" name="barcode" placeholder="enter barcode" hidden id="edit-barcode">
+			      <input type="text" class="form-control" name="barcode" placeholder="Enter Barcode" hidden id="edit-barcode">
 			    </div>
 			  </div>
 			  <div class="form-group">
 			    <label for="inputQuantity" class="col-sm-2 col-form-label">Quantity</label>
 			    <div class="col-sm-10">
-			      <input type="text" class="form-control" name="quantity" placeholder="enter quantity">
+			      <input type="text" class="form-control" name="quantity" min="0" placeholder="Enter Quantity" required>
 			    </div>
 			  </div>
 			</form>        
@@ -144,9 +144,7 @@
 		</div>
 		<a th:href="@{/sample/inventory.tsv}" target="_blank">Download Sample</a> 
 		<br>
-		Rows: <span id="rowCount">0</span>, 
-		Processed: <span id="processCount">0</span>, 
-		Errors: <span id="errorCount">0</span>
+		Rows: <span id="rowCount">0</span>
       </div>
       
       <div class="modal-footer">

@@ -56,7 +56,6 @@ public class InventoryDto {
 
     }
 
-    //REFACTOR :  refactor bulk add
     public void bulkAdd(List<InventoryForm> list) throws ApiException{
 
         StringUtil.normaliseList(list, InventoryForm.class);

@@ -4,6 +4,7 @@
 function addUser(event){
 	//Set the values to update
 	var $form = $("#user-form");
+	if(!validateFormHTML($form)){return;}
 	var json = toJson($form);
 	var url = getUserUrl();
 
@@ -74,6 +75,9 @@ function displayUserList(data){
 
 //INITIALIZATION CODE
 function init(){
+	$('.active').removeClass('active');
+	$('#a-nav-admin').addClass('active');
+
 	$('#add-user-modal-toggle').html('<img src='+addNewButton+'>');
 	$('#refresh-data').html('<img src='+refreshButton+'>');
 	$("#add-user-modal-toggle").click(displayAddUserForm);

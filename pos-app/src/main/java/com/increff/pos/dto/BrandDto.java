@@ -62,7 +62,6 @@ public class BrandDto {
         service.bulkAdd(pojoList);
 
     }
-    //TODO: ,ake it private
 
     protected void checkFileDuplications(List<BrandForm> formList) throws ApiException {
         JSONArray errorList = new JSONArray();

@@ -67,6 +67,9 @@ function toJson($form){
     return json;
 }
 
+function validateFormHTML($form){
+	return $form[0].reportValidity();
+}
 
 function handleAjaxError(response){
 	var response = JSON.parse(response.responseText);

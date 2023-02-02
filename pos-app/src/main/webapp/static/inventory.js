@@ -6,6 +6,7 @@ function addInventory(event){
 	//Set the values to update
 	var $form = $("#inventory-form");
 	var json = toJson($form);
+	if(!validateFormHTML($form)){return;}
 	var url = getInventoryUrl();
 
 	$.ajax({
@@ -37,6 +38,7 @@ function updateInventory(event){
 
 	//Set the values to update
 	var $form = $("#inventory-edit-form");
+	if(!validateFormHTML($form)){return;}
 	var json = toJson($form);
 
 	$.ajax({
@@ -65,7 +67,6 @@ function updateInventory(event){
 // FILE UPLOAD METHODS
 var fileData = [];
 var errorData = [];
-var processCount = 0;
 
 
 function processData(){
@@ -77,8 +78,25 @@ function readFileDataCallback(results){
 	fileData = results.data;
 	uploadRows();
 }
+function checkJsonKeys(json){
+	var keys = ["barcode", "quantity"];
+
+	for(var i = 0; i < keys.length; i++){
+		if(!json.hasOwnProperty(keys[i])){
+			return false;
+		}
+	}
+	return true;
+}
 
 function uploadRows(){
+	if(!checkJsonKeys(fileData[0])){
+		Swal.fire({
+			icon: "error",
+			title: "Oops!!",
+			text: "Invalid file format. Please download the sample file and upload again.",
+		});
+	}
 	//Update progress
 	var url = getInventoryUrl() + "/bulk-add";
 
@@ -90,7 +108,6 @@ function uploadRows(){
 			'Content-Type': 'application/json'
 		},	   
 		success: function(response) {
-			processCount = fileData.length;
 			
 			updateUploadDialog();
 			Swal.fire({
@@ -106,7 +123,6 @@ function uploadRows(){
 			console.log(error);
 			errorData = JSON.parse(JSON.parse(error.responseText).message);
 			console.log(errorData);
-			processCount = fileData.length;	 
 			
 			updateUploadDialog();
 			Swal.fire({
@@ -146,7 +162,6 @@ function resetUploadDialog(){
 	$file.val('');
 	$('#inventoryFileName').html("Choose File");
 	//Reset various counts
-	processCount = 0;
 	fileData = [];
 	errorData = [];
 	//Update counts	
@@ -155,7 +170,6 @@ function resetUploadDialog(){
 
 function updateUploadDialog(){
 	$('#rowCount').html("" + fileData.length);
-	$('#processCount').html("" + processCount);
 	$('#errorCount').html("" + errorData.length);
 }
 
@@ -177,7 +191,9 @@ function displayUploadData(){
 
 function displayInventory(data){
 	$("#inventory-edit-form input[name=barcode]").val(data.barcode);	
-	$("#inventory-edit-form input[name=quantity]").val(data.quantity);	
+	$("#inventory-edit-form input[name=quantity]").val(data.quantity);
+	$('#update-inventory').attr('disabled', true);
+
 	$('#edit-inventory-modal').modal('toggle');
 }
 
@@ -238,6 +254,9 @@ function getConditionalColumns(){
 
 //INITIALIZATION CODE
 function init(){
+	$('.active').removeClass('active');
+	$('#a-nav-inventory').addClass('active');
+
 	$('#add-inventory-modal-toggle').html('<img src='+addNewButton+'></img>');
 	$('#upload-data').html('<img src='+uploadFileButton+'></img>');
 	$('#refresh-data').html('<img src='+refreshButton+'></img>');
@@ -261,6 +280,10 @@ function init(){
 	$('#download-errors').click(downloadErrors);
     $('#inventoryFile').on('change', updateFileName);
 	$('#download-report').click(downloadReport);
+
+	$('#inventory-edit-form').on('input change', function() {
+		$('#update-inventory').attr('disabled', false);
+	});
 }
 
 $(document).ready(init);

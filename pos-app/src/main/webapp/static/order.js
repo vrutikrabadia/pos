@@ -98,6 +98,7 @@ function checkSellingPrice(json) {
 
 function addOrderItem(event) {
     var $form = $("#order-item-form");
+    if(!validateFormHTML($form)){return;}
     var json = JSON.parse(toJson($form));
 
     if(json.barcode == "" || json.quantity == "" || json.sellingPrice == ""){
@@ -109,7 +110,7 @@ function addOrderItem(event) {
         return;
     }
 
-    if(json.quantity <= 0 || json.sellingPrice <= 0){
+    if(json.quantity <= 0 || json.sellingPrice < 0){
             Swal.fire({
                 title: 'Oops...',
                 text: 'Please enter valid quantity and selling price',
@@ -169,7 +170,8 @@ function insufficientQuantityAlert(input, inv){
 }
 
 function checkInventory() {
-
+    var $form = $("#search-item-form");
+    if(!validateFormHTML($form)){return;}
     var barcode = $("#search-item-form input[name=barcode]").val();
 
     if (currentInventory.has(barcode)) {
@@ -178,9 +180,7 @@ function checkInventory() {
         $('#quantity-informer').text("Quantity Available: " + inv);
         $('#order-item-form input[name=barcode]').val(barcode);
         $('#order-item-form input[name=quantity]').attr({
-            "max": inv,
-            "min": 1,
-            "onkeyup": "insufficientQuantityAlert(this, " + inv + ");"
+            "max": inv
         });
 
         return;
@@ -199,9 +199,7 @@ function checkInventory() {
             $('#quantity-informer').text("Quantity Available: " + response.quantity);
             $('#order-item-form input[name=barcode]').val(response.barcode);
             $('#order-item-form input[name=quantity]').attr({
-                "max": response.quantity,
-                "min": 1,
-                "onkeyup": "insufficientQuantityAlert(this, " + response.quantity + ");"
+                "max": response.quantity
             });
         },
         error: function (error) {
@@ -326,6 +324,9 @@ function placeOrder() {
 }
 
 function init() {
+
+    $('.active').removeClass('active');
+	$('#a-nav-order').addClass('active');
 
     $("#add-order").html('<img src='+addNewButton+ '>');
     $('#refresh-data').html('<img src='+refreshButton+ '>');

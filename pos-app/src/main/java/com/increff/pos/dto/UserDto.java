@@ -15,7 +15,6 @@ import com.increff.pos.pojo.UserPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.UserService;
 import com.increff.pos.util.ConvertUtil;
-import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
 
 @Component
@@ -29,15 +28,21 @@ public class UserDto {
 
     public void add(UserForm form) throws ApiException {
         ValidateUtil.validateForms(form);
-        StringUtil.normalise(form, UserForm.class);
-        
+
+        ValidateUtil.validateEmail(form.getEmail());
+        ValidateUtil.validatePassword(form.getPassword());
+
         UserPojo p = ConvertUtil.objectMapper(form, UserPojo.class);
         service.add(p);
     }
 
     public void add(LoginForm form) throws ApiException {
         ValidateUtil.validateForms(form);
-        StringUtil.normalise(form, LoginForm.class);
+
+        ValidateUtil.validateEmail(form.getEmail());
+        ValidateUtil.validatePassword(form.getPassword());
+
+
         UserPojo p = ConvertUtil.objectMapper(form, UserPojo.class);
         if(p.getEmail().equals(supEmail)){
             p.setRole(Roles.supervisor);

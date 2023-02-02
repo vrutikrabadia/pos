@@ -6,12 +6,9 @@ import java.util.Objects;
 
 import javax.transaction.Transactional;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.GsonBuilder;
 import com.increff.pos.dao.ProductDao;
 import com.increff.pos.pojo.ProductPojo;
 
@@ -26,7 +23,6 @@ public class ProductService {
         dao.insert(p);
     }
 
-    //REFACTOR:Refactor after review
     public void bulkAdd(List<ProductPojo> list) throws ApiException{
         
         for (ProductPojo prod : list) {

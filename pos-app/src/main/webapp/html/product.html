@@ -81,7 +81,7 @@
                 <div class="form-group">
                     <label for="barcode" class="col-sm-2 col-form-label">Barcode</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" name="barcode" id="barcode" placeholder="enter barcode" maxlength="8" minlength="8">
+                      <input type="text" class="form-control" name="barcode" id="barcode" placeholder="Enter Barcode" maxlength="8" minlength="8" required>
                     </div>
                 </div>
 
@@ -89,29 +89,29 @@
 			    <div class="form-group">
 			      <label for="inputBrand" class="col-sm-2 col-form-label">Brand</label>
 			      <div class="col-sm-10">
-                    <select placeholder="Select Brand" data-search="true" id="brand-select" class="select2 form-control" name="brand">
-                        <option disabled selected value> -- select an option -- </option>
+                    <select placeholder="Select Brand" data-search="true" id="brand-select" class="select2 form-control" name="brand" required>
+                        <option disabled selected value> Select an option </option>
                     </select>
 			      </div>
 			    </div>
 			    <div class="form-group">
 			      <label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
 			      <div class="col-sm-10">
-                    <select placeholder="Select Brand" data-search="true" id="category-select" class="select2 form-control" name="category">
-                        <option disabled selected value> -- select an option -- </option>
+                    <select placeholder="Select Brand" data-search="true" id="category-select" class="select2 form-control" name="category" required>
+                        <option disabled selected value> Select an option </option>
                     </select>
 			      </div>
 			    </div>
                 <div class="form-group">
 			      <label for="inputName" class="col-sm-2 col-form-label">Name</label>
 			      <div class="col-sm-10">
-			        <input type="text" class="form-control" name="name" id="inputName" placeholder="enter name">
+			        <input type="text" class="form-control" name="name" id="inputName" placeholder="Enter Name" required>
 			      </div>
 			    </div>
                 <div class="form-group">
 			      <label for="inputMrp" class="col-sm-2 col-form-label">MRP</label>
 			      <div class="col-sm-10">
-			      <input type="number" class="form-control" name="mrp" id="inputName" placeholder="enter mrp">
+			      <input type="number" class="form-control" name="mrp" id="inputName" placeholder="Enter MRP" step="0.01" min="0" required>
 			    </div>
 			  </div>
 			
@@ -140,31 +140,31 @@
                 <div class="form-group">
                   <label for="inputBarCode" class="col-sm-2 col-form-label">Barcode</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="barcode" placeholder="enter barcode" minlength="8" maxlength="8" readonly>
+                    <input type="text" class="form-control" name="barcode" placeholder="Enter Barcode" minlength="8" maxlength="8" readonly>
                   </div>
                 </div>
 			  <div class="form-group">
 			    <label for="inputBrand" class="col-sm-2 col-form-label">Brand</label>
 			    <div class="col-sm-10">
-			      <input type="text" class="form-control" name="brand" placeholder="enter brand" readonly>
+			      <input type="text" class="form-control" name="brand" placeholder="Enter Brand" readonly>
 			    </div>
 			  </div>
 			  <div class="form-group">
 			    <label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
 			    <div class="col-sm-10">
-			      <input type="text" class="form-control" name="category" placeholder="enter category" readonly>
+			      <input type="text" class="form-control" name="category" placeholder="Enter Category" readonly>
 			    </div>
 			  </div>
               <div class="form-group">
 			    <label for="inputName" class="col-sm-2 col-form-label">Name</label>
 			    <div class="col-sm-10">
-			      <input type="text" class="form-control" name="name" placeholder="enter name">
+			      <input type="text" class="form-control" name="name" placeholder="Enter Name" required>
 			    </div>
 			  </div>
               <div class="form-group">
 			    <label for="inputMrp" class="col-sm-2 col-form-label">Mrp</label>
 			    <div class="col-sm-10">
-			      <input type="number" class="form-control" name="mrp" placeholder="enter mrp">
+			      <input type="number" class="form-control" name="mrp" placeholder="Enter MRP" step="0.01" min="0" required>
 			    </div>
 			  </div>
  	        <input type="hidden" name="id" >
@@ -198,9 +198,7 @@
 		</div>
 		<a th:href="@{/sample/product.tsv}" target="_blank">Download Sample</a> 
 		<br>
-		Rows: <span id="rowCount">0</span>, 
-		Processed: <span id="processCount">0</span>, 
-		Errors: <span id="errorCount">0</span>
+		Rows: <span id="rowCount">0</span>
       </div>
       
       <div class="modal-footer">

@@ -10,8 +10,17 @@ function displayBrand(data){
 
 function searchDateRange(){
 
+
     var startDate = new Date($("#inputStartDate").val()).toISOString();
     var endDate = new Date($("#inputEndDate").val()).toISOString();
+
+    if(startDate>endDate){
+        Swal.fire({
+            icon: "error",
+            title: "Oops!!",
+            text: "Start date cannot be greater than end date",
+        });
+    }
     var table = $('#day-sales-table').DataTable();
     table.ajax.url(getDaySalesUrl()+"/dateRange?startDate="+startDate+"&endDate="+endDate).load();
 
@@ -79,6 +88,19 @@ function downloadReport(){
 
 //INITIALIZATION CODE
 function init(){
+    $('.active').removeClass('active');
+	$('#a-nav-sales').addClass('active');
+
+    let now = new Date();
+    let today = now.toISOString().slice(0,10);
+    let firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0,10);
+
+
+    $('#inputStartDate').val(firstDay);
+    $('#inputEndDate').val(today);
+
+    $('#downlaodInputStartDate').val(firstDay);
+    $('#downloadInputEndDate').val(today);
 
     $('#search-date-range').html('<img src='+filterButton+' />');
     $('#refresh-data').html('<img src='+clearFilterButton+' />');
@@ -110,8 +132,8 @@ function init(){
                 return  new Date(o.date).toLocaleString();
             } 
         },
-            { "data": "itemsCount" },
-            { "data": "orderCount" },
+            { "data": "invoicedItemsCount" },
+            { "data": "invoicedOrderCount" },
             { 
                 "data":null,
                 "render":function(o){return parseFloat(o.totalRevenue).toFixed(2)} , 

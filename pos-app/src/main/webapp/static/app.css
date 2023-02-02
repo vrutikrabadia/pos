@@ -69,3 +69,13 @@ label{
          border: 1px solid #ced4da !important; 
      border-radius: 0.25rem  !important; 
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+

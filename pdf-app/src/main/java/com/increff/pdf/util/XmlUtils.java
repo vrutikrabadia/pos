@@ -160,7 +160,7 @@ public class XmlUtils {
 
             //UNIT_PRICE
             Element rate = doc.createElement("UNIT_PRICE");
-            rate.setTextContent(item.getSellingPrice().toString());
+            rate.setTextContent(String.format("%.2f",item.getSellingPrice()));
             recordset.appendChild(rate);
 
             double itemTotal = item.getQuantity() * item.getSellingPrice();

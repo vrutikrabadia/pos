@@ -13,7 +13,7 @@ import lombok.Setter;
 public class DaySalesData{
     @JsonSerialize(using = CustomZonedDateTimeSerializer.class)
     private ZonedDateTime date;
-    private Integer orderCount;
-    private Integer itemsCount;
+    private Integer invoicedOrderCount;
+    private Integer invoicedItemsCount;
     private Double totalRevenue;  
 }

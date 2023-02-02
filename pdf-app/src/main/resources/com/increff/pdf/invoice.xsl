@@ -43,7 +43,6 @@
 			</fo:static-content>
 		
 			<fo:flow flow-name="xsl-region-body" font-size="8pt">
-			  <fo:block space-after="0cm"> </fo:block>
 
 			  <fo:table>
 				<fo:table-column column-width="8.5cm"/>
@@ -72,7 +71,7 @@
 
 			  </fo:table>
 
-			   <fo:block space-after="3cm"/>
+			   <fo:block space-after="1cm"/>
 			  
 			  <fo:table>
 				<fo:table-column column-width="8.5cm"/>
@@ -113,11 +112,6 @@
 					  <fo:block text-align="left">
 						<fo:inline color="#f16366">SHIP TO</fo:inline> 
 					  </fo:block>
-					</fo:table-cell>	
-					<fo:table-cell>					  
-					  <fo:block text-align="left">
-						<fo:inline color="#f16366">INSTRUCTIONS</fo:inline>
-					  </fo:block>				  
 					</fo:table-cell>
 				  </fo:table-row>
 				  <fo:table-row>

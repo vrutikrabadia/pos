@@ -3,6 +3,7 @@
 function addBrand(event){
 	//Set the values to update
 	var $form = $("#brand-form");
+	if(!validateFormHTML($form)){return;}
 	var json = toJson($form);
 	var url = getBrandUrl();
 
@@ -29,6 +30,7 @@ function addBrand(event){
 }
 
 function updateBrand(event){
+	$('#update-brand').attr('disabled', true);
 	$('#edit-brand-modal').modal('toggle');
 	//Get the ID
 	var id = $("#brand-edit-form input[name=id]").val();	
@@ -36,6 +38,7 @@ function updateBrand(event){
 
 	//Set the values to update
 	var $form = $("#brand-edit-form");
+	if(!validateFormHTML($form)){return;}
 	var json = toJson($form);
 
 	$.ajax({
@@ -64,7 +67,6 @@ function updateBrand(event){
 // FILE UPLOAD METHODS
 var fileData = [];
 var errorData = [];
-var processCount = 0;
 
 
 function processData(){
@@ -77,9 +79,30 @@ function readFileDataCallback(results){
 	uploadRows();
 }
 
+function checkJsonKeys(json){
+	
+	var keys = ["name", "category"];
+	for(var i in keys){
+		if(!json.hasOwnProperty(keys[i])){
+			return false;
+		}
+	}
+
+	return true;
+}
+
 function uploadRows(){
 	//Upload progress
 
+	if(!checkJsonKeys(fileData[0])){
+		Swal.fire({
+			icon: "error",
+			title: "Oops...",
+			text: "Invalid file format. Please download the sample file and upload again.",
+			
+		});
+		return;
+	}
 
 	var url = getBrandUrl() + "/bulk-add";
 
@@ -91,7 +114,6 @@ function uploadRows(){
 			'Content-Type': 'application/json'
 		},	   
 		success: function(response) {
-			processCount = fileData.length;
 			
 			updateUploadDialog();
 			Swal.fire({
@@ -105,8 +127,7 @@ function uploadRows(){
 		error: function(error){
 			console.log(error);
 			errorData = JSON.parse(JSON.parse(error.responseText).message);
-			console.log(errorData);
-			processCount = fileData.length;	 
+			console.log(errorData); 
 			
 			updateUploadDialog();
 			Swal.fire({
@@ -145,7 +166,6 @@ function resetUploadDialog(){
 	$file.val('');
 	$('#brandFileName').html("Choose File");
 	//Reset various counts
-	processCount = 0;
 	fileData = [];
 	errorData = [];
 	//Update counts	
@@ -154,8 +174,6 @@ function resetUploadDialog(){
 
 function updateUploadDialog(){
 	$('#rowCount').html("" + fileData.length);
-	$('#processCount').html("" + processCount);
-	$('#errorCount').html("" + errorData.length);
 }
 
 function updateFileName(){
@@ -218,9 +236,15 @@ function downloadReport(){
     });
 }
 
+
 function getConditionalColumns(){
+	var i = 1;
 	var columns = [
-		{ "data": "id" },
+		{
+			render: function (data, type, row, meta) {
+				return meta.row + meta.settings._iDisplayStart + 1;
+			}
+		},
 		{ "data": "brand" },
 		{ "data": "category" },
 	];
@@ -238,6 +262,10 @@ function getConditionalColumns(){
 
 //INITIALIZATION CODE
 function init(){
+	$('.active').removeClass('active');
+	$('#a-nav-brand').addClass('active');
+
+
 	$("#add-brand-modal-toggle").html('<img src='+addNewButton+ '>');
 	$("#refresh-data").html('<img src='+refreshButton+ '>');
 	$("#upload-data").html('<img src='+uploadFileButton+ '>');
@@ -261,6 +289,10 @@ function init(){
 	$('#download-errors').click(downloadErrors);
     $('#brandFile').on('change', updateFileName);
 	$('#download-report').click(downloadReport);
+
+	$('#brand-edit-form').on('input change', function() {
+		$('#update-brand').attr('disabled', false);
+	});
 	
 }
 

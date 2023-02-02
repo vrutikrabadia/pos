@@ -58,6 +58,9 @@ public class OrderDto {
     @Value("${cache.location}")
     private String cacheLocation;
 
+    @Value("${pdfapp.url}")
+    private String pdfAppUrl;
+
     public OrderData add(List<OrderItemsForm> list) throws ApiException {
         List<OrderItemsPojo> list1 = new ArrayList<OrderItemsPojo>();
         JSONArray errorList = new JSONArray();
@@ -193,7 +196,7 @@ public class OrderDto {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String apiUrl = "http://localhost:9500/pdf/api/invoices";
+        String apiUrl = pdfAppUrl + "/api/invoices";
         ResponseEntity<String> apiResponse = restTemplate.postForEntity(apiUrl, invoiceData, String.class);
         String responseBody = apiResponse.getBody();
 
