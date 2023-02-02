@@ -106,6 +106,16 @@ function uploadRows(){
 
 	var url = getBrandUrl() + "/bulk-add";
 
+	if(fileData.length > 5000){
+		Swal.fire({
+			icon: "error",
+			title: "Oops...",
+			text: "Too many rows. Please upload less than 5000 rows at a time.",
+			
+		});
+		return;
+	}
+
 	$.ajax({
 		url: url,
 		type: 'POST',

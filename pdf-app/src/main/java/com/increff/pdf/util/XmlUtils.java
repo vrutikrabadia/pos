@@ -435,7 +435,7 @@ public class XmlUtils {
 
             //REVENUE
             Element revenue = doc.createElement("REVENUE");
-            revenue.setTextContent(sale.getRevenue().toString());
+            revenue.setTextContent(String.format("%.2f",sale.getRevenue()));
             recordset.appendChild(revenue);
 
             recordCount++;

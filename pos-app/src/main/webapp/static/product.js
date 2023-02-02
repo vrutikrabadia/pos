@@ -1,5 +1,6 @@
 
-
+// create hashmap of key and array of values
+var map = {};
 //BUTTON ACTIONS
 function addProduct(event){
 	//Set the values to update
@@ -39,18 +40,30 @@ function getBrandList(){
 		data = data.data;
 	   		var brandSelect = $("#brand-select");
             var categorySelect  = $("#category-select");
-            var brandEditSelect = $("#brand-edit-select");
-            var categoryEditSelect  = $("#category-edit-select");
             
             for(var i in data){
+				if(map[data[i].brand] == undefined){
+					map[data[i].brand] = [];
+				}
+				map[data[i].brand].push(data[i].category);
+
                 brandSelect.append("<option value='"+data[i].brand+"'>"+data[i].brand+"</option>");
                 categorySelect.append("<option value='"+data[i].category+"'>"+data[i].category+"</option>");
-                brandEditSelect.append("<option value='"+data[i].brand+"'>"+data[i].brand+"</option>");
-                categoryEditSelect.append("<option value='"+data[i].category+"'>"+data[i].category+"</option>");
             }
 	   },
 	   error: handleAjaxError
 	});
+}
+
+function populateAddCategoryList(){
+	let brand = $("#brand-select").val();
+
+	$("#category-select").empty();
+	
+	//populate category list using the map
+	for(var i in map[brand]){
+		$("#category-select").append("<option value='"+map[brand][i]+"'>"+map[brand][i]+"</option>");
+	}
 }
 
 function updateProduct(event){
@@ -125,6 +138,16 @@ function uploadRows(){
 	}
 	//Upload progress
 	var url = getProductUrl() + "/bulk-add";
+
+	if(fileData.length > 5000){
+		Swal.fire({
+			icon: "error",
+			title: "Oops...",
+			text: "Too many rows. Please upload less than 5000 rows at a time.",
+			
+		});
+		return;
+	}
 
 	$.ajax({
 		url: url,
@@ -270,6 +293,7 @@ function init(){
     getBrandList();
 
 	$("#add-product-modal-toggle").click(displayAddProduct);
+	$("#brand-select").change(populateAddCategoryList);
 	$('#add-product').click(addProduct);
 	$('#update-product').click(updateProduct);
 	$('#refresh-data').click(function(){$("#product-table").DataTable().ajax.reload()});
@@ -277,7 +301,7 @@ function init(){
 	$('#process-data').click(processData);
 	$('#download-errors').click(downloadErrors);
     $('#productFile').on('change', updateFileName);
-	$('.select2').select2();
+	$('.select2').select2({ width: '100%' });
 
 	$('#product-edit-form').on('input change', function() {
 		$('#update-product').attr('disabled', false);

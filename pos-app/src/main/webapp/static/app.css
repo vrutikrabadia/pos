@@ -54,8 +54,18 @@ label{
 	margin-bottom: 1rem;
 }
 
-.form-inline .form-group{
-	margin-bottom: 1rem;
+.page-headers{
+	margin-top: 1rem;
+}
+
+.icons-form{
+	display: inline-block;
+	float: right;
+}
+
+h3{
+	display: inline-block;
+	align-self: center;
 }
 
 .page-link{
