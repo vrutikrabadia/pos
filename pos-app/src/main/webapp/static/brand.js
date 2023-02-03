@@ -15,6 +15,8 @@ function addBrand(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
+		
+			$('#add-brand-modal').modal('toggle');
 			$("#brand-table").DataTable().ajax.reload();
 			Swal.fire({
 				icon: "success",
@@ -31,7 +33,6 @@ function addBrand(event){
 
 function updateBrand(event){
 	$('#update-brand').attr('disabled', true);
-	$('#edit-brand-modal').modal('toggle');
 	//Get the ID
 	var id = $("#brand-edit-form input[name=id]").val();	
 	var url = getBrandUrl() + "/" + id;
@@ -49,6 +50,8 @@ function updateBrand(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
+			
+			$('#edit-brand-modal').modal('toggle');
 			$("#brand-table").DataTable().ajax.reload();
 			Swal.fire({
 				icon: "success",
@@ -71,6 +74,15 @@ var errorData = [];
 
 function processData(){
 	var file = $('#brandFile')[0].files[0];
+	if(file.name.split('.').pop() != "tsv"){
+		Swal.fire({
+			icon: "error",
+			title: "Oops...",
+			text: "Invalid file format.Please upload a '.tsv' file.",
+			
+		});
+		return;
+	}
 	readFileData(file, readFileDataCallback);
 }
 
@@ -188,7 +200,7 @@ function updateUploadDialog(){
 
 function updateFileName(){
 	var $file = $('#brandFile');
-	var fileName = $file.val();
+	var fileName = $file[0].files[0].name;
 	$('#brandFileName').html(fileName);
 }
 

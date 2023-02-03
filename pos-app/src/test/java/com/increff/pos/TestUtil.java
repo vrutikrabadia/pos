@@ -1,9 +1,8 @@
 package com.increff.pos;
 
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
-
-import com.increff.pos.util.DateTimeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,11 +19,12 @@ import com.increff.pos.model.form.OrderItemsForm;
 import com.increff.pos.model.form.ProductForm;
 import com.increff.pos.model.form.SalesReportForm;
 import com.increff.pos.pojo.BrandPojo;
-import com.increff.pos.pojo.PosDaySales;
 import com.increff.pos.pojo.InventoryPojo;
 import com.increff.pos.pojo.OrderItemsPojo;
 import com.increff.pos.pojo.OrderPojo;
+import com.increff.pos.pojo.PosDaySales;
 import com.increff.pos.pojo.ProductPojo;
+import com.increff.pos.util.DateTimeProvider;
 
 
 @Component
@@ -49,6 +49,8 @@ public class TestUtil {
 
     @Autowired
     private OrderItemsDao oiDao;
+
+    public Optional<String> empty = Optional.empty();
 
     public  BrandForm getBrandForm(String brand, String category){
         BrandForm f = new BrandForm();

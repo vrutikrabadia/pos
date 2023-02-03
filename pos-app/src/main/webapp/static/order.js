@@ -233,7 +233,7 @@ function displayOrder(id) {
                 var row = '<tr>' +
                     '<td>' + element.barcode + '</td>' +
                     '<td>' + element.quantity + '</td>' +
-                    '<td>' + element.sellingPrice + '</td>' +
+                    '<td>' + parseFloat(element.sellingPrice).toFixed(2) + '</td>' +
                     '</tr>';
 
                 $tbody.append(row);

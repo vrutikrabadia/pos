@@ -26,7 +26,6 @@ public class OrderDtoTest extends AbstractUnitTest{
     @Autowired
     private TestUtil testUtil;
 
-    private Optional<String> empty = Optional.empty();
 
     @Test
     public void testAddAndGet() throws ApiException{
@@ -41,7 +40,7 @@ public class OrderDtoTest extends AbstractUnitTest{
        
         dto.add(itemsList);
 
-        SelectData<OrderData> orderList = dto.getAll(0, 5, 1, empty);
+        SelectData<OrderData> orderList = dto.getAll(0, 5, 1, testUtil.empty);
 
         assertEquals(1, orderList.getData().size());
 
@@ -154,7 +153,7 @@ public class OrderDtoTest extends AbstractUnitTest{
                 fail();
             }
             
-            SelectData<OrderData> oData= dto.getAll(0, 5, 1, empty);
+            SelectData<OrderData> oData= dto.getAll(0, 5, 1, testUtil.empty);
 
             Integer orderId = oData.getData().get(0).getId();
 
@@ -180,7 +179,7 @@ public class OrderDtoTest extends AbstractUnitTest{
                 fail();
             }
     
-            SelectData<OrderData> oData= dto.getAll(0, 5, 1, empty);
+            SelectData<OrderData> oData= dto.getAll(0, 5, 1, testUtil.empty);
     
             Integer orderId = oData.getData().get(0).getId();
     

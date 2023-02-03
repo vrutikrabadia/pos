@@ -17,6 +17,8 @@ function addProduct(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
+		
+		$('#add-product-modal').modal('toggle');
 		$("#product-table").DataTable().ajax.reload();
 		Swal.fire({
 			icon: "success",
@@ -68,7 +70,6 @@ function populateAddCategoryList(){
 
 function updateProduct(event){
 	
-	$('#edit-product-modal').modal('toggle');
 	//Get the ID
 	var id = $("#product-edit-form input[name=id]").val();	
 	var url = getProductUrl() + "/" + id;
@@ -86,6 +87,8 @@ function updateProduct(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
+		
+		$('#edit-product-modal').modal('toggle');
 		$("#product-table").DataTable().ajax.reload();
 		Swal.fire({
 			icon: "success",
@@ -109,6 +112,15 @@ var errorData = [];
 
 function processData(){
 	var file = $('#productFile')[0].files[0];
+	if(file.name.split('.').pop() != "tsv"){
+		Swal.fire({
+			icon: "error",
+			title: "Oops...",
+			text: "Invalid file format.Please upload a '.tsv' file.",
+			
+		});
+		return;
+	}
 	readFileData(file, readFileDataCallback);
 }
 
@@ -219,7 +231,7 @@ function updateUploadDialog(){
 
 function updateFileName(){
 	var $file = $('#productFile');
-	var fileName = $file.val();
+	var fileName = $file[0].files[0].name;
 	$('#productFileName').html(fileName);
 }
 
@@ -257,8 +269,7 @@ function getConditionalColumns(){
 		{ "data": "name" },
 		{ 
 			"data":null,
-			"render":function(o){return parseFloat(o.mrp).toFixed(2)} , 
-			className: "text-right" 
+			"render":function(o){return parseFloat(o.mrp).toFixed(2)} 
 		},
 	];
 	if(user == 'supervisor'){

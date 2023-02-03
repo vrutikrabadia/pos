@@ -3,6 +3,7 @@ package com.increff.pos.dto;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,6 @@ public class InventoryDtoTest extends AbstractUnitTest{
     @Autowired
     private TestUtil testUtil;
 
-    private Optional<String> empty = Optional.empty();
 
     @Test
     public void testAddAndGet() throws ApiException{
@@ -44,7 +44,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
         
         dto.add(f);
 
-        List<InventoryData> d = dto.getAll(0,1,1,empty).getData();
+        List<InventoryData> d = dto.getAll(0,1,1,testUtil.empty).getData();
         
         assertEquals(d.get(0).getBarcode(), barcode);
         assertEquals(d.get(0).getQuantity(), quantity);
@@ -78,7 +78,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.add(f1);
 
-        List<InventoryData> d = dto.getAll(0,10,1,empty).getData();
+        List<InventoryData> d = dto.getAll(0,10,1,testUtil.empty).getData();
 
         assertEquals(d.size(), 2);
 
@@ -105,7 +105,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.update(f);
 
-        List<InventoryData> d = dto.getAll(0,1,1,empty).getData();
+        List<InventoryData> d = dto.getAll(0,1,1,testUtil.empty).getData();
         assertEquals(d.get(0).getQuantity(), updatedQuantity);
     }
 
@@ -142,7 +142,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.add(f);
         dto.add(f);
-        List<InventoryData> d = dto.getAll(0,1, 1, empty).getData();
+        List<InventoryData> d = dto.getAll(0,1, 1, testUtil.empty).getData();
         
         Integer finalQuantity = 10;
 
@@ -264,5 +264,40 @@ public class InventoryDtoTest extends AbstractUnitTest{
         assertEquals(1, data.getData().size());
     }
 
-    //TODO: add inventory bulk add tests
+
+    @Test
+    public void testAddInventoryBulk() throws ApiException{
+        String brand = "brand1";
+        String category = "category1";
+        String barcode = "1a3t5tq8";
+        String name = "name1";
+        Double mrp = 18.88;
+
+        Integer brandId = testUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
+
+        Integer quantity = 5;
+
+        InventoryForm f = testUtil.getInventoryForm(barcode, quantity);
+
+
+        String barcode1 = "1a3t5tq5";
+        String name1 = "name1";
+        Double mrp1 = 18.88;
+
+        testUtil.addProduct(barcode1, brandId, name1, mrp1);
+
+        InventoryForm f1 = testUtil.getInventoryForm(barcode1, quantity);
+
+
+        List<InventoryForm> forms = new ArrayList<InventoryForm>();
+        forms.add(f);
+        forms.add(f1);
+
+        dto.bulkAdd(forms);
+
+        List<InventoryData> d = dto.getAll(0,2,1,testUtil.empty).getData();
+        assertEquals(d.get(0).getQuantity(), quantity);
+        assertEquals(d.get(1).getQuantity(), quantity);
+
+    }
 }

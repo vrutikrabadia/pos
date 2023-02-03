@@ -3,8 +3,10 @@ package com.increff.pos.dto;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolationException;
 
@@ -16,7 +18,9 @@ import com.increff.pos.TestUtil;
 import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.ProductForm;
+import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ConvertUtil;
 
 public class ProductDtoTest extends AbstractUnitTest{
     
@@ -27,7 +31,6 @@ public class ProductDtoTest extends AbstractUnitTest{
     @Autowired
     private TestUtil testUtil;
 
-    private Optional<String> empty = Optional.empty();
 
 
     @Test
@@ -48,7 +51,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         String barcodeNormalised = "1a3t5tq8";
         String nameNormalised = "name1";
 
-        List<ProductData> d = dto.getAll(0,1,1,empty).getData();
+        List<ProductData> d = dto.getAll(0,1,1,testUtil.empty).getData();
 
         assertEquals(d.get(0).getBarcode(), barcodeNormalised);
         assertEquals(d.get(0).getBrand(), brand);
@@ -95,7 +98,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         
         dto.add(f1);
 
-        List<ProductData> d = dto.getAll(0,1,1,empty).getData();
+        List<ProductData> d = dto.getAll(0,1,1,testUtil.empty).getData();
 
         String barcode1 = "1a3t5tq7";
         String name1 = "name2";
@@ -109,7 +112,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         dto.update(d.get(0).getId(), f1);
 
-        d = dto.getAll(0,1,1, empty).getData();
+        d = dto.getAll(0,1,1, testUtil.empty).getData();
 
         assertEquals(d.get(0).getBarcode(), barcode1);
         assertEquals(d.get(0).getBrand(), brand1);
@@ -124,7 +127,7 @@ public class ProductDtoTest extends AbstractUnitTest{
     @Test
     public void testGetById() throws ApiException{
         testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "p1", 10.00);
-        List<ProductData> d = dto.getAll(0,1,1,empty).getData();
+        List<ProductData> d = dto.getAll(0,1,1,testUtil.empty).getData();
         ProductData p = dto.get(d.get(0).getId());
         assertEquals(p.getBarcode(), d.get(0).getBarcode());
     }
@@ -150,7 +153,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         ProductForm form1 = testUtil.getProductForm(barcode1, brand, category, name1, mrp1);
         dto.add(form1);
 
-        List<ProductData> d = dto.getAll(0,10,1,empty).getData();
+        List<ProductData> d = dto.getAll(0,10,1,testUtil.empty).getData();
 
 
         assertEquals(d.size(), 2);
@@ -230,7 +233,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         
         dto.add(f1);
 
-        List<ProductData> d = dto.getAll(0,1, 1, empty).getData();
+        List<ProductData> d = dto.getAll(0,1, 1, testUtil.empty).getData();
 
         String barcode1 = "1a3t5tq7";
         String name1 = "name2";
@@ -311,7 +314,77 @@ public class ProductDtoTest extends AbstractUnitTest{
     }
 
 
-    //TODO: Add tests for poduct Bulk Add
+    @Test(expected = ApiException.class)
+    public void testFileDuplicate() throws ApiException{
+        List<ProductForm> productList = new ArrayList<ProductForm>();
 
+        String brand  = "brand1";
+        String category = "category1";
+
+        testUtil.addBrand(brand, category);
+
+        String barcode = "1a3t5tq8";
+        String name = "name1";
+        Double mrp = 18.88;
+
+        ProductForm form = testUtil.getProductForm(barcode, brand, category, name, mrp);
+        productList.add(form);
+
+        productList.add(form);
+
+        dto.checkFileDuplications(productList);
+    }
+
+    @Test(expected = ApiException.class)
+    public void testDbDuplicate() throws ApiException{
+        List<ProductForm> productList = new ArrayList<ProductForm>();
+
+        String brand  = "brand1";
+        String category = "category1";
+
+        testUtil.addBrand(brand, category);
+
+        String barcode = "1a3t5tq8";
+        String name = "name1";
+        Double mrp = 18.88;
+
+        ProductForm form = testUtil.getProductForm(barcode, brand, category, name, mrp);
+        productList.add(form);
+
+        dto.add(form);
+
+        List<ProductPojo> pojoList = productList.stream().map(e->ConvertUtil.objectMapper(e, ProductPojo.class)).collect(Collectors.toList());
+
+        dto.checkDbDuplicate(pojoList);
+    }
     
+    @Test
+    public void testBulkAdd() throws ApiException{
+        List<ProductForm> productList = new ArrayList<ProductForm>();
+
+        String brand  = "brand1";
+        String category = "category1";
+
+        testUtil.addBrand(brand, category);
+
+        String barcode = "1a3t5tq8";
+        String name = "name1";
+        Double mrp = 18.88;
+
+        ProductForm form = testUtil.getProductForm(barcode, brand, category, name, mrp);
+        productList.add(form);
+
+        String barcode1 = "1a3t5tq7";
+        String name1 = "name2";
+        Double mrp1 = 25.36;
+
+        ProductForm form1 = testUtil.getProductForm(barcode1, brand, category, name1, mrp1);
+        productList.add(form1);
+
+        dto.bulkAdd(productList);
+
+        List<ProductData> list = dto.getAll(0, 5, 0, testUtil.empty).getData();
+
+        assertEquals(2, list.size());
+    }
 }

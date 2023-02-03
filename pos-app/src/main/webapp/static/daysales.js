@@ -136,8 +136,7 @@ function init(){
             { "data": "invoicedOrderCount" },
             { 
                 "data":null,
-                "render":function(o){return parseFloat(o.totalRevenue).toFixed(2)} , 
-                className: "text-right" 
+                "render":function(o){return parseFloat(o.totalRevenue).toFixed(2)} 
             },
             
         ]

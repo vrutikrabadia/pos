@@ -17,6 +17,8 @@ function addInventory(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
+		
+		$('#add-inventory-modal').modal('toggle');
 		$("#inventory-table").DataTable().ajax.reload();
 		Swal.fire({
 			icon: "success",
@@ -32,7 +34,6 @@ function addInventory(event){
 }
 
 function updateInventory(event){
-	$('#edit-inventory-modal').modal('toggle');
 	//Get the ID	
 	var url = getInventoryUrl();
 
@@ -49,6 +50,8 @@ function updateInventory(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
+		
+		$('#edit-inventory-modal').modal('toggle');
 		$("#inventory-table").DataTable().ajax.reload();
 		Swal.fire({
 			icon: "success",
@@ -71,6 +74,15 @@ var errorData = [];
 
 function processData(){
 	var file = $('#inventoryFile')[0].files[0];
+	if(file.name.split('.').pop() != "tsv"){
+		Swal.fire({
+			icon: "error",
+			title: "Oops...",
+			text: "Invalid file format.Please upload a '.tsv' file.",
+			
+		});
+		return;
+	}
 	readFileData(file, readFileDataCallback);
 }
 
@@ -185,7 +197,7 @@ function updateUploadDialog(){
 
 function updateFileName(){
 	var $file = $('#inventoryFile');
-	var fileName = $file.val();
+	var fileName = $file[0].files[0].name;
 	$('#inventoryFileName').html(fileName);
 }
 
@@ -248,7 +260,7 @@ function downloadReport(){
 function getConditionalColumns(){
 	var columns = columns = [
 		{ "data": "barcode" },
-		{ "data": "quantity", className: "text-right" },
+		{ "data": "quantity" },
 	];
 
 	if(user == 'supervisor'){

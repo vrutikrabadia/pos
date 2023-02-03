@@ -10,6 +10,7 @@ import com.increff.pos.model.data.UserData;
 import com.increff.pos.model.form.LoginForm;
 import com.increff.pos.model.form.UserForm;
 import com.increff.pos.service.ApiException;
+import com.increff.pos.util.PasswordUtil;
 
 public class UserDtoTest extends AbstractUnitTest {
     
@@ -18,7 +19,7 @@ public class UserDtoTest extends AbstractUnitTest {
 
     @Test
     public void testAdd() throws ApiException {
-        String email = "email";
+        String email = "email@email.com";
         String password = "password";
         String role = "operator";
         UserForm form = new UserForm();
@@ -33,7 +34,7 @@ public class UserDtoTest extends AbstractUnitTest {
 
     @Test(expected = ApiException.class)
     public void testAddDuplicateUser() throws ApiException {
-        String email = "email";
+        String email = "email@email.com";
         String password = "password";
         String role = "operator";
         UserForm form = new UserForm();
@@ -46,7 +47,7 @@ public class UserDtoTest extends AbstractUnitTest {
 
     @Test
     public void testGetAll() throws ApiException {
-        String email = "email";
+        String email = "email@email.com";
         String password = "password";
         String role = "operator";
         UserForm form = new UserForm();
@@ -59,7 +60,7 @@ public class UserDtoTest extends AbstractUnitTest {
 
     @Test
     public void testDelete() throws ApiException {
-        String email = "email";
+        String email = "email@email.com";
         String password = "password";
         String role = "operator";
         UserForm form = new UserForm();
@@ -98,6 +99,15 @@ public class UserDtoTest extends AbstractUnitTest {
         UserData data = userDto.get(email);
         assertEquals(data.getEmail(), email);
         assertEquals(data.getRole(), "operator");
+    }
+
+    @Test
+    public void validatePassword() throws Exception {
+        String password = "password";
+
+        String hashedPassword = PasswordUtil.generateStorngPasswordHash(password);
+
+        assertEquals(PasswordUtil.validatePassword(password, hashedPassword), true);
     }
 
 }
