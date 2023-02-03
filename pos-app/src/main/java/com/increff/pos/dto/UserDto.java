@@ -15,6 +15,7 @@ import com.increff.pos.pojo.UserPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.UserService;
 import com.increff.pos.util.ConvertUtil;
+import com.increff.pos.util.PasswordUtil;
 import com.increff.pos.util.ValidateUtil;
 
 @Component
@@ -32,6 +33,13 @@ public class UserDto {
         ValidateUtil.validateEmail(form.getEmail());
         ValidateUtil.validatePassword(form.getPassword());
 
+        try{
+            form.setPassword(PasswordUtil.generateStorngPasswordHash(form.getPassword()));
+        }
+        catch(Exception e){
+            throw new ApiException("Password hashing failed");
+        }
+
         UserPojo p = ConvertUtil.objectMapper(form, UserPojo.class);
         service.add(p);
     }
@@ -42,7 +50,13 @@ public class UserDto {
         ValidateUtil.validateEmail(form.getEmail());
         ValidateUtil.validatePassword(form.getPassword());
 
-
+        try{
+            form.setPassword(PasswordUtil.generateStorngPasswordHash(form.getPassword()));
+        }
+        catch(Exception e){
+            throw new ApiException("Password hashing failed");
+        }
+        
         UserPojo p = ConvertUtil.objectMapper(form, UserPojo.class);
         if(p.getEmail().equals(supEmail)){
             p.setRole(Roles.supervisor);

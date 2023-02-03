@@ -23,6 +23,7 @@ import com.increff.pos.model.form.LoginForm;
 import com.increff.pos.pojo.UserPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.UserService;
+import com.increff.pos.util.PasswordUtil;
 import com.increff.pos.util.SecurityUtil;
 import com.increff.pos.util.UserPrincipal;
 
@@ -73,7 +74,17 @@ public class LoginController {
 	public ModelAndView login(HttpServletRequest req, LoginForm f) throws ApiException {
 		info.setMessage("No message");
 		UserPojo p = service.get(f.getEmail());
-		boolean authenticated = (p != null && Objects.equals(p.getPassword(), f.getPassword()));
+
+		boolean passwordValidate = false;
+		try{
+			passwordValidate = PasswordUtil.validatePassword(f.getPassword(), p.getPassword());
+		}
+		catch(Exception e){
+			info.setMessage("Errro validating password");;
+			return new ModelAndView("redirect:/site/login");
+		}
+		
+		boolean authenticated = (p != null && passwordValidate);
 		if (!authenticated) {
 			info.setMessage("Invalid username or password");
 			return new ModelAndView("redirect:/site/login");

@@ -61,7 +61,13 @@ function displayUserList(data){
 	var $tbody = $('#user-table').find('tbody');
 	$tbody.empty();
 	for(var i in data){
+		
 		var e = data[i];
+		
+		if(e.email == userEmail){
+			continue;
+		}
+		
 		var buttonHtml = '<button class="btn" title="delete user" onclick="deleteUser(' + e.id + ')"><img src='+deleteButton+ '></button>';
 		var row = '<tr>'
 		+ '<td>' + e.id + '</td>'
