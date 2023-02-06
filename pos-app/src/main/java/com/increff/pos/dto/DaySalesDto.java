@@ -48,12 +48,7 @@ public class DaySalesDto {
         }
 
         Integer totalEntries = service.getTotalEntries();
-<<<<<<< HEAD
-       
-        return new SelectData<DaySalesData>(dataList, totalEntries, totalEntries, draw);
-=======
         return new SelectData<DaySalesData>(dataList, draw, totalEntries, totalEntries);
->>>>>>> ceae59c (adds generic error function in bulkAdd & minor changes)
     }
 
     public SelectData<DaySalesData> getInDateRange(Integer start, Integer length, Integer draw, ZonedDateTime startDate, ZonedDateTime endDate) throws ApiException{
