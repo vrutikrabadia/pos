@@ -22,6 +22,7 @@ public class DaySalesService {
     public void add(PosDaySales pojo){
         PosDaySales check = getByDate(pojo.getDate()); 
 
+
         if(Objects.isNull(check)){
 
             dao.insert(pojo); 

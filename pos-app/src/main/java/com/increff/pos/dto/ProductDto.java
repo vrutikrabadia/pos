@@ -25,6 +25,7 @@ import com.increff.pos.service.ApiException;
 import com.increff.pos.service.BrandService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ConvertUtil;
+import com.increff.pos.util.ExceptionUtil;
 import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
 
@@ -57,7 +58,7 @@ public class ProductDto {
         StringUtil.normaliseList(list, ProductForm.class);
         ValidateUtil.validateList(list);
 
-        checkFileDuplications(list);
+        checkListDuplications(list);
 
         List<ProductPojo> pojoList = checkAndConvertBrandAndCategory(list);
         
@@ -100,8 +101,7 @@ public class ProductDto {
         return pojoList;
     }
 
-    protected void checkFileDuplications(List<ProductForm> formList) throws ApiException {
-        JSONArray errorList = new JSONArray();
+    protected void checkListDuplications(List<ProductForm> formList) throws ApiException {
         Set<String> fileSet = new HashSet<String>();
 
 
@@ -110,62 +110,30 @@ public class ProductDto {
 
 
         if (repeatSet.size() > 0) {
-            Set<ProductForm> formSet = formList.stream().filter(e->!repeatSet.contains(e)).collect(Collectors.toSet());
-            
-            repeatSet.forEach(e -> {
-                JSONObject error = new JSONObject(new Gson().toJson(e));
-                error.put("error", "DUPLICATE entries in file");
-                errorList.put(error);
-            });
-
-
-            formSet.forEach(e->{
-                JSONObject error = new JSONObject(new Gson().toJson(e));
-                error.put("error", "");
-                errorList.put(error);
-            });
-
-
-            throw new ApiException(errorList.toString());
+            ExceptionUtil.generateBulkAddExceptionList("DUPLICATE entries in file", formList, repeatSet);
         }
     }
 
     protected void checkDbDuplicate(List<ProductPojo> pojoList) throws ApiException{
-        JSONArray errorList = new JSONArray();
-        
         List<String> barcodeList = pojoList.stream().map(ProductPojo::getBarcode).collect(Collectors.toList());
         List<ProductPojo> currentExixting = service.getInColumn(Arrays.asList("barcode"),Arrays.asList(barcodeList));
-        System.out.println(currentExixting.toString());
+      
         Set<String> dbSet = new HashSet<String>();
         dbSet = currentExixting.stream().flatMap(pojo -> Stream.of(pojo.getBarcode()))
                 .collect(Collectors.toSet());
-        System.out.println(dbSet);
+
         Set<String> finalDbSet = dbSet;
         Set<ProductPojo> repeatSet = pojoList.stream().filter(e -> !finalDbSet.add(e.getBarcode()))
                 .collect(Collectors.toSet());
         
-        System.out.println(repeatSet);
-        
-
+         
         if (repeatSet.size() > 0) {
-            Set<ProductPojo> formSet = pojoList.stream().filter(e->!repeatSet.contains(e)).collect(Collectors.toSet());
-            formSet.forEach(e->{
-                ProductForm repeated = ConvertUtil.objectMapper(e, ProductForm.class);
-                JSONObject error = new JSONObject(new Gson().toJson(repeated));
-                error.put("error", "");
-                errorList.put(error);
-            });
 
-            repeatSet.forEach(e -> {
-                ProductForm repeated = ConvertUtil.objectMapper(e, ProductForm.class);
-                JSONObject error = new JSONObject(new Gson().toJson(repeated));
-                error.put("error", "DUPLICATE: already exists in db");
-                errorList.put(error);
-            });
-
-            throw new ApiException(errorList.toString());
+            ExceptionUtil.generateBulkAddExceptionPojo("DUPLICATE: already exists in db", pojoList, repeatSet, ProductForm.class);
         }
     }
+
+    
 
     public ProductData get(Integer id) throws ApiException {
         ProductPojo p = service.get(id);
@@ -209,13 +177,11 @@ public class ProductDto {
             list1.add(pData);
         }
 
-        SelectData<ProductData> result = new SelectData<ProductData>();
-        result.setData(list1);
-        result.setDraw(draw);
+
+        
         Integer totalRecords = service.getTotalEntries();
-        result.setRecordsFiltered(totalRecords);
-        result.setRecordsTotal(totalRecords);
-        return result;
+       
+        return new SelectData<ProductData>(list1, draw, totalRecords, totalRecords);
     }
 
     public void update(Integer id, ProductForm form) throws ApiException {
@@ -226,7 +192,6 @@ public class ProductDto {
 
         ProductPojo p = ConvertUtil.objectMapper(form, ProductPojo.class);
         p.setBrandCat(brandP.getId());
-
 
         if (service.checkBarCode(id, p.getBarcode())) {
             throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");

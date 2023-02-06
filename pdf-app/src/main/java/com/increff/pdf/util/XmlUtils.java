@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -15,31 +16,32 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.increff.pdf.model.form.BrandReportForm;
-import com.increff.pdf.model.form.InventoryReportForm;
-import com.increff.pdf.model.form.InvoiceForm;
-import com.increff.pdf.model.form.InvoiceItemsForm;
-import com.increff.pdf.model.form.SalesReportForm;
+import com.increff.pdf.model.data.BrandReportData;
+import com.increff.pdf.model.data.InventoryReportData;
+import com.increff.pdf.model.data.InvoiceData;
+import com.increff.pdf.model.data.InvoiceItemsData;
+import com.increff.pdf.model.data.SalesReportData;
 
-@Component
+// @Component
 public class XmlUtils {
 
     
-    @Value("${cache.location}")
     private String cacheLocation;
+
+    public XmlUtils(String cacheLocation) {
+        this.cacheLocation = cacheLocation;
+    }
 
     
 
-    public  void generateInvoiceXml(InvoiceForm invoiceData) throws Exception {
+    public void generateInvoiceXml(InvoiceData invoiceData) throws Exception {
         
         double subTotal = 0.0;
 
-        for(InvoiceItemsForm item: invoiceData.getItemsList()){
+        for(InvoiceItemsData item: invoiceData.getItemsList()){
             subTotal += item.getQuantity()*item.getSellingPrice();
         }
 
@@ -132,7 +134,7 @@ public class XmlUtils {
 
         Integer recordCount = 1;
 
-        for (InvoiceItemsForm item: invoiceData.getItemsList()) {
+        for (InvoiceItemsData item: invoiceData.getItemsList()) {
             // RECORDSET
             Element recordset = doc.createElement("RECORDSET");
             recordset.setAttribute("RecordsetNumber", recordCount.toString());
@@ -183,7 +185,7 @@ public class XmlUtils {
     }
 
 
-    public  void generateBrandReportXml(List<BrandReportForm> brands) throws Exception{
+    public  void generateBrandReportXml(List<BrandReportData> brands) throws Exception{
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -240,7 +242,7 @@ public class XmlUtils {
 
         Integer recordCount = 1;
 
-        for (BrandReportForm brand: brands) {
+        for (BrandReportData brand: brands) {
             // RECORDSET
             Element recordset = doc.createElement("RECORDSET");
             recordset.setAttribute("RecordsetNumber", recordCount.toString());
@@ -267,7 +269,7 @@ public class XmlUtils {
     }
 
 
-    public  void generateInventoryReportXml(List<InventoryReportForm> inventory) throws Exception{
+    public  void generateInventoryReportXml(List<InventoryReportData> inventory) throws Exception{
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -324,7 +326,7 @@ public class XmlUtils {
 
         Integer recordCount = 1;
 
-        for (InventoryReportForm inv: inventory) {
+        for (InventoryReportData inv: inventory) {
             // RECORDSET
             Element recordset = doc.createElement("RECORDSET");
             recordset.setAttribute("RecordsetNumber", recordCount.toString());
@@ -355,7 +357,7 @@ public class XmlUtils {
         }
     }
 
-    public  void generateSalesReportXml(List<SalesReportForm> sales) throws Exception{
+    public  void generateSalesReportXml(List<SalesReportData> sales) throws Exception{
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -412,7 +414,7 @@ public class XmlUtils {
 
         Integer recordCount = 1;
 
-        for (SalesReportForm sale: sales) {
+        for (SalesReportData sale: sales) {
             // RECORDSET
             Element recordset = doc.createElement("RECORDSET");
             recordset.setAttribute("RecordsetNumber", recordCount.toString());

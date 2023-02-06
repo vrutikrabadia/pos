@@ -1,27 +1,25 @@
-package com.increff.pdf.dto;
+package com.increff.pdf.generator;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.increff.pdf.model.form.BrandReportForm;
-import com.increff.pdf.model.form.InventoryReportForm;
-import com.increff.pdf.model.form.SalesReportForm;
+import com.increff.pdf.model.data.BrandReportData;
+import com.increff.pdf.model.data.InventoryReportData;
+import com.increff.pdf.model.data.SalesReportData;
 import com.increff.pdf.service.ApiException;
 import com.increff.pdf.util.PdfUtil;
 import com.increff.pdf.util.XmlUtils;
 
-@Component
-public class ReportDto {
+public class ReportGenerator {
     
-    @Autowired
     private XmlUtils xmlUtils;
-
-    @Autowired
     private PdfUtil pdfUtil;
 
-    public String generateBrandReport(List<BrandReportForm> form) throws ApiException{
+    public ReportGenerator(String cacheLocation) {
+        this.xmlUtils = new XmlUtils(cacheLocation);
+        this.pdfUtil = new PdfUtil(cacheLocation);
+    }
+
+    public String generateBrandReport(List<BrandReportData> form) throws ApiException{
         
         try {
             xmlUtils.generateBrandReportXml(form);
@@ -34,7 +32,7 @@ public class ReportDto {
     }
 
 
-    public String generateInventoryReport(List<InventoryReportForm> form) throws ApiException{
+    public String generateInventoryReport(List<InventoryReportData> form) throws ApiException{
         try {
             xmlUtils.generateInventoryReportXml(form);
         } catch (Exception e) {
@@ -45,7 +43,7 @@ public class ReportDto {
         return pdfUtil.generateInventoryReportPdf();
     }
 
-    public String generateSalesReport(List<SalesReportForm> form) throws ApiException{
+    public String generateSalesReport(List<SalesReportData> form) throws ApiException{
         try {
             xmlUtils.generateSalesReportXml(form);
         } catch (Exception e) {

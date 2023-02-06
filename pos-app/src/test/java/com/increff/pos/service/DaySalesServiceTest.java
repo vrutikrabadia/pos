@@ -43,11 +43,12 @@ public class DaySalesServiceTest extends AbstractUnitTest {
         PosDaySales pojo1 = testUtil.getDaySalesPojo(5, 1, 25.0);
         service.add(pojo1);
         List<PosDaySales> list = service.getAllPaginated(0, 5);
-
-        assertEquals(1, list.size());
+        
         assertEquals(Integer.valueOf(10), list.get(0).getInvoicedItemsCount());
         assertEquals(Integer.valueOf(6), list.get(0).getInvoicedOrderCount());
         assertEquals(Double.valueOf(50.0), list.get(0).getTotalRevenue());
+        
+        assertEquals(1, list.size());
     }
 
     @Test

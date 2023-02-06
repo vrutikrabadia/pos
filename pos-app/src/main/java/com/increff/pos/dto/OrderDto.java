@@ -11,15 +11,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
-import com.increff.pos.model.data.InvoiceData;
-import com.increff.pos.model.data.InvoiceItemsData;
+import com.increff.pdf.generator.InvoiceGenerator;
+import com.increff.pdf.model.data.InvoiceData;
+import com.increff.pdf.model.data.InvoiceItemsData;
 import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.data.OrderItemsData;
 import com.increff.pos.model.data.SelectData;
@@ -52,8 +49,8 @@ public class OrderDto {
     @Autowired
     private InventoryService invService;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    // @Autowired
+    // private RestTemplate restTemplate;
 
     @Value("${cache.location}")
     private String cacheLocation;
@@ -141,13 +138,8 @@ public class OrderDto {
             list.add(data);
         }
 
-        SelectData<OrderData> result = new SelectData<OrderData>();
-        result.setData(list);
-        result.setDraw(draw);
         Integer totalEntries = service.getTotalEntries();
-        result.setRecordsFiltered(totalEntries);
-        result.setRecordsTotal(totalEntries);
-        return result;
+        return new SelectData<OrderData>(list, draw, totalEntries, totalEntries);
     }
 
     public List<OrderItemsData> getByOrderId(Integer orderId) throws ApiException {
@@ -173,7 +165,7 @@ public class OrderDto {
         File file = new File(filePath);
 
         if (file.exists()){
-        return Base64Util.encodeFileToBase64Binary(filePath);
+            return Base64Util.encodeFileToBase64Binary(filePath);
         }
 
         OrderPojo order = service.get(orderId);
@@ -193,16 +185,19 @@ public class OrderDto {
 
         invoiceData.setItemsList(invItems);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        // String base64 = "";
+        String base64 = new InvoiceGenerator(cacheLocation).generateInvoice(invoiceData);
 
-        String apiUrl = pdfAppUrl + "/api/invoices";
-        ResponseEntity<String> apiResponse = restTemplate.postForEntity(apiUrl, invoiceData, String.class);
-        String responseBody = apiResponse.getBody();
+        // HttpHeaders headers = new HttpHeaders();
+        // headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Base64Util.decodeBase64ToFile(responseBody, filePath);
+        // String apiUrl = pdfAppUrl + "/api/invoices";
+        // ResponseEntity<String> apiResponse = restTemplate.postForEntity(apiUrl, invoiceData, String.class);
+        // String responseBody = apiResponse.getBody();
 
-        return responseBody;
+        Base64Util.decodeBase64ToFile(base64, filePath);
+
+        return base64;
 
     }
 

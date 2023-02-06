@@ -14,16 +14,20 @@ import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import com.increff.pdf.service.ApiException;
 
-@Component
+// @Component
 public class PdfUtil {
 
-    @Value("${cache.location}")
     private String cacheLocation;
+
+    //constructor
+    public PdfUtil(String cacheLocation) {
+        this.cacheLocation = cacheLocation;
+    }
+    // @Value("${cache.location}")
+    // private String cacheLocation;
 
     public  String generateInvoicePdf(Integer orderId) throws ApiException {
         File xsltFile = new File(new File("src/main/resources/com/increff/pdf/invoice.xsl").getAbsolutePath());

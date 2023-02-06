@@ -1,11 +1,11 @@
-package com.increff.pdf.model.form;
+package com.increff.pdf.model.data;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class InvoiceItemsForm {
+public class InvoiceItemsData {
     private String name;
     private String barcode;
     private Integer quantity;

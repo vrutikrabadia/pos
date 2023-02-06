@@ -28,10 +28,10 @@ public class ReportDtoTest extends AbstractUnitTest{
     @Autowired
     private TestUtil testUtil;
 
-    //brand report tests
+    // brand report tests
 
     @Test
-    public void testGetBrandReport(){
+    public void testGetBrandReport() throws com.increff.pdf.service.ApiException{
         
         //add brand
         testUtil.addBrand("brand1", "category1");
@@ -43,7 +43,7 @@ public class ReportDtoTest extends AbstractUnitTest{
 
     }
 
-    //inventory report tests
+    // inventory report tests
 
     @Test
     public void testgetProductIdToBrandCatMap(){
@@ -93,7 +93,7 @@ public class ReportDtoTest extends AbstractUnitTest{
     }
 
     @Test
-    public void testGetInventoryReport() throws ApiException{
+    public void testGetInventoryReport() throws ApiException, com.increff.pdf.service.ApiException{
         Integer brandId1 =testUtil.addBrand("brand1", "category1");
         Integer brandId2 =testUtil.addBrand("brand2", "category2");
 
@@ -143,7 +143,7 @@ public class ReportDtoTest extends AbstractUnitTest{
     }
 
     @Test
-    public void testSalesReportWithoutBrandAndCategory() throws ApiException{
+    public void testSalesReportWithoutBrandAndCategory() throws ApiException, com.increff.pdf.service.ApiException{
         Integer brandId1 =testUtil.addBrand("brand1", "category1");
         Integer brandId2 =testUtil.addBrand("brand2", "category2");
 
@@ -171,7 +171,7 @@ public class ReportDtoTest extends AbstractUnitTest{
     }
     
     @Test
-    public void testSalesReportWithBrandAndCategory() throws ApiException{
+    public void testSalesReportWithBrandAndCategory() throws ApiException, com.increff.pdf.service.ApiException{
         Integer brandId1 =testUtil.addBrand("brand1", "category1");
         Integer brandId2 =testUtil.addBrand("brand2", "category2");
 

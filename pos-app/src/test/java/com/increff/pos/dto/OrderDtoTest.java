@@ -40,6 +40,7 @@ public class OrderDtoTest extends AbstractUnitTest{
        
         dto.add(itemsList);
 
+
         SelectData<OrderData> orderList = dto.getAll(0, 5, 1, testUtil.empty);
 
         assertEquals(1, orderList.getData().size());
@@ -124,14 +125,15 @@ public class OrderDtoTest extends AbstractUnitTest{
     
             dto.add(itemsList);
             
+            SelectData<OrderData> orderList = dto.getAll(0, 5, 1, testUtil.empty);
+
             String base64 = null;
 
             try{
-                base64 = dto.generateInvoice(1);
+                base64 = dto.generateInvoice(orderList.getData().get(0).getId());
             }catch(Exception e){
-                e.printStackTrace();
+                fail();
             }
-
             assertEquals(true, Objects.nonNull(base64));
 
     }

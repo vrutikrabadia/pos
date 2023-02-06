@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
-@ComponentScan("com.increff.pos")
+@ComponentScan({"com.increff.pos","com.increff.pdf"})
 @EnableAsync
 @EnableScheduling
 @PropertySources({ //

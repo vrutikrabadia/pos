@@ -1,4 +1,4 @@
-package com.increff.pdf.model.form;
+package com.increff.pdf.model.data;
 
 import javax.validation.constraints.NotBlank;
 
@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BrandReportForm {
+public class BrandReportData {
 
     @NotBlank(message = "Brand cannot be blank")
     private String brand;

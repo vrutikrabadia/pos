@@ -18,9 +18,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import com.increff.pdf.generator.ReportGenerator;
+import com.increff.pdf.model.data.BrandReportData;
+import com.increff.pdf.model.data.InventoryReportData;
+import com.increff.pdf.model.data.SalesReportData;
 import com.increff.pos.model.data.BrandData;
-import com.increff.pos.model.data.InventoryReportData;
-import com.increff.pos.model.data.SalesReportData;
 import com.increff.pos.model.form.SalesReportForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.InventoryPojo;
@@ -33,6 +35,7 @@ import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.OrderItemsService;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.service.ProductService;
+import com.increff.pos.util.ConvertUtil;
 import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
 
@@ -63,10 +66,13 @@ public class ReportDto {
     @Value("${pdfapp.url}")
     private String pdfAppUrl;
 
+    @Value("${cache.location}")
+    private String cacheLocation;
+
 
     //functions for inventory report
 
-    public String getInventoryReport() throws ApiException {
+    public String getInventoryReport() throws ApiException, com.increff.pdf.service.ApiException {
 
         List<InventoryPojo> iList = iService.getAll();
         HashMap<Integer, Integer> prodIdtoBrandCat = getProductIdToBrandCatMap(iList);
@@ -76,7 +82,7 @@ public class ReportDto {
         return invReportFromMap(resultMap, brandCatIds);
     }
 
-    private String invReportFromMap(HashMap<Integer, Integer> resultMap, List<Integer> brandCatIds) {
+    private String invReportFromMap(HashMap<Integer, Integer> resultMap, List<Integer> brandCatIds) throws com.increff.pdf.service.ApiException {
         List<InventoryReportData> result = new ArrayList<InventoryReportData>();
 
         List<BrandPojo> brandList = bService.getInColumn(Arrays.asList("id"), Arrays.asList(brandCatIds));
@@ -94,7 +100,7 @@ public class ReportDto {
             result.add(res);
         }
         
-        return getReportFile(result, "/inventory");
+        return new ReportGenerator(cacheLocation).generateInventoryReport(result);
     }
 
     protected HashMap<Integer, Integer> getProductIdToBrandCatMap(List<InventoryPojo> iList) {
@@ -124,7 +130,7 @@ public class ReportDto {
 
     //functions for sales report
 
-    public String getSalesReport(SalesReportForm form) throws ApiException {
+    public String getSalesReport(SalesReportForm form) throws ApiException, com.increff.pdf.service.ApiException {
 
         StringUtil.normalise(form, SalesReportForm.class);
         ValidateUtil.validateForms(form);
@@ -148,7 +154,7 @@ public class ReportDto {
     }
 
     private String generateSalesReportWithBrandandCategory(String brand, String category,
-            ZonedDateTime sDate, ZonedDateTime eDate) throws ApiException {
+            ZonedDateTime sDate, ZonedDateTime eDate) throws ApiException, com.increff.pdf.service.ApiException {
 
         List<BrandPojo> brandList = new ArrayList<BrandPojo>();
 
@@ -178,7 +184,7 @@ public class ReportDto {
 
     }
 
-    private String generateSalesReportOnlyDates(ZonedDateTime sDate, ZonedDateTime eDate) {
+    private String generateSalesReportOnlyDates(ZonedDateTime sDate, ZonedDateTime eDate) throws com.increff.pdf.service.ApiException {
 
         List<OrderItemsPojo> itemsList = getOrderItems(sDate, eDate, null);
 
@@ -209,7 +215,7 @@ public class ReportDto {
     }
 
     private String generateSalesReport(List<OrderItemsPojo> itemlsList, List<BrandPojo> brandList,
-            List<ProductPojo> prodList) {
+            List<ProductPojo> prodList) throws com.increff.pdf.service.ApiException {
 
         HashMap<Integer, Integer> prodIdToBrandCatId = (HashMap<Integer, Integer>) prodList.stream()
                 .collect(Collectors.toMap(ProductPojo::getId, ProductPojo::getBrandCat));
@@ -245,29 +251,30 @@ public class ReportDto {
             result.add(data);
         }
 
-        return getReportFile(result, "/sales");
+        return new ReportGenerator(cacheLocation).generateSalesReport(result);
     }
 
     //functions for brand report
 
-    public String getBrandReport() {
+    public String getBrandReport() throws com.increff.pdf.service.ApiException {
 
         Integer totalBrands = bService.getTotalEntries();
-        List<BrandData> brandList = bDto.getAll(0, totalBrands, 1, Optional.empty()).getData();
+        List<BrandData> dataList= bDto.getAll(0, totalBrands, 1, Optional.empty()).getData();
+        List<BrandReportData> brandList = dataList.stream().map(e->ConvertUtil.objectMapper(e, BrandReportData.class)).collect(Collectors.toList());
 
-        return getReportFile(brandList, "/brands");
+        return new ReportGenerator(cacheLocation).generateBrandReport(brandList);
     }
 
-    private <T> String getReportFile(T result, String path){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+    // private <T> String getReportFile(T result, String path){
+    //     HttpHeaders headers = new HttpHeaders();
+    //     headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String apiUrl = pdfAppUrl + "/api/reports" + path;
-        ResponseEntity<String> apiResponse = restTemplate.postForEntity(apiUrl, result, String.class);
-        String responseBody = apiResponse.getBody();
+    //     String apiUrl = pdfAppUrl + "/api/reports" + path;
+    //     ResponseEntity<String> apiResponse = restTemplate.postForEntity(apiUrl, result, String.class);
+    //     String responseBody = apiResponse.getBody();
 
 
-        return responseBody;
-    }
+    //     return responseBody;
+    // }
 
 }
