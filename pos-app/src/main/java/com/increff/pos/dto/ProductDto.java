@@ -115,6 +115,10 @@ public class ProductDto {
     }
 
     protected void checkDbDuplicate(List<ProductPojo> pojoList) throws ApiException{
+<<<<<<< HEAD
+=======
+        
+>>>>>>> ceae59c (adds generic error function in bulkAdd & minor changes)
         List<String> barcodeList = pojoList.stream().map(ProductPojo::getBarcode).collect(Collectors.toList());
         List<ProductPojo> currentExixting = service.getInColumn(Arrays.asList("barcode"),Arrays.asList(barcodeList));
       
@@ -126,10 +130,15 @@ public class ProductDto {
         Set<ProductPojo> repeatSet = pojoList.stream().filter(e -> !finalDbSet.add(e.getBarcode()))
                 .collect(Collectors.toSet());
         
+<<<<<<< HEAD
          
         if (repeatSet.size() > 0) {
 
             ExceptionUtil.generateBulkAddExceptionPojo("DUPLICATE: already exists in db", pojoList, repeatSet, ProductForm.class);
+=======
+        if (repeatSet.size() > 0) {
+           ExceptionUtil.generateBulkAddExceptionPojo("DUPLICATE: already exists in db", pojoList, repeatSet, ProductForm.class);
+>>>>>>> ceae59c (adds generic error function in bulkAdd & minor changes)
         }
     }
 
@@ -177,10 +186,7 @@ public class ProductDto {
             list1.add(pData);
         }
 
-
-        
         Integer totalRecords = service.getTotalEntries();
-       
         return new SelectData<ProductData>(list1, draw, totalRecords, totalRecords);
     }
 

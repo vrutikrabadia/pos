@@ -145,8 +145,9 @@ public class InventoryDto {
             iData.setBarcode(prodPojo.getBarcode());
             list.add(iData);
         }
-
+;
         Integer totalEntries = service.getTotalEntries();
+
         return new SelectData<InventoryData>(list, draw, totalEntries, totalEntries);
     }
 

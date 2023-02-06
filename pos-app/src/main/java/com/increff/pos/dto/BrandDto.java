@@ -70,7 +70,6 @@ public class BrandDto {
 
 
         if (repeatSet.size() > 0) {
-
             ExceptionUtil.generateBulkAddExceptionList( "DUPLICATE entries in file", formList, repeatSet);
         }
     }
@@ -89,9 +88,7 @@ public class BrandDto {
         
 
         if (repeatSet.size() > 0) {
-
             ExceptionUtil.generateBulkAddExceptionPojo("DUPLICATE: already exists in db", pojoList, repeatSet, BrandForm.class);
-            
         }
     }
 
