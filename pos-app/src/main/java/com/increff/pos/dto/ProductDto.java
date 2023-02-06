@@ -47,7 +47,7 @@ public class ProductDto {
         p.setBrandCat(brandP.getId());
 
 
-        if (service.checkBarCode(0, p.getBarcode())) {
+        if (service.checkBarcode(0, p.getBarcode())) {
             throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
         }
 
@@ -115,10 +115,7 @@ public class ProductDto {
     }
 
     protected void checkDbDuplicate(List<ProductPojo> pojoList) throws ApiException{
-<<<<<<< HEAD
-=======
         
->>>>>>> ceae59c (adds generic error function in bulkAdd & minor changes)
         List<String> barcodeList = pojoList.stream().map(ProductPojo::getBarcode).collect(Collectors.toList());
         List<ProductPojo> currentExixting = service.getInColumn(Arrays.asList("barcode"),Arrays.asList(barcodeList));
       
@@ -130,15 +127,8 @@ public class ProductDto {
         Set<ProductPojo> repeatSet = pojoList.stream().filter(e -> !finalDbSet.add(e.getBarcode()))
                 .collect(Collectors.toSet());
         
-<<<<<<< HEAD
-         
-        if (repeatSet.size() > 0) {
-
-            ExceptionUtil.generateBulkAddExceptionPojo("DUPLICATE: already exists in db", pojoList, repeatSet, ProductForm.class);
-=======
         if (repeatSet.size() > 0) {
            ExceptionUtil.generateBulkAddExceptionPojo("DUPLICATE: already exists in db", pojoList, repeatSet, ProductForm.class);
->>>>>>> ceae59c (adds generic error function in bulkAdd & minor changes)
         }
     }
 
@@ -199,7 +189,8 @@ public class ProductDto {
         ProductPojo p = ConvertUtil.objectMapper(form, ProductPojo.class);
         p.setBrandCat(brandP.getId());
 
-        if (service.checkBarCode(id, p.getBarcode())) {
+
+        if (service.checkBarcode(id, p.getBarcode())) {
             throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
         }
 

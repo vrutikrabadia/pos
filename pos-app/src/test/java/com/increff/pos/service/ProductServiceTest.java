@@ -111,7 +111,7 @@ public class ProductServiceTest extends AbstractUnitTest {
     }
 
     @Test
-    public void testGetInColumn() {
+    public void testGetInColumn() throws ApiException {
         Integer brandId = testUtil.addBrand("b1", "c1");
         testUtil.addProduct("abcdefgh", brandId, "n1", 10.00);
         testUtil.addProduct("a1cdefgh", brandId, "n2", 10.00);

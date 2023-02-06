@@ -46,7 +46,7 @@ public class ReportDtoTest extends AbstractUnitTest{
     // inventory report tests
 
     @Test
-    public void testgetProductIdToBrandCatMap(){
+    public void testgetProductIdToBrandCatMap() throws ApiException{
         //add brand
 
         Integer brandId1 =testUtil.addBrand("brand1", "category1");
@@ -69,7 +69,7 @@ public class ReportDtoTest extends AbstractUnitTest{
     }
 
     @Test
-    public void testgetbrandCatIdToQuantityMap(){
+    public void testgetbrandCatIdToQuantityMap() throws ApiException{
         Integer brandId1 =testUtil.addBrand("brand1", "category1");
         Integer brandId2 =testUtil.addBrand("brand2", "category2");
 

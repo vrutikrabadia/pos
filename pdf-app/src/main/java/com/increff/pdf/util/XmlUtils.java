@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -113,7 +113,7 @@ public class XmlUtils {
 
         // invoice date
         Element invoice_date = doc.createElement("Invoice_date");
-        invoice_date.setTextContent(DateTimeFormatter.ofPattern("dd/MM/yyyy - hh:mm").format(invoiceData.getUpdated()));
+        invoice_date.setTextContent(invoiceData.getUpdated().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy HH:mm:ss").toFormatter()) + " UTC");
         gdkRow.appendChild(invoice_date);
 
         // invoice number
@@ -232,7 +232,7 @@ public class XmlUtils {
 
         // report date
         Element report_date = doc.createElement("Report_date");
-        report_date.setTextContent(DateTimeFormatter.ofPattern("dd/MM/yyyy - hh:mm").format(LocalDateTime.now()));
+        report_date.setTextContent(ZonedDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy HH:mm:ss z").toFormatter()));
         gdkRow.appendChild(report_date);
         
         //Report name
@@ -316,7 +316,7 @@ public class XmlUtils {
 
         // report date
         Element report_date = doc.createElement("Report_date");
-        report_date.setTextContent(DateTimeFormatter.ofPattern("dd/MM/yyyy - hh:mm").format(LocalDateTime.now()));
+        report_date.setTextContent(ZonedDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy HH:mm:ss z").toFormatter()));
         gdkRow.appendChild(report_date);
         
         //Report name
@@ -404,7 +404,7 @@ public class XmlUtils {
 
         // report date
         Element report_date = doc.createElement("Report_date");
-        report_date.setTextContent(DateTimeFormatter.ofPattern("dd/MM/yyyy - hh:mm").format(LocalDateTime.now()));
+        report_date.setTextContent(ZonedDateTime.now().format(new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy HH:mm:ss z").toFormatter()));
         gdkRow.appendChild(report_date);
         
         //Report name

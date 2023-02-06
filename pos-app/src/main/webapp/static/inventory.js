@@ -74,6 +74,15 @@ var errorData = [];
 
 function processData(){
 	var file = $('#inventoryFile')[0].files[0];
+
+	if(!file){
+		Swal.fire({
+			icon: "error",
+			title: "Oops...",
+			text: "Please select a file to upload.",
+		});
+		return;
+	}
 	if(file.name.split('.').pop() != "tsv"){
 		Swal.fire({
 			icon: "error",
@@ -81,6 +90,7 @@ function processData(){
 			text: "Invalid file format.Please upload a '.tsv' file.",
 			
 		});
+		resetUploadDialog();
 		return;
 	}
 	readFileData(file, readFileDataCallback);
@@ -142,10 +152,19 @@ function uploadRows(){
 
 		},
 		error: function(error){
-			console.log(error);
 			errorData = JSON.parse(JSON.parse(error.responseText).message);
-			console.log(errorData);
-			
+			//enable download-errors button
+			$('#download-errors').attr('disabled', false);
+
+			//change order of json keys to order "barcode, quantity, error"
+			for(var i = 0; i < errorData.length; i++){
+				var temp = errorData[i];
+				errorData[i] = {};
+				errorData[i]["barcode"] = temp["barcode"];
+				errorData[i]["quantity"] = temp["quantity"];
+				errorData[i]["error"] = temp["error"];
+			}
+
 			updateUploadDialog();
 			Swal.fire({
 				icon: "error",
@@ -179,6 +198,10 @@ function displayEditInventory(barcode){
 }
 
 function resetUploadDialog(){
+	//disable download-errors button
+
+	$('#download-errors').attr('disabled', true);
+
 	//Reset file name
 	var $file = $('#inventoryFile');
 	$file.val('');
@@ -214,6 +237,17 @@ function displayUploadData(){
 function displayInventory(data){
 	$("#inventory-edit-form input[name=barcode]").val(data.barcode);	
 	$("#inventory-edit-form input[name=quantity]").val(data.quantity);
+
+	$('#inventory-edit-form').on('input change', function() {
+		let quantity = $("#inventory-edit-form input[name=quantity]").val();
+
+		if(quantity == data.quantity){
+			$('#update-inventory').attr('disabled', true);
+		}
+		else{
+			$('#update-inventory').attr('disabled', false);
+		}
+	});
 	$('#update-inventory').attr('disabled', true);
 
 	$('#edit-inventory-modal').modal('toggle');
@@ -283,7 +317,11 @@ function init(){
 	$('#upload-data').html('<img src='+uploadFileButton+'></img>');
 	$('#refresh-data').html('<img src='+refreshButton+'></img>');
 	$('#download-report').html('<img src='+downloadReportButton+'></img>');
+
 	$('#inventory-table').DataTable( {
+		language: {
+			searchPlaceholder: "Bacode"
+		},
 		"ordering": false,
 		"processing": true,
 		"serverSide": true,
@@ -303,9 +341,7 @@ function init(){
     $('#inventoryFile').on('change', updateFileName);
 	$('#download-report').click(downloadReport);
 
-	$('#inventory-edit-form').on('input change', function() {
-		$('#update-inventory').attr('disabled', false);
-	});
+	
 }
 
 $(document).ready(init);
