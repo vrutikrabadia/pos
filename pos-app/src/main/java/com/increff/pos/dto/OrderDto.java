@@ -141,13 +141,9 @@ public class OrderDto {
             list.add(data);
         }
 
-        SelectData<OrderData> result = new SelectData<OrderData>();
-        result.setData(list);
-        result.setDraw(draw);
         Integer totalEntries = service.getTotalEntries();
-        result.setRecordsFiltered(totalEntries);
-        result.setRecordsTotal(totalEntries);
-        return result;
+
+        return new SelectData<OrderData>(list, draw, totalEntries, totalEntries);
     }
 
     public List<OrderItemsData> getByOrderId(Integer orderId) throws ApiException {

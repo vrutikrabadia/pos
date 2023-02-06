@@ -126,10 +126,12 @@ public class OrderDtoTest extends AbstractUnitTest{
             
             String base64 = null;
 
+            SelectData<OrderData> orderList = dto.getAll(0, 5, 1, testUtil.empty);
+
             try{
-                base64 = dto.generateInvoice(1);
+                base64 = dto.generateInvoice(orderList.getData().get(0).getId());
             }catch(Exception e){
-                e.printStackTrace();
+                fail();
             }
 
             assertEquals(true, Objects.nonNull(base64));

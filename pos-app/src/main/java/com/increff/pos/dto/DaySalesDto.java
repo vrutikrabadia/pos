@@ -47,13 +47,8 @@ public class DaySalesDto {
             dataList.add(data);
         }
 
-        SelectData<DaySalesData> result = new SelectData<DaySalesData>();
-        result.setData(dataList);
         Integer totalEntries = service.getTotalEntries();
-        result.setRecordsFiltered(totalEntries);
-        result.setRecordsTotal(totalEntries);
-        result.setDraw(draw);
-        return result;
+        return new SelectData<DaySalesData>(dataList, draw, totalEntries, totalEntries);
     }
 
     public SelectData<DaySalesData> getInDateRange(Integer start, Integer length, Integer draw, ZonedDateTime startDate, ZonedDateTime endDate) throws ApiException{
@@ -75,13 +70,8 @@ public class DaySalesDto {
             
         }
 
-        SelectData<DaySalesData> result = new SelectData<DaySalesData>();
-        result.setData(dataList);
         Integer totalEntries = service.getTotalEntriesinDateRange(sDate, eDate);
-        result.setRecordsFiltered(totalEntries);
-        result.setRecordsTotal(totalEntries);
-        result.setDraw(draw);
-        return result;
+        return new SelectData<DaySalesData>(dataList, draw, totalEntries, totalEntries);
     }
 
     

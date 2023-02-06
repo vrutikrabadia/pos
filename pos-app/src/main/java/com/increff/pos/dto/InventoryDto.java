@@ -145,14 +145,10 @@ public class InventoryDto {
             iData.setBarcode(prodPojo.getBarcode());
             list.add(iData);
         }
-
-        SelectData<InventoryData> result = new SelectData<InventoryData>();
-        result.setData(list);
-        result.setDraw(draw);
+;
         Integer totalEntries = service.getTotalEntries();
-        result.setRecordsFiltered(totalEntries);
-        result.setRecordsTotal(totalEntries);
-        return result;
+
+        return new SelectData<InventoryData>(list, draw, totalEntries, totalEntries);
     }
 
     public void update(InventoryForm form) throws ApiException {

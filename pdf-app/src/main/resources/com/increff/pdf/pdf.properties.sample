@@ -1,0 +1,5 @@
+app.version=1.0
+app.name=POS Application
+app.baseUrl=/pos
+
+cache.location=

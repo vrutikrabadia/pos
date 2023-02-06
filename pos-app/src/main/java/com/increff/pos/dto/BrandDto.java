@@ -10,12 +10,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.gson.Gson;
 import com.increff.pos.model.data.BrandData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.BrandForm;
@@ -23,6 +20,7 @@ import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.BrandService;
 import com.increff.pos.util.ConvertUtil;
+import com.increff.pos.util.ExceptionUtil;
 import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
 
@@ -53,7 +51,7 @@ public class BrandDto {
     public void bulkAdd(List<BrandForm> list) throws ApiException {
         StringUtil.normaliseList(list, BrandForm.class);
         ValidateUtil.validateList(list);
-        checkFileDuplications(list);
+        checkListDuplications(list);
 
         List<BrandPojo> pojoList = list.stream().map(e->ConvertUtil.objectMapper(e, BrandPojo.class)).collect(Collectors.toList());
 
@@ -63,8 +61,7 @@ public class BrandDto {
 
     }
 
-    protected void checkFileDuplications(List<BrandForm> formList) throws ApiException {
-        JSONArray errorList = new JSONArray();
+    protected void checkListDuplications(List<BrandForm> formList) throws ApiException {
         Set<String> fileSet = new HashSet<String>();
 
 
@@ -73,28 +70,11 @@ public class BrandDto {
 
 
         if (repeatSet.size() > 0) {
-            Set<BrandForm> formSet = formList.stream().filter(e->!repeatSet.contains(e)).collect(Collectors.toSet());
-            
-            repeatSet.forEach(e -> {
-                JSONObject error = new JSONObject(new Gson().toJson(e));
-                error.put("error", "DUPLICATE entries in file");
-                errorList.put(error);
-            });
-
-
-            formSet.forEach(e->{
-                JSONObject error = new JSONObject(new Gson().toJson(e));
-                error.put("error", "");
-                errorList.put(error);
-            });
-
-
-            throw new ApiException(errorList.toString());
+            ExceptionUtil.generateBulkAddExceptionList( "DUPLICATE entries in file", formList, repeatSet);
         }
     }
 
     protected void checkDbDuplicate(List<BrandPojo> pojoList) throws ApiException{
-        JSONArray errorList = new JSONArray();
         
         List<String> brandList = pojoList.stream().map(BrandPojo::getBrand).collect(Collectors.toList());
         List<BrandPojo> currentExixting = service.getInColumn(Arrays.asList("brand"),Arrays.asList(brandList));
@@ -108,22 +88,7 @@ public class BrandDto {
         
 
         if (repeatSet.size() > 0) {
-            Set<BrandPojo> formSet = pojoList.stream().filter(e->!repeatSet.contains(e)).collect(Collectors.toSet());
-            formSet.forEach(e->{
-                BrandForm repeated = ConvertUtil.objectMapper(e, BrandForm.class);
-                JSONObject error = new JSONObject(new Gson().toJson(repeated));
-                error.put("error", "");
-                errorList.put(error);
-            });
-
-            repeatSet.forEach(e -> {
-                BrandForm repeated = ConvertUtil.objectMapper(e, BrandForm.class);
-                JSONObject error = new JSONObject(new Gson().toJson(repeated));
-                error.put("error", "DUPLICATE: already exists in db");
-                errorList.put(error);
-            });
-
-            throw new ApiException(errorList.toString());
+            ExceptionUtil.generateBulkAddExceptionPojo("DUPLICATE: already exists in db", pojoList, repeatSet, BrandForm.class);
         }
     }
 
@@ -149,12 +114,7 @@ public class BrandDto {
 
         Integer totalEntries = service.getTotalEntries();
 
-        SelectData<BrandData> result = new SelectData<BrandData>();
-        result.setData(list1);
-        result.setDraw(draw);
-        result.setRecordsFiltered(totalEntries);
-        result.setRecordsTotal(totalEntries);
-        return result;
+        return new SelectData<BrandData>(list1, draw, totalEntries, totalEntries);
 
     }
 
