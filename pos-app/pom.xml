@@ -27,7 +27,6 @@
 		<h2.version>1.4.200</h2.version>
 		<javax.servlet.version>3.1.0</javax.servlet.version>
 		<commons-dbcp.version>1.4</commons-dbcp.version>
-		<slf4j.version>1.7.5</slf4j.version>
 		<lambok.version>1.18.24</lambok.version>
 		<javax.version>3.0.0</javax.version>
 		<hibernate-validator.version>6.0.13.Final</hibernate-validator.version>

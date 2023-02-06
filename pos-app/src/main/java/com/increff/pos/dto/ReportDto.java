@@ -11,12 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import com.increff.pos.model.data.BrandData;
 import com.increff.pos.model.data.InventoryReportData;
@@ -33,6 +28,7 @@ import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.OrderItemsService;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.service.ProductService;
+import com.increff.pos.util.ClientWrapper;
 import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
 
@@ -58,10 +54,8 @@ public class ReportDto {
     private BrandDto bDto;
 
     @Autowired
-    private RestTemplate restTemplate;
+    private ClientWrapper clientWrapper;
 
-    @Value("${pdfapp.url}")
-    private String pdfAppUrl;
 
 
     //functions for inventory report
@@ -94,7 +88,7 @@ public class ReportDto {
             result.add(res);
         }
         
-        return getReportFile(result, "/inventory");
+        return clientWrapper.getPdfBase64(result, "/api/reports/inventory");
     }
 
     protected HashMap<Integer, Integer> getProductIdToBrandCatMap(List<InventoryPojo> iList) {
@@ -245,7 +239,7 @@ public class ReportDto {
             result.add(data);
         }
 
-        return getReportFile(result, "/sales");
+        return clientWrapper.getPdfBase64(result, "/api/reports/sales");
     }
 
     //functions for brand report
@@ -255,19 +249,9 @@ public class ReportDto {
         Integer totalBrands = bService.getTotalEntries();
         List<BrandData> brandList = bDto.getAll(0, totalBrands, 1, Optional.empty()).getData();
 
-        return getReportFile(brandList, "/brands");
+        return clientWrapper.getPdfBase64(brandList, "/api/reports/brands");
     }
 
-    private <T> String getReportFile(T result, String path){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        String apiUrl = pdfAppUrl + "/api/reports" + path;
-        ResponseEntity<String> apiResponse = restTemplate.postForEntity(apiUrl, result, String.class);
-        String responseBody = apiResponse.getBody();
-
-
-        return responseBody;
-    }
+    
 
 }

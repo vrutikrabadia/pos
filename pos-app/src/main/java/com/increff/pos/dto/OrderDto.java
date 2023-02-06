@@ -11,11 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
 import com.increff.pos.model.data.InvoiceData;
@@ -33,6 +29,7 @@ import com.increff.pos.service.OrderItemsService;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.Base64Util;
+import com.increff.pos.util.ClientWrapper;
 import com.increff.pos.util.ConvertUtil;
 import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
@@ -53,13 +50,12 @@ public class OrderDto {
     private InventoryService invService;
 
     @Autowired
-    private RestTemplate restTemplate;
+    private ClientWrapper clientWrapper;
 
     @Value("${cache.location}")
     private String cacheLocation;
 
-    @Value("${pdfapp.url}")
-    private String pdfAppUrl;
+
 
     public OrderData add(List<OrderItemsForm> list) throws ApiException {
         List<OrderItemsPojo> list1 = new ArrayList<OrderItemsPojo>();
@@ -189,16 +185,13 @@ public class OrderDto {
 
         invoiceData.setItemsList(invItems);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        String apiUrl =  "/api/invoices";
+        
+        String base64 = clientWrapper.getPdfBase64( invoiceData, apiUrl);
 
-        String apiUrl = pdfAppUrl + "/api/invoices";
-        ResponseEntity<String> apiResponse = restTemplate.postForEntity(apiUrl, invoiceData, String.class);
-        String responseBody = apiResponse.getBody();
+        Base64Util.decodeBase64ToFile(base64, filePath);
 
-        Base64Util.decodeBase64ToFile(responseBody, filePath);
-
-        return responseBody;
+        return base64;
 
     }
 
