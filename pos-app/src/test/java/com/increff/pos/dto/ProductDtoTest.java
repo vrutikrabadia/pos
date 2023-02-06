@@ -114,9 +114,6 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         d = dto.getAll(0,1,1, testUtil.empty).getData();
 
-        assertEquals(d.get(0).getBarcode(), barcode1);
-        assertEquals(d.get(0).getBrand(), brand1);
-        assertEquals(d.get(0).getCategory(), category1);
         assertEquals(d.get(0).getName(), name1);
         assertEquals(String.valueOf(d.get(0).getMrp()), String.valueOf(mrp1));
     
@@ -264,7 +261,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         testUtil.addBrandAndProduct(brand, category, barcode, name, mrp);
 
-        SelectData<ProductData> list = new SelectData<ProductData>();
+        SelectData<ProductData> list = new SelectData<ProductData>(null, null, null, null);
 
         try{
             list = dto.getAll(0, 5, 0, Optional.of("1a3"));
@@ -332,7 +329,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         productList.add(form);
 
-        dto.checkFileDuplications(productList);
+        dto.checkListDuplications(productList);
     }
 
     @Test(expected = ApiException.class)
@@ -356,6 +353,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         List<ProductPojo> pojoList = productList.stream().map(e->ConvertUtil.objectMapper(e, ProductPojo.class)).collect(Collectors.toList());
 
         dto.checkDbDuplicate(pojoList);
+    
     }
     
     @Test

@@ -15,6 +15,10 @@ import com.increff.pos.pojo.PosDaySales;
 
 @Repository
 public class DaySalesDao extends AbstractDao<PosDaySales>{
+
+    public DaySalesDao() {
+        super(PosDaySales.class);
+    }
     
     public List<PosDaySales> selectInDateRange(ZonedDateTime startDate, ZonedDateTime endDate, Integer offset, Integer pageSize){
         CriteriaBuilder cb = em.getCriteriaBuilder();

@@ -35,11 +35,11 @@ public class BrandService {
     }
 
     public List<BrandPojo> getAllPaginated(Integer offset, Integer pageSize) {
-        return dao.selectAllPaginated(offset, pageSize, BrandPojo.class);
+        return dao.selectAllPaginated(offset, pageSize);
     }
 
     public List<BrandPojo> getAll() {
-        return dao.selectAll(BrandPojo.class);
+        return dao.selectAll();
     }
 
     public BrandPojo get(String brand, String category) throws ApiException {
@@ -61,20 +61,20 @@ public class BrandService {
     }
 
     public Integer getTotalEntries() {
-        return dao.getTotalEntries(BrandPojo.class);
+        return dao.getTotalEntries();
     }
 
     public List<BrandPojo> searchQueryString(Integer pageNo, Integer pageSize,String queryString){
         List<String> columnList = Arrays.asList("brand", "category");
-        return dao.selectQueryString(pageNo, pageSize,queryString, columnList , BrandPojo.class);
+        return dao.selectQueryString(pageNo, pageSize,queryString, columnList );
     }
 
     public <T> List<BrandPojo> getInColumn(List<String> column,List<List<T>> values){
-        return dao.selectByColumnUsingIn(column, values, BrandPojo.class);
+        return dao.selectByColumnUsingIn(column, values);
     }
 
     protected BrandPojo getCheck(Integer id) throws ApiException {
-        BrandPojo b = dao.selectByColumn("id", id, BrandPojo.class);
+        BrandPojo b = dao.selectByColumn("id", id);
         if (Objects.isNull(b)) {
             throw new ApiException("brand/category with given ID does not exist, id: " + id);
         }

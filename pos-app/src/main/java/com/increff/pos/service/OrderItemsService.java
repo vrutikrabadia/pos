@@ -44,17 +44,17 @@ public class OrderItemsService {
 
      
     public OrderItemsPojo selectById(Integer id){
-        return dao.selectByColumn("id",id, OrderItemsPojo.class);
+        return dao.selectByColumn("id",id);
     }
 
      
     public List<OrderItemsPojo> selectByOrderId(Integer orderId){
-        return dao.selectMultiple("orderId", orderId, OrderItemsPojo.class);
+        return dao.selectMultiple("orderId", orderId);
     }
 
 
     public <T> List<OrderItemsPojo> getInColumn(List<String> columns, List<List<T>> values){
-        return dao.selectByColumnUsingIn(columns, values, OrderItemsPojo.class);
+        return dao.selectByColumnUsingIn(columns, values);
     }
     
 }

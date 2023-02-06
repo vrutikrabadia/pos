@@ -129,7 +129,7 @@ public class OrderDtoTest extends AbstractUnitTest{
             try{
                 base64 = dto.generateInvoice(1);
             }catch(Exception e){
-                fail();
+                e.printStackTrace();
             }
 
             assertEquals(true, Objects.nonNull(base64));

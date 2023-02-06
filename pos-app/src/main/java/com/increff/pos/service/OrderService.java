@@ -41,7 +41,7 @@ public class OrderService {
 
      
     public OrderPojo getCheck(Integer id) throws ApiException{
-        OrderPojo p =dao.selectByColumn("id", id, OrderPojo.class);
+        OrderPojo p =dao.selectByColumn("id", id);
         if(p == null){
             throw new ApiException("Order does not exists");
         }
@@ -50,17 +50,17 @@ public class OrderService {
 
      
     public List<OrderPojo> getAllPaginated(Integer offset, Integer pageSize){  
-        return dao.selectAllPaginated(offset, pageSize, OrderPojo.class);
+        return dao.selectAllPaginated(offset, pageSize);
    
     }
 
     public List<OrderPojo> getAll(){  
-        return dao.selectAll(OrderPojo.class);
+        return dao.selectAll();
    
     }
 
     public Integer getTotalEntries(){
-        return dao.getTotalEntries(OrderPojo.class);
+        return dao.getTotalEntries();
     }
 
     public List<OrderPojo> getInDateRange(ZonedDateTime startDate, ZonedDateTime endDate){

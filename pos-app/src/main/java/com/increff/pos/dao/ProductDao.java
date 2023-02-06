@@ -8,5 +8,8 @@ import com.increff.pos.pojo.ProductPojo;
 @Repository
 public class ProductDao extends AbstractDao<ProductPojo>{
     
+    public ProductDao() {
+        super(ProductPojo.class);
+    }
 
 }

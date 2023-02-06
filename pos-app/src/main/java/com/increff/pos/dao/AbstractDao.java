@@ -14,6 +14,12 @@ import javax.persistence.criteria.Root;
 
 public abstract class AbstractDao<T> {
 
+	private Class<T> pojoClass;
+
+	AbstractDao(Class<T> pojoClass2){
+		pojoClass = pojoClass2;
+	}
+
 	@PersistenceContext
 	protected EntityManager em;
 
@@ -21,8 +27,8 @@ public abstract class AbstractDao<T> {
 		return query.getResultList().stream().findFirst().orElse(null);
 	}
 
-	protected TypedQuery<T> getQuery(String jpql, Class<T> clazz) {
-		return em.createQuery(jpql, clazz);
+	protected TypedQuery<T> getQuery(String jpql) {
+		return em.createQuery(jpql, pojoClass);
 	}
 
 	protected EntityManager em() {
@@ -38,7 +44,7 @@ public abstract class AbstractDao<T> {
 
 	}
 
-	public List<T> selectAllPaginated(Integer offset, Integer pageSize, Class<T> pojoClass) {
+	public List<T> selectAllPaginated(Integer offset, Integer pageSize) {
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> cq = cb.createQuery(pojoClass);
@@ -48,7 +54,7 @@ public abstract class AbstractDao<T> {
 		return allQuery.setFirstResult(offset).setMaxResults(pageSize).getResultList();
 	}
 
-	public List<T> selectAll(Class<T> pojoClass) {
+	public List<T> selectAll() {
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> cq = cb.createQuery(pojoClass);
@@ -58,7 +64,7 @@ public abstract class AbstractDao<T> {
 		return allQuery.getResultList();
 	}
 
-	public Integer getTotalEntries(Class<T> pojoClass) {
+	public Integer getTotalEntries() {
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
@@ -69,16 +75,15 @@ public abstract class AbstractDao<T> {
 
 	}
 
-	public List<T> selectQueryString(Integer offset, Integer pageSize, String queryString, List<String> columns,
-			Class<T> pojoClass) {
+	public List<T> selectQueryString(Integer offset, Integer pageSize, String queryString, List<String> columns) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 
 		CriteriaQuery<T> cq = cb.createQuery(pojoClass);
-		Root<T> brandCat = cq.from(pojoClass);
+		Root<T> root = cq.from(pojoClass);
 
 		List<Predicate> preds = new ArrayList<>();
 		for (String col : columns) {
-			preds.add(cb.like(brandCat.get(col), queryString + "%"));
+			preds.add(cb.like(root.get(col), queryString + "%"));
 		}
 		cq.where(cb.or(preds.toArray(new Predicate[] {})));
 		TypedQuery<T> query = em.createQuery(cq);
@@ -86,7 +91,7 @@ public abstract class AbstractDao<T> {
 		return query.setFirstResult(offset).setMaxResults(pageSize).getResultList();
 	}
 
-	public <R> List<T> selectMultiple(String column, R value, Class<T> pojoClass) {
+	public <R> List<T> selectMultiple(String column, R value) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> cq = cb.createQuery(pojoClass);
 		Root<T> root = cq.from(pojoClass);
@@ -95,7 +100,7 @@ public abstract class AbstractDao<T> {
 		return query.getResultList();
 	}
 
-	public <R> T selectByColumn(String column, R value, Class<T> pojoClass) {
+	public <R> T selectByColumn(String column, R value) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> cq = cb.createQuery(pojoClass);
 		Root<T> root = cq.from(pojoClass);
@@ -104,7 +109,7 @@ public abstract class AbstractDao<T> {
 		return getSingle(query);
 	}
 
-	public <R> List<T> selectByColumnUsingIn(List<String> columns, List<List<R>> values, Class<T> pojoClass) {
+	public <R> List<T> selectByColumnUsingIn(List<String> columns, List<List<R>> values) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> cq = cb.createQuery(pojoClass);
 		Root<T> root = cq.from(pojoClass);

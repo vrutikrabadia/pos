@@ -4,6 +4,7 @@ import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -19,10 +20,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 		@PropertySource(value = "file:./src/main/resources/com/increff/pos/pos.properties", ignoreResourceNotFound = true) //
 })
 public class SpringConfig {
+
+	@Value("${server.timezone}")
+	private String serverTimezone;
+
 	@PostConstruct
 	public void init() {
 		System.out.println("SpringConfig.init()");
-		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+		TimeZone.setDefault(TimeZone.getTimeZone(serverTimezone));
 	}
 
 

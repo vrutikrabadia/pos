@@ -47,11 +47,11 @@ public class InventoryService {
     
      
     public List<InventoryPojo> getAllPaginated(Integer offset, Integer pageSize){
-        return dao.selectAllPaginated(offset, pageSize, InventoryPojo.class);
+        return dao.selectAllPaginated(offset, pageSize);
     }
 
     public List<InventoryPojo> getAll(){
-        return dao.selectAll(InventoryPojo.class);
+        return dao.selectAll();
     }
 
     public void update(Integer id, InventoryPojo p) throws ApiException{
@@ -61,7 +61,7 @@ public class InventoryService {
 
     
     public InventoryPojo getCheck(Integer id) throws ApiException{
-        InventoryPojo p = dao.selectByColumn("productId", id, InventoryPojo.class);
+        InventoryPojo p = dao.selectByColumn("productId", id);
         if(p == null){
             throw new ApiException("Inventory does not exist for thr product");
         }
@@ -90,6 +90,6 @@ public class InventoryService {
     } 
 
     public Integer getTotalEntries(){
-        return dao.getTotalEntries(InventoryPojo.class);
+        return dao.getTotalEntries();
     }
 }

@@ -36,7 +36,7 @@ public class DaySalesService {
     }
 
     public List<PosDaySales> getAllPaginated(Integer offset, Integer pageSize){
-        return dao.selectAllPaginated(offset, pageSize, PosDaySales.class);
+        return dao.selectAllPaginated(offset, pageSize);
     }
 
     public PosDaySales getByDate(ZonedDateTime date){
@@ -62,7 +62,7 @@ public class DaySalesService {
     }
 
     public Integer getTotalEntries(){
-        return dao.getTotalEntries(PosDaySales.class);
+        return dao.getTotalEntries();
     }
 
     

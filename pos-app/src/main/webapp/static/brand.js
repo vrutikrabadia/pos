@@ -93,7 +93,7 @@ function readFileDataCallback(results){
 
 function checkJsonKeys(json){
 	
-	var keys = ["name", "category"];
+	var keys = ["brand", "category"];
 	for(var i in keys){
 		if(!json.hasOwnProperty(keys[i])){
 			return false;

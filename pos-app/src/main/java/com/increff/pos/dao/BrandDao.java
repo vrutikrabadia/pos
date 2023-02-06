@@ -14,6 +14,10 @@ import com.increff.pos.pojo.BrandPojo;
 @Repository
 public class BrandDao extends AbstractDao<BrandPojo>{
 
+    public BrandDao() {
+        super(BrandPojo.class);
+    }
+
     public BrandPojo selectByBrandCategory(String brand, String category){
         CriteriaBuilder cb = em.getCriteriaBuilder();
 

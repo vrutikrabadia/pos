@@ -26,7 +26,7 @@ public class Base64Util {
         try{
             return Base64.getEncoder().encodeToString(FileUtils.readFileToByteArray(file));
         } catch(Exception e){
-            throw new ApiException("error encoding file to base 64");
+            throw new ApiException("Error encoding file to base 64");
         }
     }
     

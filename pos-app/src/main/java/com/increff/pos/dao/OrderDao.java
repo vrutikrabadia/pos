@@ -16,6 +16,9 @@ import com.increff.pos.pojo.OrderPojo;
 @Repository
 public class OrderDao extends AbstractDao<OrderPojo>{
     
+    public OrderDao() {
+        super(OrderPojo.class);
+    }
 
     public List<OrderPojo> selectInDateRange(ZonedDateTime startDate, ZonedDateTime endDate){
         CriteriaBuilder cb = em.getCriteriaBuilder();

@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -16,7 +15,6 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "products",
-        indexes ={@Index(name = "i_product_barcode", columnList = "barcode", unique = true)},
         uniqueConstraints = {@UniqueConstraint(name="unique_barcode", columnNames = {"barcode"})})
 @Getter
 @Setter
@@ -24,7 +22,6 @@ public class ProductPojo extends AbstractPojo implements Serializable{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable=false)
     private Integer id;
     
     @Column(nullable=false)

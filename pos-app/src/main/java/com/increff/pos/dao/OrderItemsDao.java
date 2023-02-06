@@ -7,6 +7,8 @@ import com.increff.pos.pojo.OrderItemsPojo;
 @Repository
 public class OrderItemsDao extends AbstractDao<OrderItemsPojo>{
 
-
+    public OrderItemsDao() {
+        super(OrderItemsPojo.class);
+    }
     
 }

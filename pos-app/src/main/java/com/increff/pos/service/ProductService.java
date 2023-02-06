@@ -24,12 +24,9 @@ public class ProductService {
     }
 
     public void bulkAdd(List<ProductPojo> list) throws ApiException{
-        
         for (ProductPojo prod : list) {
-           
             add(prod);
         }
-
     }
 
     public ProductPojo get(Integer id) throws ApiException {
@@ -37,7 +34,7 @@ public class ProductService {
     }
 
     public ProductPojo get(String barcode) throws ApiException {
-        ProductPojo p1 = dao.selectByColumn("barcode", barcode, ProductPojo.class);
+        ProductPojo p1 = dao.selectByColumn("barcode", barcode);
         if (Objects.isNull(p1)) {
             throw new ApiException("Product with bar code does not exist");
         }
@@ -45,36 +42,34 @@ public class ProductService {
     }
 
     public List<ProductPojo> getAllPaginated(Integer offset, Integer pageSize) {
-        return dao.selectAllPaginated(offset, pageSize, ProductPojo.class);
+        return dao.selectAllPaginated(offset, pageSize);
     }
 
     public List<ProductPojo> getAll() {
-        return dao.selectAll(ProductPojo.class);
+        return dao.selectAll();
     }
 
     public void update(Integer id, ProductPojo p) throws ApiException {
         ProductPojo p1 = getCheck(id);
 
-        p1.setBarcode(p.getBarcode());
         p1.setName(p.getName());
-        p1.setBrandCat(p.getBrandCat());
         p1.setMrp(p.getMrp());
     }
 
     public List<ProductPojo> getByBrandCat(Integer brandCat){
-        return dao.selectMultiple("brandCat", brandCat, ProductPojo.class);
+        return dao.selectMultiple("brandCat", brandCat);
     }
 
     public List<ProductPojo> getByQueryString(Integer pageNo, Integer pageSize,String searchQuery){
         List<String> columnList = Arrays.asList("name", "barcode");
 
-        return dao.selectQueryString(pageNo, pageSize, searchQuery, columnList, ProductPojo.class);
+        return dao.selectQueryString(pageNo, pageSize, searchQuery, columnList);
 
     }
 
     public ProductPojo getCheck(Integer id) throws ApiException {
 
-        ProductPojo p = dao.selectByColumn("id",id, ProductPojo.class);
+        ProductPojo p = dao.selectByColumn("id",id);
         if (Objects.isNull(p)) {
             throw new ApiException("product does not exist with id: " + id);
         }
@@ -82,15 +77,17 @@ public class ProductService {
     }
 
     public Integer getTotalEntries() {
-        return dao.getTotalEntries(ProductPojo.class);
+        return dao.getTotalEntries();
     }
 
+    //TODO: check if length of both lists is same
     public <T> List<ProductPojo> getInColumn(List<String> column, List<List<T>>values){
-        return dao.selectByColumnUsingIn(column, values, ProductPojo.class);
+        return dao.selectByColumnUsingIn(column, values);
     }
 
+    //TODO: BarCode c should be small
     public boolean checkBarCode(Integer id, String barcode) {
-        ProductPojo p = dao.selectByColumn("barcode", barcode, ProductPojo.class);
+        ProductPojo p = dao.selectByColumn("barcode", barcode);
         if (Objects.isNull(p)) {
             return false;
         }

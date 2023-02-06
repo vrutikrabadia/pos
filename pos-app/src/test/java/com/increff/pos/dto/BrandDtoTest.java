@@ -161,11 +161,11 @@ public class BrandDtoTest extends AbstractUnitTest {
         BrandForm f2 = testUtil.getBrandForm("b2", "c2");
         brandList.add(f2);
 
-        dto.checkFileDuplications(brandList);
+        dto.checkListDuplications(brandList);
 
         brandList.add(f2);
 
-        dto.checkFileDuplications(brandList);
+        dto.checkListDuplications(brandList);
 
     }
 

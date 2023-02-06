@@ -16,6 +16,9 @@ import com.increff.pos.pojo.UserPojo;
 @Repository
 public class UserDao extends AbstractDao<UserPojo> {
 	
+    public UserDao() {
+        super(UserPojo.class);
+    }
 
 	public Integer delete(Integer id) {
 		CriteriaBuilder cb = em().getCriteriaBuilder();
