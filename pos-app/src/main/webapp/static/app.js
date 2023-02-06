@@ -139,3 +139,13 @@ function writeFileData(arr){
     tempLink.setAttribute('download', 'download.tsv');
     tempLink.click(); 
 }
+
+
+function emphasizeNavbarCurrentLink(){
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	var url = document.URL;
+	path = url.substring(url.indexOf(baseUrl));
+	var element = document.querySelectorAll('[href="' + path + '"][class="nav-link"]');
+	element[0].style.fontWeight = "bold";	
+}
+emphasizeNavbarCurrentLink();

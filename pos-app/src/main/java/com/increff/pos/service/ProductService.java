@@ -80,13 +80,14 @@ public class ProductService {
         return dao.getTotalEntries();
     }
 
-    //TODO: check if length of both lists is same
-    public <T> List<ProductPojo> getInColumn(List<String> column, List<List<T>>values){
+    public <T> List<ProductPojo> getInColumn(List<String> column, List<List<T>>values) throws ApiException{
+        if(column.size() != values.size()){
+            throw new ApiException("Column and values list size mismatch");
+        }   
         return dao.selectByColumnUsingIn(column, values);
     }
 
-    //TODO: BarCode c should be small
-    public boolean checkBarCode(Integer id, String barcode) {
+    public boolean checkBarcode(Integer id, String barcode) {
         ProductPojo p = dao.selectByColumn("barcode", barcode);
         if (Objects.isNull(p)) {
             return false;

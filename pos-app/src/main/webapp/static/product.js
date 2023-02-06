@@ -112,6 +112,17 @@ var errorData = [];
 
 function processData(){
 	var file = $('#productFile')[0].files[0];
+
+	if(!file){
+		Swal.fire({
+			icon: "error",
+			title: "Oops...",
+			text: "Please select a file to upload.",
+			
+		});
+		return;
+	}
+
 	if(file.name.split('.').pop() != "tsv"){
 		Swal.fire({
 			icon: "error",
@@ -119,6 +130,7 @@ function processData(){
 			text: "Invalid file format.Please upload a '.tsv' file.",
 			
 		});
+		resetUploadDialog();
 		return;
 	}
 	readFileData(file, readFileDataCallback);
@@ -180,10 +192,21 @@ function uploadRows(){
 			return;	 
 		},
 		error: function(error){
-			console.log(error);
 			errorData = JSON.parse(JSON.parse(error.responseText).message);
-			console.log(errorData);
-			
+			//enable download-errors button
+			$('#download-error').attr("disabled", false);
+
+			//change order of json keys in errorData to match the order in the sample file
+			for(var i in errorData){
+				var temp = errorData[i];
+				errorData[i] = {};
+				errorData[i].name = temp.name;
+				errorData[i].brand = temp.brand;
+				errorData[i].category = temp.category;
+				errorData[i].price = temp.price;
+				errorData[i].error = temp.error;
+			}
+
 			updateUploadDialog();
 			Swal.fire({
 				icon: "error",
@@ -214,6 +237,9 @@ function displayEditProduct(id){
 }
 
 function resetUploadDialog(){
+	//disable download-error button
+	$('#download-error').attr('disabled', true);
+
 	//Reset file name
 	var $file = $('#productFile');
 	$file.val('');
@@ -252,8 +278,25 @@ function displayProduct(data){
 	$("#product-edit-form input[name=name]").val(data.name);	
 	$("#product-edit-form input[name=mrp]").val(data.mrp);			
 	$("#product-edit-form input[name=id]").val(data.id);
+
+	$('#product-edit-form').on('input change', function() {
+
+		let nameVal = $("#product-edit-form input[name=name]").val();
+		let mrpVal = $("#product-edit-form input[name=mrp]").val();
+
+		if(nameVal == data.name && mrpVal == data.mrp){
+			$('#update-product').attr('disabled', true);
+		}
+		else{
+			$('#update-product').attr('disabled', false);
+		}
+	});
+
+
 	$('#update-product').attr('disabled',true);	
 	$('#edit-product-modal').modal('toggle');
+
+	
 }
 
 function getConditionalColumns(){
@@ -293,6 +336,9 @@ function init(){
 	$("#refresh-data").html('<img src='+refreshButton+'></img>');
 
 	$('#product-table').DataTable( {
+		language: {
+			searchPlaceholder: "Name / Barcode / Brand / Category"
+		},
 		"ordering": false,
 		"processing": true,
 		"serverSide": true,
@@ -314,9 +360,7 @@ function init(){
     $('#productFile').on('change', updateFileName);
 	$('.select2').select2({ width: '100%' });
 
-	$('#product-edit-form').on('input change', function() {
-		$('#update-product').attr('disabled', false);
-	});
+	
 }
 
 $(document).ready(init);

@@ -91,9 +91,14 @@ public class ReportDto {
         return clientWrapper.getPdfBase64(result, "/api/reports/inventory");
     }
 
-    protected HashMap<Integer, Integer> getProductIdToBrandCatMap(List<InventoryPojo> iList) {
+    protected HashMap<Integer, Integer> getProductIdToBrandCatMap(List<InventoryPojo> iList) throws ApiException {
         List<Integer> idList = iList.stream().map(InventoryPojo::getProductId).collect(Collectors.toList());
-        List<ProductPojo> productList = pService.getInColumn(Arrays.asList("id"), Arrays.asList(idList));
+        List<ProductPojo> productList;
+        try {
+            productList = pService.getInColumn(Arrays.asList("id"), Arrays.asList(idList));
+        } catch (ApiException e) {
+            throw new ApiException("Runtime Exception");
+        }
 
         HashMap<Integer, Integer> prodIdtoBrandCat = (HashMap<Integer, Integer>) productList.stream()
                 .collect(Collectors.toMap(ProductPojo::getId, ProductPojo::getBrandCat));
@@ -172,13 +177,18 @@ public class ReportDto {
 
     }
 
-    private String generateSalesReportOnlyDates(ZonedDateTime sDate, ZonedDateTime eDate) {
+    private String generateSalesReportOnlyDates(ZonedDateTime sDate, ZonedDateTime eDate) throws ApiException {
 
         List<OrderItemsPojo> itemsList = getOrderItems(sDate, eDate, null);
 
         List<Integer> prodIds = new ArrayList<Integer>(itemsList.stream().map(OrderItemsPojo::getProductId).collect(Collectors.toSet()));
         
-        List<ProductPojo> prodList = pService.getInColumn(Arrays.asList("id"), Arrays.asList(prodIds));
+        List<ProductPojo> prodList;
+        try {
+            prodList = pService.getInColumn(Arrays.asList("id"), Arrays.asList(prodIds));
+        } catch (ApiException e) {
+            throw new ApiException("Runtime exception");
+        }
 
         List<Integer> brandCatIds = new ArrayList<Integer>(prodList.stream().map(ProductPojo::getBrandCat).collect(Collectors.toSet()));
         

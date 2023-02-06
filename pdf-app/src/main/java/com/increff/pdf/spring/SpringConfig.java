@@ -1,5 +1,10 @@
 package com.increff.pdf.spring;
 
+import java.util.TimeZone;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -11,6 +16,13 @@ import org.springframework.context.annotation.PropertySources;
 		@PropertySource(value = "file:./src/main/resources/com/increff/pdf/pdf.properties", ignoreResourceNotFound = true) //
 })
 public class SpringConfig {
+	@Value("${server.timezone}")
+	private String serverTimezone;
 
+	@PostConstruct
+	public void init() {
+		System.out.println("SpringConfig.init()");
+		TimeZone.setDefault(TimeZone.getTimeZone(serverTimezone));
+	}
 
 }

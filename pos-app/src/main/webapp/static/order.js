@@ -97,8 +97,9 @@ function checkSellingPrice(json) {
 
 
 function addOrderItem(event) {
+
+    
     var $form = $("#order-item-form");
-    if(!validateFormHTML($form)){return;}
     var json = JSON.parse(toJson($form));
 
     if(json.barcode == "" || json.quantity == "" || json.sellingPrice == ""){
@@ -110,14 +111,28 @@ function addOrderItem(event) {
         return;
     }
 
-    if(json.quantity <= 0 || json.sellingPrice < 0){
+    if(json.quantity <= 0 || json.quantity > currentInventory.get(json.barcode)){
             Swal.fire({
                 title: 'Oops...',
-                text: 'Please enter valid quantity and selling price',
+                text: 'Please enter valid quantity in range 1 to ' + currentInventory.get(json.barcode),
                 icon: 'error',
             });
             return;
     }
+
+    if(json.sellingPrice <= 0){
+        Swal.fire({
+            title: 'Oops...',
+            text: 'Please enter valid selling price >= 0',
+            icon: 'error',
+        });
+        return;
+    }
+
+
+    if(!validateFormHTML($form)){return;}
+
+    
 
     if (checkOrderItemExist()) {
 
@@ -228,9 +243,11 @@ function displayOrder(id) {
             'Content-Type': 'application/json'
         },
         success: function (response) {
+            let count = 1;
             $("#view-order-id").text(id);
             response.forEach(element => {
                 var row = '<tr>' +
+                    '<td>' + count++ + '</td>' +
                     '<td>' + element.barcode + '</td>' +
                     '<td>' + element.quantity + '</td>' +
                     '<td>' + parseFloat(element.sellingPrice).toFixed(2) + '</td>' +
@@ -332,6 +349,9 @@ function init() {
     $('#refresh-data').html('<img src='+refreshButton+ '>');
 
     $('#Order-table').DataTable({
+        language: {
+			searchPlaceholder: "Order Id"
+		},
         "ordering": false,
         "processing": true,
         "serverSide": true,

@@ -47,7 +47,7 @@ public class ProductDto {
         p.setBrandCat(brandP.getId());
 
 
-        if (service.checkBarCode(0, p.getBarcode())) {
+        if (service.checkBarcode(0, p.getBarcode())) {
             throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
         }
 
@@ -188,7 +188,7 @@ public class ProductDto {
         p.setBrandCat(brandP.getId());
 
 
-        if (service.checkBarCode(id, p.getBarcode())) {
+        if (service.checkBarcode(id, p.getBarcode())) {
             throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
         }
 

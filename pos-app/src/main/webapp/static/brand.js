@@ -74,6 +74,16 @@ var errorData = [];
 
 function processData(){
 	var file = $('#brandFile')[0].files[0];
+
+	if(!file){
+		Swal.fire({
+			icon: "error",
+			title: "Oops...",
+			text: "Please select a file to upload.",
+			
+		});
+		return;
+	}
 	if(file.name.split('.').pop() != "tsv"){
 		Swal.fire({
 			icon: "error",
@@ -81,6 +91,7 @@ function processData(){
 			text: "Invalid file format.Please upload a '.tsv' file.",
 			
 		});
+		resetUploadDialog();
 		return;
 	}
 	readFileData(file, readFileDataCallback);
@@ -147,10 +158,18 @@ function uploadRows(){
 			return;	 
 		},
 		error: function(error){
-			console.log(error);
 			errorData = JSON.parse(JSON.parse(error.responseText).message);
-			console.log(errorData); 
+
+			//rearrange keys in json object in order "brand", "category", "error"
+			for(var i in errorData){
+				var temp = errorData[i];
+				errorData[i] = {};
+				errorData[i]["brand"] = temp["brand"];
+				errorData[i]["category"] = temp["category"];
+				errorData[i]["error"] = temp["error"];
+			}
 			
+			$("#download-errors").attr("disabled", false);
 			updateUploadDialog();
 			Swal.fire({
 				icon: "error",
@@ -183,6 +202,9 @@ function displayEditBrand(id){
 }
 
 function resetUploadDialog(){
+
+	//deisable download errors nutton
+	$("#download-errors").attr("disabled", true);
 	//Reset file name
 	var $file = $('#brandFile');
 	$file.val('');
@@ -215,10 +237,21 @@ function displayAddBrand(){
 }
 
 function displayBrand(data){
-	console.log("here");
 	$("#brand-edit-form input[name=brand]").val(data.brand);	
 	$("#brand-edit-form input[name=category]").val(data.category);	
-	$("#brand-edit-form input[name=id]").val(data.id);	
+	$("#brand-edit-form input[name=id]").val(data.id);
+
+	$('#brand-edit-form').on('input change', function() {
+		let brandValue = $("#brand-edit-form input[name=brand]").val();
+		let categoryValue = $("#brand-edit-form input[name=category]").val();
+
+		if(brandValue == data.brand && categoryValue == data.category){
+			$('#update-brand').attr('disabled',true);
+		}else{
+			$('#update-brand').attr('disabled', false);
+		}
+	});
+
 	$('#edit-brand-modal').modal('toggle');
 }
 
@@ -293,6 +326,9 @@ function init(){
 	$("#upload-data").html('<img src='+uploadFileButton+ '>');
 	$("#download-report").html('<img src='+downloadReportButton+ '>');
 	$('#brand-table').DataTable( {
+		language: {
+			searchPlaceholder: "Brand / Category"
+		},
         "ordering": false,
 		"processing": true,
 		"serverSide": true,
@@ -312,9 +348,7 @@ function init(){
     $('#brandFile').on('change', updateFileName);
 	$('#download-report').click(downloadReport);
 
-	$('#brand-edit-form').on('input change', function() {
-		$('#update-brand').attr('disabled', false);
-	});
+	
 	
 }
 
