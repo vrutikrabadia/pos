@@ -12,11 +12,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import com.increff.pdf.generator.ReportGenerator;
 import com.increff.pdf.model.data.BrandReportData;
@@ -59,9 +55,6 @@ public class ReportDto {
 
     @Autowired
     private BrandDto bDto;
-
-    @Autowired
-    private RestTemplate restTemplate;
 
     @Value("${pdfapp.url}")
     private String pdfAppUrl;
@@ -264,17 +257,5 @@ public class ReportDto {
 
         return new ReportGenerator(cacheLocation).generateBrandReport(brandList);
     }
-
-    // private <T> String getReportFile(T result, String path){
-    //     HttpHeaders headers = new HttpHeaders();
-    //     headers.setContentType(MediaType.APPLICATION_JSON);
-
-    //     String apiUrl = pdfAppUrl + "/api/reports" + path;
-    //     ResponseEntity<String> apiResponse = restTemplate.postForEntity(apiUrl, result, String.class);
-    //     String responseBody = apiResponse.getBody();
-
-
-    //     return responseBody;
-    // }
 
 }
