@@ -1,4 +1,4 @@
-package com.increff.pos.util;
+package com.increff.pos.model.data;
 
 import lombok.Generated;
 import lombok.Getter;
