@@ -51,6 +51,7 @@ public class LoginController {
 		}
 		catch(ApiException e){
 			info.setMessage(e.getMessage());
+			info.setShown(false);
 			return new ModelAndView("redirect:/site/signup");
 		}
 		
@@ -58,6 +59,7 @@ public class LoginController {
 		boolean authenticated = (p != null && Objects.equals(p.getPassword(), f.getPassword()));
 		if (!authenticated) {
 			info.setMessage("Invalid username or password");
+			info.setShown(false);
 			return new ModelAndView("redirect:/site/login");
 		}
 
@@ -80,13 +82,15 @@ public class LoginController {
 			passwordValidate = PasswordUtil.validatePassword(f.getPassword(), p.getPassword());
 		}
 		catch(Exception e){
-			info.setMessage("Errro validating password");;
+			info.setMessage("Errro validating password");
+			info.setShown(false);
 			return new ModelAndView("redirect:/site/login");
 		}
 		
 		boolean authenticated = (p != null && passwordValidate);
 		if (!authenticated) {
 			info.setMessage("Invalid username or password");
+			info.setShown(false);
 			return new ModelAndView("redirect:/site/login");
 		}
 
