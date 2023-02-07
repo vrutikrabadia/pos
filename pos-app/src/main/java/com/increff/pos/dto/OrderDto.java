@@ -69,7 +69,7 @@ public class OrderDto {
             if (barcodeSet.contains(f.getBarcode())) {
                 JSONObject error = new JSONObject(new Gson().toJson(f));
 
-                error.put("error", "Duplicate products in the order");
+                error.put("error", "Duplicate products in the order.");
                 errorList.put(error);
             }
 
@@ -187,7 +187,7 @@ public class OrderDto {
 
         String apiUrl =  "/api/invoices";
         
-        String base64 = clientWrapper.getPdfBase64( invoiceData, apiUrl);
+        String base64 = clientWrapper.pdfClient.getPdfBase64( invoiceData, apiUrl);
 
         Base64Util.decodeBase64ToFile(base64, filePath);
 

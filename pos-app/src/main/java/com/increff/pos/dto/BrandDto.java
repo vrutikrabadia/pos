@@ -44,7 +44,7 @@ public class BrandDto {
             return;
         }
 
-        throw new ApiException("Brand and category already exists");
+        throw new ApiException("Brand and Category already exists.");
 
     }
 
@@ -70,7 +70,7 @@ public class BrandDto {
 
 
         if (repeatSet.size() > 0) {
-            ExceptionUtil.generateBulkAddExceptionList( "DUPLICATE entries in file", formList, repeatSet);
+            ExceptionUtil.generateBulkAddExceptionList( "DUPLICATE entry in same file", formList, repeatSet);
         }
     }
 
@@ -88,7 +88,7 @@ public class BrandDto {
         
 
         if (repeatSet.size() > 0) {
-            ExceptionUtil.generateBulkAddExceptionPojo("DUPLICATE: already exists in db", pojoList, repeatSet, BrandForm.class);
+            ExceptionUtil.generateBulkAddExceptionPojo("DUPLICATE: Brand and Category already exists.", pojoList, repeatSet, BrandForm.class);
         }
     }
 
@@ -141,7 +141,7 @@ public class BrandDto {
         }
         
         if(Objects.nonNull(p1) && p1.getId()!=p.getId()){
-            throw new ApiException("DUPLICATE: brand/category already exists");
+            throw new ApiException("DUPLICATE: Brand and Category already exists.");
         }
         
         service.update(id, p);

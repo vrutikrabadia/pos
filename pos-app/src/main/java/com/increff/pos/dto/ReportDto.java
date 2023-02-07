@@ -88,7 +88,7 @@ public class ReportDto {
             result.add(res);
         }
         
-        return clientWrapper.getPdfBase64(result, "/api/reports/inventory");
+        return clientWrapper.pdfClient.getPdfBase64(result, "/api/reports/inventory");
     }
 
     protected HashMap<Integer, Integer> getProductIdToBrandCatMap(List<InventoryPojo> iList) throws ApiException {
@@ -133,7 +133,7 @@ public class ReportDto {
         
 
         if (sDate.compareTo(eDate) > 0) {
-            throw new ApiException("start date should be less than end date");
+            throw new ApiException("Start date should be less than End date");
         }
 
         if ((Objects.nonNull(form.getBrand()) && !form.getBrand().isEmpty())
@@ -249,7 +249,7 @@ public class ReportDto {
             result.add(data);
         }
 
-        return clientWrapper.getPdfBase64(result, "/api/reports/sales");
+        return clientWrapper.pdfClient.getPdfBase64(result, "/api/reports/sales");
     }
 
     //functions for brand report
@@ -259,7 +259,7 @@ public class ReportDto {
         Integer totalBrands = bService.getTotalEntries();
         List<BrandData> brandList = bDto.getAll(0, totalBrands, 1, Optional.empty()).getData();
 
-        return clientWrapper.getPdfBase64(brandList, "/api/reports/brands");
+        return clientWrapper.pdfClient.getPdfBase64(brandList, "/api/reports/brands");
     }
 
     

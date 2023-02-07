@@ -1,20 +1,18 @@
-
-
-function displayBrand(data){
-	$("#brand-edit-form input[name=brand]").val(data.brand);	
-	$("#brand-edit-form input[name=category]").val(data.category);	
-	$("#brand-edit-form input[name=id]").val(data.id);	
-	$('#edit-brand-modal').modal('toggle');
+function displayBrand(data) {
+    $("#brand-edit-form input[name=brand]").val(data.brand);
+    $("#brand-edit-form input[name=category]").val(data.category);
+    $("#brand-edit-form input[name=id]").val(data.id);
+    $('#edit-brand-modal').modal('toggle');
 }
 
 
-function searchDateRange(){
+function searchDateRange() {
 
 
     var startDate = new Date($("#inputStartDate").val()).toISOString();
     var endDate = new Date($("#inputEndDate").val()).toISOString();
 
-    if(startDate>endDate){
+    if (startDate > endDate) {
         Swal.fire({
             icon: "error",
             title: "Oops!!",
@@ -22,19 +20,18 @@ function searchDateRange(){
         });
     }
     var table = $('#day-sales-table').DataTable();
-    table.ajax.url(getDaySalesUrl()+"/dateRange?startDate="+startDate+"&endDate="+endDate).load();
+    table.ajax.url(getDaySalesUrl() + "/dateRange?startDate=" + startDate + "&endDate=" + endDate).load();
 
-    
+
 }
 
-function refresh(){
+function refresh() {
     var table = $('#day-sales-table').DataTable();
     table.ajax.url(getDaySalesUrl()).load();
 }
 
 
-function downloadReport(){
-    console.log("downloadReport");
+function downloadReport() {
     //select input from form id
     var startDate = new Date($("#downlaodInputStartDate").val()).toISOString();
     var endDate = new Date($("#downloadInputEndDate").val()).toISOString();
@@ -69,9 +66,9 @@ function downloadReport(){
 
             const a = document.createElement('a');
             //generate current datetime
-			var date = new Date();
-			a.href = URL.createObjectURL(blob);
-            a.download = 'brandReport-'+date+'.pdf';
+            var date = new Date();
+            a.href = URL.createObjectURL(blob);
+            a.download = 'brandReport-' + date + '.pdf';
             a.click();
         },
         error: function (error) {
@@ -82,73 +79,85 @@ function downloadReport(){
             });
         }
     });
-    //clear form using form id
-    $('#sales-report-form').trigger("reset");
 }
 
 //INITIALIZATION CODE
-function init(){
+function init() {
     $('.active').removeClass('active');
-	$('#a-nav-sales').addClass('active');
+    $('#a-nav-sales').addClass('active');
 
+    
     let now = new Date();
-    let today = now.toISOString().slice(0,10);
-    let firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0,10);
-
-
+    let today = now.toISOString().slice(0, 10);
+    let firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10);
+    
     $('#inputStartDate').val(firstDay);
     $('#inputEndDate').val(today);
 
-    $('#downlaodInputStartDate').val(firstDay);
-    $('#downloadInputEndDate').val(today);
 
-    $('#search-date-range').html('<img src='+filterButton+' />');
-    $('#refresh-data').html('<img src='+clearFilterButton+' />');
-    $('#download-report-button').html('<img src='+downloadReportButton+' />');
 
-	$('#day-sales-table').DataTable( {
+
+    $('#search-date-range').html('<img src=' + filterButton + ' />');
+    $('#refresh-data').html('<img src=' + clearFilterButton + ' />');
+    $('#download-report-button').html('<img src=' + downloadReportButton + ' />');
+
+    $('#day-sales-table').DataTable({
         "ordering": false,
-		"processing": true,
-		"serverSide": true,
-        "searching":false,
-		"lengthMenu": [2,5,10,20, 40, 60, 80, 100],
-		"pageLength":10,
-		"ajax": {
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "lengthMenu": [2, 5, 10, 20, 40, 60, 80, 100],
+        "pageLength": 10,
+        "ajax": {
             url: getDaySalesUrl(),
             dataType: 'json',
-            cache:false,
+            cache: false,
             type: 'GET',
-            data: function ( d ) {
-               d.supersearch = $('.my-filter').val();
-     
-               // Retrieve dynamic parameters
-               var dt_params = $('#day-sales-table').data('dt_params');
-               // Add dynamic parameters to the data object sent to the server
-               if(dt_params){ $.extend(d, dt_params); }
-            }},
-		"columns": [
-            { "data": null,
-            "render": function (o) {
-                return  new Date(o.date).toLocaleString();
-            } 
-        },
-            { "data": "invoicedItemsCount" },
-            { "data": "invoicedOrderCount" },
-            { 
-                "data":null,
-                "render":function(o){return parseFloat(o.totalRevenue).toFixed(2)} 
-            },
-            
-        ]
-	});
+            data: function (d) {
+                d.supersearch = $('.my-filter').val();
 
-	$('#refresh-data').click(refresh);
+                // Retrieve dynamic parameters
+                var dt_params = $('#day-sales-table').data('dt_params');
+                // Add dynamic parameters to the data object sent to the server
+                if (dt_params) {
+                    $.extend(d, dt_params);
+                }
+            }
+        },
+        "columns": [{
+                "data": null,
+                "render": function (o) {
+                    return new Date(o.date).toLocaleString();
+                }
+            },
+            {
+                "data": "invoicedItemsCount"
+            },
+            {
+                "data": "invoicedOrderCount"
+            },
+            {
+                "data": null,
+                "render": function (o) {
+                    return parseFloat(o.totalRevenue).toFixed(2)
+                }
+            },
+
+        ]
+    });
+
+    $('#refresh-data').click(refresh);
     $('#search-date-range').click(searchDateRange);
-	$('#download-report-button').click(function(){
+    $('#download-report-button').click(function () {
+        let now = new Date();
+        let today = now.toISOString().slice(0, 10);
+        let firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10);
+
+        $('#downlaodInputStartDate').val(firstDay);
+        $('#downloadInputEndDate').val(today);
         $('#download-report-modal').modal('toggle');
     });
     $('#download-report').click(downloadReport);
 }
 
 $(document).ready(init);
-

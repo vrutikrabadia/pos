@@ -58,7 +58,7 @@ public class DaySalesDto {
         
 
         if(sDate.compareTo(eDate)>0){
-            throw new ApiException("start date should be less than end date");
+            throw new ApiException("Start Date should be less than End Date.");
         }
         List<PosDaySales> pojoList = service.getByDateRange(sDate, eDate,start, length);
 

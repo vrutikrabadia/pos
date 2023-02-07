@@ -88,7 +88,7 @@ function processData(){
 		Swal.fire({
 			icon: "error",
 			title: "Oops...",
-			text: "Invalid file format.Please upload a '.tsv' file.",
+			text: "Invalid file format. Please upload a '.tsv' file.",
 			
 		});
 		resetUploadDialog();
@@ -102,22 +102,11 @@ function readFileDataCallback(results){
 	uploadRows();
 }
 
-function checkJsonKeys(json){
-	
-	var keys = ["brand", "category"];
-	for(var i in keys){
-		if(!json.hasOwnProperty(keys[i])){
-			return false;
-		}
-	}
-
-	return true;
-}
 
 function uploadRows(){
 	//Upload progress
 
-	if(!checkJsonKeys(fileData[0])){
+	if(!checkJsonKeys(fileData[0], ["brand", "category"])){
 		Swal.fire({
 			icon: "error",
 			title: "Oops...",

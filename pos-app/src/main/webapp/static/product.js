@@ -141,19 +141,10 @@ function readFileDataCallback(results){
 	uploadRows();
 }
 
-function checkJsonKeys(json){
-	var keys = ["name", "brand", "category", "price", "quantity"];
-	for(var i in keys){
-		if(!json.hasOwnProperty(keys[i])){
-			return false;
-		}
-	}
-	return true;
-}
 
 function uploadRows(){
 
-	if(!checkJsonKeys(fileData[0])){
+	if(!checkJsonKeys(fileData[0], ["name", "brand", "category", "price", "quantity"])){
 		Swal.fire({
 			icon: "error",
 			title: "Oops!!",
@@ -336,8 +327,8 @@ function init(){
 	$("#refresh-data").html('<img src='+refreshButton+'></img>');
 
 	$('#product-table').DataTable( {
-		language: {
-			searchPlaceholder: "Name / Barcode / Brand / Category"
+		"language": {
+			"searchPlaceholder": "Name / Barcode / Brand / Category"
 		},
 		"ordering": false,
 		"processing": true,

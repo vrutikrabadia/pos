@@ -71,6 +71,21 @@ function validateFormHTML($form){
 	return $form[0].reportValidity();
 }
 
+function checkJsonKeys(json, keys){
+
+	if(Object.keys(json).length != keys.length){
+		return false;
+	}
+
+	for(var i in keys){
+		if(!json.hasOwnProperty(keys[i])){
+			return false;
+		}
+	}
+
+	return true;
+}
+
 function handleAjaxError(response){
 	var response = JSON.parse(response.responseText);
     try {
