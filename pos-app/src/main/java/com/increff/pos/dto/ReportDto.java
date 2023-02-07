@@ -138,7 +138,7 @@ public class ReportDto {
         
 
         if (sDate.compareTo(eDate) > 0) {
-            throw new ApiException("start date should be less than end date");
+            throw new ApiException("Start date should be less than End date");
         }
 
         if ((Objects.nonNull(form.getBrand()) && !form.getBrand().isEmpty())

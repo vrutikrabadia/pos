@@ -27,7 +27,7 @@ public class ProductForm {
     @Expose
     private String category;
     
-    @NotBlank(message = "product name cannot be blank")
+    @NotBlank(message = "Product Name cannot be blank")
     @Expose
     private String name;
 

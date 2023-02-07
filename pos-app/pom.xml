@@ -185,7 +185,6 @@
 					<runOrder>random</runOrder>
 					<redirectTestOutputToFile>true</redirectTestOutputToFile>
 					<rerunFailingTestsCount>1</rerunFailingTestsCount>
-					<parallel>methods</parallel>
 					<forkedProcessExitTimeoutInSeconds>2</forkedProcessExitTimeoutInSeconds>
 				</configuration>
 			</plugin>

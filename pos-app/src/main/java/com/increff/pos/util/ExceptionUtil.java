@@ -68,7 +68,7 @@ public class ExceptionUtil {
 		repeatSet.forEach(e -> {
 			R repeated = ConvertUtil.objectMapper(e, clazz);
 			JSONObject error = new JSONObject(new Gson().toJson(repeated));
-			error.put("error", "DUPLICATE: already exists in db");
+			error.put("error", message);
 			errorList.put(error);
 		});
 		throw new ApiException(errorList.toString());

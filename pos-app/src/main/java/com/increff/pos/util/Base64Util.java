@@ -26,7 +26,7 @@ public class Base64Util {
         try{
             return Base64.getEncoder().encodeToString(FileUtils.readFileToByteArray(file));
         } catch(Exception e){
-            throw new ApiException("Error encoding file to base 64");
+            throw new ApiException("Error encoding file to base64");
         }
     }
     
@@ -47,7 +47,7 @@ public class Base64Util {
             fos.write(decoder);
             System.out.println("PDF File Saved");
         } catch (Exception e) {
-            throw new ApiException("Error decoding base 64 to File");
+            throw new ApiException("Error decoding base64 to File");
         }
     }
     

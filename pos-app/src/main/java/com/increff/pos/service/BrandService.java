@@ -55,7 +55,7 @@ public class BrandService {
     public BrandPojo getcheck(String brand, String category) throws ApiException {
         BrandPojo pojo = dao.selectByBrandCategory(brand, category);
         if (Objects.isNull(pojo)) {
-            throw new ApiException("brand/category does not exist: " + brand + "/" + category);
+            throw new ApiException("Brand and Category does not exist: " + brand + "/" + category);
         }
         return pojo;
     }
@@ -76,7 +76,7 @@ public class BrandService {
     protected BrandPojo getCheck(Integer id) throws ApiException {
         BrandPojo b = dao.selectByColumn("id", id);
         if (Objects.isNull(b)) {
-            throw new ApiException("brand/category with given ID does not exist, id: " + id);
+            throw new ApiException("Brand and Category with given ID does not exist, id: " + id);
         }
         return b;
     }

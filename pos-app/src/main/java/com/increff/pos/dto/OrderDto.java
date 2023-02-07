@@ -70,7 +70,7 @@ public class OrderDto {
             if (barcodeSet.contains(f.getBarcode())) {
                 JSONObject error = new JSONObject(new Gson().toJson(f));
 
-                error.put("error", "Duplicate products in the order");
+                error.put("error", "Duplicate products in the order.");
                 errorList.put(error);
             }
 

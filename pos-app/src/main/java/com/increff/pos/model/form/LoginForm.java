@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 public class LoginForm {
 
-	@NotBlank(message = "email cannot be blank")
+	@NotBlank(message = "Email cannot be blank")
 	private String email;
 
-	@NotBlank(message = "password cannot be blank")
+	@NotBlank(message = "Password cannot be blank")
 	private String password;
 }

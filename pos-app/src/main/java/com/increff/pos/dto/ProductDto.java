@@ -110,7 +110,7 @@ public class ProductDto {
 
 
         if (repeatSet.size() > 0) {
-            ExceptionUtil.generateBulkAddExceptionList("DUPLICATE entries in file", formList, repeatSet);
+            ExceptionUtil.generateBulkAddExceptionList("DUPLICATE: Entry already exist in same file.", formList, repeatSet);
         }
     }
 
@@ -128,7 +128,7 @@ public class ProductDto {
                 .collect(Collectors.toSet());
         
         if (repeatSet.size() > 0) {
-           ExceptionUtil.generateBulkAddExceptionPojo("DUPLICATE: already exists in db", pojoList, repeatSet, ProductForm.class);
+           ExceptionUtil.generateBulkAddExceptionPojo("DUPLICATE: Product already exist with same Barcode.", pojoList, repeatSet, ProductForm.class);
         }
     }
 

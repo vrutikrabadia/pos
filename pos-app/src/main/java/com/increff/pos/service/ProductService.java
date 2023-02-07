@@ -36,7 +36,7 @@ public class ProductService {
     public ProductPojo get(String barcode) throws ApiException {
         ProductPojo p1 = dao.selectByColumn("barcode", barcode);
         if (Objects.isNull(p1)) {
-            throw new ApiException("Product with bar code does not exist");
+            throw new ApiException("Product with barcode does not exist");
         }
         return p1;
     }
@@ -71,7 +71,7 @@ public class ProductService {
 
         ProductPojo p = dao.selectByColumn("id",id);
         if (Objects.isNull(p)) {
-            throw new ApiException("product does not exist with id: " + id);
+            throw new ApiException("Product does not exist with id: " + id);
         }
         return p;
     }

@@ -73,7 +73,7 @@ public class ValidateUtil {
 
     public static void validateEmail(String email) throws ApiException {
         String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
-        String errorMessage = "Invalid email format";
+        String errorMessage = "Invalid Email format.";
         if (!email.matches(emailRegex)) {
             throw new ApiException(errorMessage);
         }
@@ -81,7 +81,7 @@ public class ValidateUtil {
 
     public static void validatePassword(String password) throws ApiException {
         if (password.length() < 8) {
-            throw new ApiException("Password must be at least 8 characters");
+            throw new ApiException("Password must be of atleast 8 characters");
         }
     }
 

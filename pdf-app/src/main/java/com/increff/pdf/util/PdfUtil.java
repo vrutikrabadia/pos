@@ -51,7 +51,7 @@ public class PdfUtil {
 
             transformer.transform(xmlSource, res);
         } catch (Exception e) {
-            throw new ApiException("Error generating pdf");
+            throw new ApiException("Error generating PDF");
         }
         byte[] pdf = baos.toByteArray();
         String base64 = Base64.getEncoder().encodeToString(pdf);
@@ -82,7 +82,7 @@ public class PdfUtil {
 
             transformer.transform(xmlSource, res);
         } catch (Exception e) {
-            throw new ApiException("Error generating pdf");
+            throw new ApiException("Error generating PDF");
         }
         byte[] pdf = baos.toByteArray();
         String base64 = Base64.getEncoder().encodeToString(pdf);
@@ -113,7 +113,7 @@ public class PdfUtil {
 
             transformer.transform(xmlSource, res);
         } catch (Exception e) {
-            throw new ApiException("Error generating pdf");
+            throw new ApiException("Error generating PDF");
         }
         byte[] pdf = baos.toByteArray();
         String base64 = Base64.getEncoder().encodeToString(pdf);
@@ -145,7 +145,7 @@ public class PdfUtil {
 
             transformer.transform(xmlSource, res);
         } catch (Exception e) {
-            throw new ApiException("Error generating pdf");
+            throw new ApiException("Error generating PDF");
         }
         byte[] pdf = baos.toByteArray();
         String base64 = Base64.getEncoder().encodeToString(pdf);
