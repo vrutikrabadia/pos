@@ -11,47 +11,42 @@ import com.increff.pdf.util.XmlUtils;
 
 public class ReportGenerator {
     
-    private XmlUtils xmlUtils;
-    private PdfUtil pdfUtil;
 
-    public ReportGenerator(String cacheLocation) {
-        this.xmlUtils = new XmlUtils(cacheLocation);
-        this.pdfUtil = new PdfUtil(cacheLocation);
+    public static String generateBrandReport(List<BrandReportData> form) throws ApiException{
+        String encodedXML = "";
+        try {
+            encodedXML = XmlUtils.generateBrandReportXml(form);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ApiException("Error generating XML");
+        }
+
+        return PdfUtil.generatePdf("brandReport",encodedXML);
     }
 
-    public String generateBrandReport(List<BrandReportData> form) throws ApiException{
-        
+
+    public static String generateInventoryReport(List<InventoryReportData> form) throws ApiException{
+        String encodedXML = "";
         try {
-            xmlUtils.generateBrandReportXml(form);
+            encodedXML = XmlUtils.generateInventoryReportXml(form);
         } catch (Exception e) {
 
             throw new ApiException("Error generating XML");
         }
 
-        return pdfUtil.generatePdf("brandReport", "brandReport");
+        return PdfUtil.generatePdf("inventoryReport", encodedXML);
     }
 
-
-    public String generateInventoryReport(List<InventoryReportData> form) throws ApiException{
+    public static String generateSalesReport(List<SalesReportData> form) throws ApiException{
+        String encodedXML = "";
         try {
-            xmlUtils.generateInventoryReportXml(form);
+            encodedXML = XmlUtils.generateSalesReportXml(form);
         } catch (Exception e) {
 
             throw new ApiException("Error generating XML");
         }
 
-        return pdfUtil.generatePdf("inventoryReport", "inventoryReport");
-    }
-
-    public String generateSalesReport(List<SalesReportData> form) throws ApiException{
-        try {
-            xmlUtils.generateSalesReportXml(form);
-        } catch (Exception e) {
-
-            throw new ApiException("Error generating XML");
-        }
-
-        return pdfUtil.generatePdf("salesReport", "salesReport");
+        return PdfUtil.generatePdf("salesReport", encodedXML);
     }
 
 

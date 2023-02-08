@@ -1,5 +1,6 @@
 package com.increff.pdf.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Base64;
@@ -20,18 +21,10 @@ import com.increff.pdf.service.ApiException;
 // @Component
 public class PdfUtil {
 
-    private String cacheLocation;
-
-    public PdfUtil(String cacheLocation){
-        this.cacheLocation = cacheLocation;
-    }
-
-    public String generatePdf(String xslFile, String xmlFile) throws ApiException{
+    public static String generatePdf(String xslFile, String xmlFile) throws ApiException{
         File xsltFile = new File(new File("src/main/resources/com/increff/pdf/"+xslFile+".xsl").getAbsolutePath());
 
-        StreamSource xmlSource = new StreamSource(
-                new File(new File(cacheLocation+"/" + xmlFile + ".xml")
-                        .getAbsolutePath()));
+        StreamSource xmlSource = convert(xmlFile);
 
         FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
 
@@ -56,5 +49,11 @@ public class PdfUtil {
         return base64;
     }
 
+
+    private static StreamSource convert(String base64EncodedString) {
+        byte[] decodedBytes = Base64.getDecoder().decode(base64EncodedString);
+        ByteArrayInputStream bais = new ByteArrayInputStream(decodedBytes);
+        return new StreamSource(bais);
+    }
    
 }

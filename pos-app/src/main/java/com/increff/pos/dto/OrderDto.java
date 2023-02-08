@@ -179,7 +179,7 @@ public class OrderDto {
 
         invoiceData.setItemsList(invItems);
 
-        String base64 = new InvoiceGenerator(properties.getCacheLocation()).generateInvoice(invoiceData);
+        String base64 = InvoiceGenerator.generateInvoice(invoiceData);
 
         Base64Util.decodeBase64ToFile(base64, filePath);
 

@@ -14,6 +14,13 @@ function deleteOrderItem(id) {
 }
 
 function editOrderItem(id){
+    var currBarcode = $('#order-item-form input[name=barcode]').val();
+    var currQuantity = $('#order-item-form input[name=quantity]').val();
+    var currSellingPrice = $('#order-item-form input[name=sellingPrice]').val();
+
+    if(currBarcode != "" && currQuantity != "" && currSellingPrice != ""){
+        addOrderItem();
+    }
     var barcode = wholeOrder[id].barcode;
     var quantity = wholeOrder[id].quantity;
     var sellingPrice = wholeOrder[id].sellingPrice;
@@ -220,7 +227,7 @@ function checkInventory() {
         error: function (error) {
             Swal.fire({
                 title: 'Oops...',
-                text: 'Item not found',
+                text: error.responseJSON.message,
                 icon: 'error',
             });
         }

@@ -11,7 +11,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.increff.pdf.generator.ReportGenerator;
@@ -56,13 +55,6 @@ public class ReportDto {
     @Autowired
     private BrandDto bDto;
 
-    @Value("${pdfapp.url}")
-    private String pdfAppUrl;
-
-    @Value("${cache.location}")
-    private String cacheLocation;
-
-
     //functions for inventory report
 
     public String getInventoryReport() throws ApiException, com.increff.pdf.service.ApiException {
@@ -93,7 +85,7 @@ public class ReportDto {
             result.add(res);
         }
         
-        return new ReportGenerator(cacheLocation).generateInventoryReport(result);
+        return ReportGenerator.generateInventoryReport(result);
     }
 
     protected HashMap<Integer, Integer> getProductIdToBrandCatMap(List<InventoryPojo> iList) throws ApiException {
@@ -254,7 +246,7 @@ public class ReportDto {
             result.add(data);
         }
 
-        return new ReportGenerator(cacheLocation).generateSalesReport(result);
+        return ReportGenerator.generateSalesReport(result);
     }
 
     //functions for brand report
@@ -265,7 +257,7 @@ public class ReportDto {
         List<BrandData> dataList= bDto.getAll(0, totalBrands, 1, Optional.empty()).getData();
         List<BrandReportData> brandList = dataList.stream().map(e->ConvertUtil.objectMapper(e, BrandReportData.class)).collect(Collectors.toList());
 
-        return new ReportGenerator(cacheLocation).generateBrandReport(brandList);
+        return ReportGenerator.generateBrandReport(brandList);
     }
 
 }

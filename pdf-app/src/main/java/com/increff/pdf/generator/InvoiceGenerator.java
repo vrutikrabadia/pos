@@ -8,24 +8,16 @@ import com.increff.pdf.util.XmlUtils;
 // @Component
 public class InvoiceGenerator {
     
-    private XmlUtils xmlUtils;
-    private PdfUtil pdfUtil;
-
-    public InvoiceGenerator(String cacheLocation) {
-        this.xmlUtils = new XmlUtils(cacheLocation);
-        this.pdfUtil = new PdfUtil(cacheLocation);
-    }
-
-    public String generateInvoice(InvoiceData data) throws ApiException{
-        
+    public static String generateInvoice(InvoiceData data) throws ApiException{
+        String encodedXML = "";
         try {
-            xmlUtils.generateInvoiceXml(data);
+            encodedXML = XmlUtils.generateInvoiceXml(data);
         } catch (Exception e) {
 
             throw new ApiException("Error generating XML");
         }
 
-        return pdfUtil.generatePdf("invoice", "invoice"+ data.getId());
+        return PdfUtil.generatePdf("invoice", encodedXML);
 
 
     }
