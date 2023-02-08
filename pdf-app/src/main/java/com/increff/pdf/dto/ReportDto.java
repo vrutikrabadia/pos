@@ -22,38 +22,40 @@ public class ReportDto {
     private PdfUtil pdfUtil;
 
     public String generateBrandReport(List<BrandReportForm> form) throws ApiException{
-        
+        String encodedXml = "";
         try {
-            xmlUtils.generateBrandReportXml(form);
+            encodedXml = xmlUtils.generateBrandReportXml(form);
         } catch (Exception e) {
 
             throw new ApiException("Error generating XML");
         }
 
-        return pdfUtil.generatePdf("brandReport", "brandReport");
+        return pdfUtil.generatePdf("brandReport", encodedXml);
     }
 
 
     public String generateInventoryReport(List<InventoryReportForm> form) throws ApiException{
+        String encodedXml = "";
         try {
-            xmlUtils.generateInventoryReportXml(form);
+            encodedXml =xmlUtils.generateInventoryReportXml(form);
         } catch (Exception e) {
 
             throw new ApiException("Error generating XML");
         }
 
-        return pdfUtil.generatePdf("inventoryReport", "inventoryReport");
+        return pdfUtil.generatePdf("inventoryReport", encodedXml);
     }
 
     public String generateSalesReport(List<SalesReportForm> form) throws ApiException{
+        String encodedXml = "";
         try {
-            xmlUtils.generateSalesReportXml(form);
+            encodedXml = xmlUtils.generateSalesReportXml(form);
         } catch (Exception e) {
 
             throw new ApiException("Error generating XML");
         }
 
-        return pdfUtil.generatePdf("salesReport", "salesReport");
+        return pdfUtil.generatePdf("salesReport", encodedXml);
     }
 
 

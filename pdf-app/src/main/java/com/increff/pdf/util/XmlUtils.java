@@ -1,11 +1,9 @@
 package com.increff.pdf.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.ByteArrayOutputStream;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.Base64;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -36,7 +34,7 @@ public class XmlUtils {
 
     
 
-    public  void generateInvoiceXml(InvoiceForm invoiceData) throws Exception {
+    public  String generateInvoiceXml(InvoiceForm invoiceData) throws Exception {
         
         double subTotal = 0.0;
 
@@ -174,16 +172,15 @@ public class XmlUtils {
             recordCount++;
         }
 
-
-        try (FileOutputStream output = new FileOutputStream(new File(cacheLocation+"/invoice"+invoiceData.getId().toString()+".xml").getAbsolutePath())) {
-            writeXml(doc, output);
-        } catch (IOException e) {
-            
-        }
+        //generate base64 xml string
+        
+        
+        return generateXMLString(doc);
+       
     }
 
 
-    public  void generateBrandReportXml(List<BrandReportForm> brands) throws Exception{
+    public String generateBrandReportXml(List<BrandReportForm> brands) throws Exception{
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -259,15 +256,12 @@ public class XmlUtils {
             recordCount++;
         }
 
-        try (FileOutputStream output = new FileOutputStream(new File(cacheLocation+"/brandReport.xml").getAbsolutePath())) {
-            writeXml(doc, output);
-        } catch (IOException e) {
-            
-        }
+        
+        return generateXMLString(doc);
     }
 
 
-    public  void generateInventoryReportXml(List<InventoryReportForm> inventory) throws Exception{
+    public  String generateInventoryReportXml(List<InventoryReportForm> inventory) throws Exception{
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -348,14 +342,11 @@ public class XmlUtils {
             recordCount++;
         }
 
-        try (FileOutputStream output = new FileOutputStream(new File(cacheLocation+"/inventoryReport.xml").getAbsolutePath())) {
-            writeXml(doc, output);
-        } catch (IOException e) {
-            
-        }
+        
+        return generateXMLString(doc);
     }
 
-    public  void generateSalesReportXml(List<SalesReportForm> sales) throws Exception{
+    public  String generateSalesReportXml(List<SalesReportForm> sales) throws Exception{
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -441,21 +432,22 @@ public class XmlUtils {
             recordCount++;
         }
 
-        try (FileOutputStream output = new FileOutputStream(new File(cacheLocation+"/salesReport.xml").getAbsolutePath())) {
-            writeXml(doc, output);
-        } catch (IOException e) {
-            
-        }
+        return generateXMLString(doc);
     }
 
 
-    private  void writeXml(Document doc, OutputStream output) throws TransformerException {
+    private String generateXMLString(Document doc) throws TransformerException {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = tf.newTransformer();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        transformer.transform(new DOMSource(doc), new StreamResult(bos));
+        
 
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(output);
-
-        transformer.transform(source, result);
+        byte[] xmlBytes = bos.toByteArray();
+        String encodedXML = Base64.getEncoder().encodeToString(xmlBytes);
+        
+        return encodedXML;
     }
+
+    
 }

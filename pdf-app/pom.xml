@@ -42,13 +42,18 @@
 	</properties>
 
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.apache.xml.security/xml-security -->
 		
+
+
 		<!-- PDF dependencies-->
 		<dependency>
 			<groupId>org.w3c</groupId>
 			<artifactId>dom</artifactId>
 			<version>${dom.version}</version>
 		</dependency>
+
+		
 
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>

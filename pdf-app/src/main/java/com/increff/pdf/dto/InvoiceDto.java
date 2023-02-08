@@ -19,14 +19,15 @@ public class InvoiceDto {
 
     public String generateInvoice(InvoiceForm form) throws ApiException{
         
+        String encodedXml = "";
         try {
-            xmlUtils.generateInvoiceXml(form);
+            encodedXml = xmlUtils.generateInvoiceXml(form);
         } catch (Exception e) {
 
             throw new ApiException("Error generating XML");
         }
 
-        return pdfUtil.generatePdf("invoice", "invoice"+form.getId());
+        return pdfUtil.generatePdf("invoice", encodedXml);
 
 
     }
