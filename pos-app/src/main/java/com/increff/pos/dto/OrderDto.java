@@ -49,14 +49,8 @@ public class OrderDto {
     @Autowired
     private InventoryService invService;
 
-    // @Autowired
-    // private RestTemplate restTemplate;
-
     @Autowired
     private Properties properties;
-
-    @Value("${pdfapp.url}")
-    private String pdfAppUrl;
 
     public OrderData add(List<OrderItemsForm> list) throws ApiException {
         List<OrderItemsPojo> list1 = new ArrayList<OrderItemsPojo>();
@@ -185,15 +179,7 @@ public class OrderDto {
 
         invoiceData.setItemsList(invItems);
 
-        // String base64 = "";
-        String base64 = new InvoiceGenerator(cacheLocation).generateInvoice(invoiceData);
-
-        // HttpHeaders headers = new HttpHeaders();
-        // headers.setContentType(MediaType.APPLICATION_JSON);
-
-        // String apiUrl = pdfAppUrl + "/api/invoices";
-        // ResponseEntity<String> apiResponse = restTemplate.postForEntity(apiUrl, invoiceData, String.class);
-        // String responseBody = apiResponse.getBody();
+        String base64 = new InvoiceGenerator(properties.getCacheLocation()).generateInvoice(invoiceData);
 
         Base64Util.decodeBase64ToFile(base64, filePath);
 

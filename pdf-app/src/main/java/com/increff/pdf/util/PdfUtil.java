@@ -22,6 +22,10 @@ public class PdfUtil {
 
     private String cacheLocation;
 
+    public PdfUtil(String cacheLocation){
+        this.cacheLocation = cacheLocation;
+    }
+
     public String generatePdf(String xslFile, String xmlFile) throws ApiException{
         File xsltFile = new File(new File("src/main/resources/com/increff/pdf/"+xslFile+".xsl").getAbsolutePath());
 

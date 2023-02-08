@@ -23,6 +23,4 @@ public class Properties {
 	@Value("${app.version}")
 	private String version;
 
-    @Value("${pdfapp.url}")
-    private String pdfAppUrl;
 }
