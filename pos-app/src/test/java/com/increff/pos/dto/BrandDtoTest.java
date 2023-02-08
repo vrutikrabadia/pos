@@ -90,7 +90,7 @@ public class BrandDtoTest extends AbstractUnitTest {
         BrandForm form = testUtil.getBrandForm("brand1", "category1");
 
         exceptionRule.expect(ApiException.class);
-        exceptionRule.expectMessage("Brand and category already exists");
+        exceptionRule.expectMessage("Brand and Category already exists.");
         dto.add(form);
     }
 

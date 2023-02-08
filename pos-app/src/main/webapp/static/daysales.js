@@ -68,7 +68,7 @@ function downloadReport() {
             //generate current datetime
             var date = new Date();
             a.href = URL.createObjectURL(blob);
-            a.download = 'brandReport-' + date + '.pdf';
+            a.download = 'SalesReport-' + date + '.pdf';
             a.click();
         },
         error: function (error) {

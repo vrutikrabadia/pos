@@ -28,7 +28,7 @@ public class ReportGenerator {
             throw new ApiException("Error generating XML");
         }
 
-        return pdfUtil.generateBrandReportPdf();
+        return pdfUtil.generatePdf("brandReport", "brandReport");
     }
 
 
@@ -40,7 +40,7 @@ public class ReportGenerator {
             throw new ApiException("Error generating XML");
         }
 
-        return pdfUtil.generateInventoryReportPdf();
+        return pdfUtil.generatePdf("inventoryReport", "inventoryReport");
     }
 
     public String generateSalesReport(List<SalesReportData> form) throws ApiException{
@@ -51,7 +51,7 @@ public class ReportGenerator {
             throw new ApiException("Error generating XML");
         }
 
-        return pdfUtil.generateSalesReportPdf();
+        return pdfUtil.generatePdf("salesReport", "salesReport");
     }
 
 

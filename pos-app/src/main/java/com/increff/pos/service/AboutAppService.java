@@ -1,23 +1,22 @@
 package com.increff.pos.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.increff.pos.spring.Properties;
 
 @Service
 public class AboutAppService {
 
-	@Value("${app.name}")
-	private String name;
-	@Value("${app.version}")
-	
-	private String version;
+	@Autowired
+	private Properties properties;
 	
 	public String getName() {
-		return name;
+		return properties.getName();
 	}
 
 	public String getVersion() {
-		return version;
+		return properties.getVersion();
 	}
 
 }
