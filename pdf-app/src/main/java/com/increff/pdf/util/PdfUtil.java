@@ -25,11 +25,11 @@ public class PdfUtil {
     @Value("${cache.location}")
     private String cacheLocation;
 
-    public  String generateInvoicePdf(Integer orderId) throws ApiException {
-        File xsltFile = new File(new File("src/main/resources/com/increff/pdf/invoice.xsl").getAbsolutePath());
+    public String generatePdf(String xslFile, String xmlFile) throws ApiException{
+        File xsltFile = new File(new File("src/main/resources/com/increff/pdf/"+xslFile+".xsl").getAbsolutePath());
 
         StreamSource xmlSource = new StreamSource(
-                new File(new File(cacheLocation+"/invoice" + orderId.toString() + ".xml")
+                new File(new File(cacheLocation+"/" + xmlFile + ".xml")
                         .getAbsolutePath()));
 
         FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
@@ -53,100 +53,7 @@ public class PdfUtil {
         String base64 = Base64.getEncoder().encodeToString(pdf);
 
         return base64;
-
     }
 
-    public  String generateBrandReportPdf() throws ApiException {
-        File xsltFile = new File(new File("src/main/resources/com/increff/pdf/brandReport.xsl").getAbsolutePath());
-
-        StreamSource xmlSource = new StreamSource(
-                new File(new File(cacheLocation+"/brandReport.xml")
-                        .getAbsolutePath()));
-
-        FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
-
-        FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        try {
-            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, baos);
-
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer(new StreamSource(xsltFile));
-
-            Result res = new SAXResult(fop.getDefaultHandler());
-
-            transformer.transform(xmlSource, res);
-        } catch (Exception e) {
-            throw new ApiException("Error generating PDF");
-        }
-        byte[] pdf = baos.toByteArray();
-        String base64 = Base64.getEncoder().encodeToString(pdf);
-
-        return base64;
-
-    }
-
-    public  String generateInventoryReportPdf() throws ApiException {
-        File xsltFile = new File(new File("src/main/resources/com/increff/pdf/inventoryReport.xsl").getAbsolutePath());
-
-        StreamSource xmlSource = new StreamSource(
-                new File(new File(cacheLocation+"/inventoryReport.xml")
-                        .getAbsolutePath()));
-
-        FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
-
-        FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        try {
-            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, baos);
-
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer(new StreamSource(xsltFile));
-
-            Result res = new SAXResult(fop.getDefaultHandler());
-
-            transformer.transform(xmlSource, res);
-        } catch (Exception e) {
-            throw new ApiException("Error generating PDF");
-        }
-        byte[] pdf = baos.toByteArray();
-        String base64 = Base64.getEncoder().encodeToString(pdf);
-
-        return base64;
-
-    }
-
-
-    public  String generateSalesReportPdf() throws ApiException {
-        File xsltFile = new File(new File("src/main/resources/com/increff/pdf/salesReport.xsl").getAbsolutePath());
-
-        StreamSource xmlSource = new StreamSource(
-                new File(new File(cacheLocation+"/salesReport.xml")
-                        .getAbsolutePath()));
-
-        FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
-
-        FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        try {
-            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, baos);
-
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer(new StreamSource(xsltFile));
-
-            Result res = new SAXResult(fop.getDefaultHandler());
-
-            transformer.transform(xmlSource, res);
-        } catch (Exception e) {
-            throw new ApiException("Error generating PDF");
-        }
-        byte[] pdf = baos.toByteArray();
-        String base64 = Base64.getEncoder().encodeToString(pdf);
-
-        return base64;
-
-    }
+   
 }

@@ -45,8 +45,8 @@ public class Base64Util {
             byte[] decoder = Base64.getDecoder().decode(base64);
 
             fos.write(decoder);
-            System.out.println("PDF File Saved");
         } catch (Exception e) {
+            
             throw new ApiException("Error decoding base64 to File");
         }
     }

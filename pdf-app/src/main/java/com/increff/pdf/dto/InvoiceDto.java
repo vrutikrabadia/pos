@@ -26,7 +26,7 @@ public class InvoiceDto {
             throw new ApiException("Error generating XML");
         }
 
-        return pdfUtil.generateInvoicePdf(form.getId());
+        return pdfUtil.generatePdf("invoice", "invoice"+form.getId());
 
 
     }

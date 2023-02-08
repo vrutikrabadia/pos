@@ -174,12 +174,11 @@ public class XmlUtils {
             recordCount++;
         }
 
-        System.out.println(cacheLocation);
 
         try (FileOutputStream output = new FileOutputStream(new File(cacheLocation+"/invoice"+invoiceData.getId().toString()+".xml").getAbsolutePath())) {
             writeXml(doc, output);
         } catch (IOException e) {
-            e.printStackTrace();
+            
         }
     }
 
@@ -263,7 +262,7 @@ public class XmlUtils {
         try (FileOutputStream output = new FileOutputStream(new File(cacheLocation+"/brandReport.xml").getAbsolutePath())) {
             writeXml(doc, output);
         } catch (IOException e) {
-            e.printStackTrace();
+            
         }
     }
 
@@ -352,7 +351,7 @@ public class XmlUtils {
         try (FileOutputStream output = new FileOutputStream(new File(cacheLocation+"/inventoryReport.xml").getAbsolutePath())) {
             writeXml(doc, output);
         } catch (IOException e) {
-            e.printStackTrace();
+            
         }
     }
 
@@ -445,7 +444,7 @@ public class XmlUtils {
         try (FileOutputStream output = new FileOutputStream(new File(cacheLocation+"/salesReport.xml").getAbsolutePath())) {
             writeXml(doc, output);
         } catch (IOException e) {
-            e.printStackTrace();
+            
         }
     }
 

@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,6 +24,7 @@ import com.increff.pos.model.form.UserForm;
 import com.increff.pos.pojo.UserPojo;
 import com.increff.pos.service.ApiException;
 import com.increff.pos.service.UserService;
+import com.increff.pos.spring.Properties;
 import com.increff.pos.util.ConvertUtil;
 import com.increff.pos.util.PasswordUtil;
 import com.increff.pos.util.SecurityUtil;
@@ -36,8 +36,8 @@ public class UserDto {
     @Autowired
     UserService service;
 
-    @Value("${supervisor.email}")
-    private String supEmail;
+    @Autowired
+	private Properties properties;
 
     @Autowired
 	private InfoData info;
@@ -139,7 +139,7 @@ public class UserDto {
         }
         
         UserPojo p = ConvertUtil.objectMapper(form, UserPojo.class);
-        if(p.getEmail().equals(supEmail)){
+        if(p.getEmail().equals(properties.getSupEmail())){
             p.setRole(Roles.supervisor);
         }
         else{

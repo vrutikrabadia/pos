@@ -1,20 +1,19 @@
 package com.increff.pos.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import com.increff.pos.spring.Properties;
+
 @Component
 public class PdfClient {
-    @Value("${cache.location}")
-    private String cacheLocation;
-
-    @Value("${pdfapp.url}")
-    private String pdfAppUrl;
+    
+    @Autowired
+    private Properties properties;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -23,7 +22,7 @@ public class PdfClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        ResponseEntity<String> apiResponse = restTemplate.postForEntity(pdfAppUrl+url, data, String.class);
+        ResponseEntity<String> apiResponse = restTemplate.postForEntity(properties.getPdfAppUrl()+url, data, String.class);
         String responseBody = apiResponse.getBody();
         
         return responseBody;

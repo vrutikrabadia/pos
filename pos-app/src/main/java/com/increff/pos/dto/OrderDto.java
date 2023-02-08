@@ -10,7 +10,6 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -28,6 +27,7 @@ import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.OrderItemsService;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.service.ProductService;
+import com.increff.pos.spring.Properties;
 import com.increff.pos.util.Base64Util;
 import com.increff.pos.util.ClientWrapper;
 import com.increff.pos.util.ConvertUtil;
@@ -52,8 +52,8 @@ public class OrderDto {
     @Autowired
     private ClientWrapper clientWrapper;
 
-    @Value("${cache.location}")
-    private String cacheLocation;
+    @Autowired
+    private Properties properties;
 
 
 
@@ -161,7 +161,7 @@ public class OrderDto {
 
     public String generateInvoice(Integer orderId) throws ApiException, Exception {
 
-        String filePath = new File(cacheLocation+"/invoice"+orderId+".pdf").getAbsolutePath();
+        String filePath = new File(properties.getCacheLocation()+"/invoice"+orderId+".pdf").getAbsolutePath();
         File file = new File(filePath);
 
         if (file.exists()){

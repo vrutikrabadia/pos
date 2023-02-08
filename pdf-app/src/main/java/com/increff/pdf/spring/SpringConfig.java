@@ -21,7 +21,6 @@ public class SpringConfig {
 
 	@PostConstruct
 	public void init() {
-		System.out.println("SpringConfig.init()");
 		TimeZone.setDefault(TimeZone.getTimeZone(serverTimezone));
 	}
 

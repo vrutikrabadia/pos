@@ -118,11 +118,9 @@ public class ProductDto {
         
         List<String> barcodeList = pojoList.stream().map(ProductPojo::getBarcode).collect(Collectors.toList());
         List<ProductPojo> currentExixting = service.getInColumn(Arrays.asList("barcode"),Arrays.asList(barcodeList));
-        System.out.println(currentExixting.toString());
         Set<String> dbSet = new HashSet<String>();
         dbSet = currentExixting.stream().flatMap(pojo -> Stream.of(pojo.getBarcode()))
                 .collect(Collectors.toSet());
-        System.out.println(dbSet);
         Set<String> finalDbSet = dbSet;
         Set<ProductPojo> repeatSet = pojoList.stream().filter(e -> !finalDbSet.add(e.getBarcode()))
                 .collect(Collectors.toSet());
