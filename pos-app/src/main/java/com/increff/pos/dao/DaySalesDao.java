@@ -34,7 +34,7 @@ public class DaySalesDao extends AbstractDao<PosDaySales>{
     }
 
 
-    public Integer getTotalEntriesInDateRange(ZonedDateTime startDate, ZonedDateTime endDate){
+    public Integer selectTotalEntriesInDateRange(ZonedDateTime startDate, ZonedDateTime endDate){
 		CriteriaBuilder cb = em.getCriteriaBuilder();
     	CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<PosDaySales> root = cq.from(PosDaySales.class);

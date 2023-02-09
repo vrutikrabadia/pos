@@ -12,8 +12,8 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.TestUtil;
+import com.increff.pos.config.AbstractUnitTest;
+import com.increff.pos.config.TestUtil;
 import com.increff.pos.model.form.SalesReportForm;
 import com.increff.pos.pojo.InventoryPojo;
 import com.increff.pos.pojo.OrderItemsPojo;
@@ -85,7 +85,7 @@ public class ReportDtoTest extends AbstractUnitTest{
 
         List<Integer> brandCatIdList = new ArrayList<Integer>(map.values());
 
-        HashMap<Integer,Integer> brandCatIdToQuantityMap = dto.getbrandCatIdToQuantityMap(map, iList, brandCatIdList);
+        HashMap<Integer,Integer> brandCatIdToQuantityMap = dto.getBrandCatIdToQuantityMap(map, iList, brandCatIdList);
 
 
         assertEquals(10, brandCatIdToQuantityMap.get(brandId1).intValue());

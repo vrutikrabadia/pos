@@ -19,19 +19,24 @@ public class BrandService {
     @Autowired
     private BrandDao dao;
 
-    public void add(BrandPojo p) {
-        dao.insert(p);
+    public void add(BrandPojo brandPojo) {
+        dao.insert(brandPojo);
     }
 
     public void bulkAdd(List<BrandPojo> list) {
-
         for (BrandPojo brand : list) {
                 add(brand); 
         }
     }
 
-    public BrandPojo get(Integer id) throws ApiException {
-        return getCheck(id);
+    public BrandPojo getById(Integer bCatId) {
+        return dao.selectByColumn("id", bCatId);
+
+    }
+
+    public BrandPojo getByBrandAndCategory(String brand, String category) {
+        
+        return dao.selectByBrandCategory(brand, category);
     }
 
     public List<BrandPojo> getAllPaginated(Integer offset, Integer pageSize) {
@@ -42,44 +47,41 @@ public class BrandService {
         return dao.selectAll();
     }
 
-    public BrandPojo get(String brand, String category) throws ApiException {
-        return getcheck(brand, category);
+    public void update(Integer id, BrandPojo brandPojo) throws ApiException {
+        BrandPojo checkPojo = getCheckById(id);
+        checkPojo.setBrand(brandPojo.getBrand());
+        checkPojo.setCategory(brandPojo.getCategory());
     }
 
-    public void update(Integer id, BrandPojo p) throws ApiException {
-        BrandPojo b1 = getCheck(id);
-        b1.setBrand(p.getBrand());
-        b1.setCategory(p.getCategory());
+
+    public Integer getTotalEntries() {
+        return dao.selectTotalEntries();
     }
 
-    public BrandPojo getcheck(String brand, String category) throws ApiException {
-        BrandPojo pojo = dao.selectByBrandCategory(brand, category);
+    public List<BrandPojo> searchQueryString(Integer pageNo, Integer pageSize,String queryString){
+        List<String> columnList = Arrays.asList("brand", "category");
+        return dao.selectByQueryString(pageNo, pageSize,queryString, columnList );
+    }
+
+    public <T> List<BrandPojo> getInColumns(List<String> columnList,List<List<T>> valueList){
+        return dao.selectInColumns(columnList, valueList);
+    }
+
+    
+    public BrandPojo getCheckByBrandCategory(String brand, String category) throws ApiException {
+        BrandPojo pojo = getByBrandAndCategory(brand, category);
         if (Objects.isNull(pojo)) {
             throw new ApiException("Brand and Category does not exist: " + brand + "/" + category);
         }
         return pojo;
     }
 
-    public Integer getTotalEntries() {
-        return dao.getTotalEntries();
-    }
-
-    public List<BrandPojo> searchQueryString(Integer pageNo, Integer pageSize,String queryString){
-        List<String> columnList = Arrays.asList("brand", "category");
-        return dao.selectQueryString(pageNo, pageSize,queryString, columnList );
-    }
-
-    public <T> List<BrandPojo> getInColumn(List<String> column,List<List<T>> values){
-        return dao.selectByColumnUsingIn(column, values);
-    }
-
-    protected BrandPojo getCheck(Integer id) throws ApiException {
-        BrandPojo b = dao.selectByColumn("id", id);
-        if (Objects.isNull(b)) {
-            throw new ApiException("Brand and Category with given ID does not exist, id: " + id);
+    public BrandPojo getCheckById(Integer bCatId) throws ApiException {
+        BrandPojo brandPojo = getById(bCatId);    
+        if (Objects.isNull(brandPojo)) {
+            throw new ApiException("Brand and Category with given ID does not exist, id: " + bCatId);
         }
-        return b;
+        return brandPojo;
     }
-
 
 }

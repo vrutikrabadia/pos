@@ -30,23 +30,23 @@ public class OrderApiController {
     @Autowired
     private OrderDto dto;
 
-    @ApiOperation(value="Creates order")
+    @ApiOperation(value="Creates a order.")
     @RequestMapping(path="", method = RequestMethod.POST)
-    public OrderData add(@RequestBody List<OrderItemsForm> form) throws ApiException{
-        return dto.add(form);
+    public OrderData add(@RequestBody List<OrderItemsForm> itemsFormList) throws ApiException{
+        return dto.add(itemsFormList);
     }
 
 
     @ApiOperation(value = "Gets Order by id")
     @RequestMapping(path="/{id}", method = RequestMethod.GET)
-    public OrderData get(@PathVariable Integer id) throws ApiException{
-        return dto.get(id);
+    public OrderData get(@PathVariable Integer orderId) throws ApiException{
+        return dto.get(orderId);
     }
 
     @ApiOperation(value="Get Order Items by order id")
     @RequestMapping(path="/{id}/items", method = RequestMethod.GET)
-    public List<OrderItemsData> getByOrderId(@PathVariable Integer id) throws ApiException{
-        return dto.getByOrderId(id);
+    public List<OrderItemsData> getByOrderId(@PathVariable Integer orderId) throws ApiException{
+        return dto.getByOrderId(orderId);
     }
 
     @ApiOperation(value = "Gets All orders")

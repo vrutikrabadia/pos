@@ -3,6 +3,7 @@ package com.increff.pos.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -15,20 +16,22 @@ import javax.persistence.criteria.Root;
 public abstract class AbstractDao<T> {
 
 	private Class<T> pojoClass;
+	private CriteriaBuilder cb;
 
-	AbstractDao(Class<T> pojoClass2){
-		pojoClass = pojoClass2;
+	AbstractDao(Class<T> pClass){
+		pojoClass = pClass;
 	}
 
 	@PersistenceContext
 	protected EntityManager em;
 
-	protected <R> R getSingle(TypedQuery<R> query) {
-		return query.getResultList().stream().findFirst().orElse(null);
+	@PostConstruct
+	public void init() {
+		cb = em.getCriteriaBuilder();
 	}
 
-	protected TypedQuery<T> getQuery(String jpql) {
-		return em.createQuery(jpql, pojoClass);
+	protected <R> R getSingle(TypedQuery<R> query) {
+		return query.getResultList().stream().findFirst().orElse(null);
 	}
 
 	protected EntityManager em() {
@@ -46,37 +49,37 @@ public abstract class AbstractDao<T> {
 
 	public List<T> selectAllPaginated(Integer offset, Integer pageSize) {
 
-		CriteriaBuilder cb = em.getCriteriaBuilder();
+		
 		CriteriaQuery<T> cq = cb.createQuery(pojoClass);
 		Root<T> root = cq.from(pojoClass);
 		CriteriaQuery<T> all = cq.select(root);
-		TypedQuery<T> allQuery = em.createQuery(all);
-		return allQuery.setFirstResult(offset).setMaxResults(pageSize).getResultList();
+		TypedQuery<T> query = em.createQuery(all);
+		return query.setFirstResult(offset).setMaxResults(pageSize).getResultList();
 	}
 
 	public List<T> selectAll() {
 
-		CriteriaBuilder cb = em.getCriteriaBuilder();
+		
 		CriteriaQuery<T> cq = cb.createQuery(pojoClass);
 		Root<T> root = cq.from(pojoClass);
 		CriteriaQuery<T> all = cq.select(root);
-		TypedQuery<T> allQuery = em.createQuery(all);
-		return allQuery.getResultList();
+		TypedQuery<T> query = em.createQuery(all);
+		return query.getResultList();
 	}
 
-	public Integer getTotalEntries() {
+	public Integer selectTotalEntries() {
 
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
-		criteria.select(builder.count(criteria.from(pojoClass)));
-		TypedQuery<Long> query = em.createQuery(criteria);
+		
+		CriteriaQuery<Long> cqLongClass = cb.createQuery(Long.class);
+		cqLongClass.select(cb.count(cqLongClass.from(pojoClass)));
+		TypedQuery<Long> query = em.createQuery(cqLongClass);
 
 		return Math.toIntExact(getSingle(query));
 
 	}
 
-	public List<T> selectQueryString(Integer offset, Integer pageSize, String queryString, List<String> columns) {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
+	public List<T> selectByQueryString(Integer offset, Integer pageSize, String queryString, List<String> columns) {
+		
 
 		CriteriaQuery<T> cq = cb.createQuery(pojoClass);
 		Root<T> root = cq.from(pojoClass);
@@ -91,8 +94,8 @@ public abstract class AbstractDao<T> {
 		return query.setFirstResult(offset).setMaxResults(pageSize).getResultList();
 	}
 
-	public <R> List<T> selectMultiple(String column, R value) {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
+	public <R> List<T> selectMultipleEntriesByColumn(String column, R value) {
+		
 		CriteriaQuery<T> cq = cb.createQuery(pojoClass);
 		Root<T> root = cq.from(pojoClass);
 		cq.where(cb.equal(root.get(column), value));
@@ -101,7 +104,7 @@ public abstract class AbstractDao<T> {
 	}
 
 	public <R> T selectByColumn(String column, R value) {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
+		
 		CriteriaQuery<T> cq = cb.createQuery(pojoClass);
 		Root<T> root = cq.from(pojoClass);
 		cq.where(cb.equal(root.get(column), value));
@@ -109,15 +112,15 @@ public abstract class AbstractDao<T> {
 		return getSingle(query);
 	}
 
-	public <R> List<T> selectByColumnUsingIn(List<String> columns, List<List<R>> values) {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
+	public <R> List<T> selectInColumns(List<String> columnList, List<List<R>> valueList) {
+		
 		CriteriaQuery<T> cq = cb.createQuery(pojoClass);
 		Root<T> root = cq.from(pojoClass);
 
 		List<Predicate> preds = new ArrayList<>();
-		for(int i=0; i<columns.size(); i++){
-			In<R> inClause = cb.in(root.get(columns.get(i)));
-			for (R val : values.get(i)) {
+		for(int i=0; i<columnList.size(); i++){
+			In<R> inClause = cb.in(root.get(columnList.get(i)));
+			for (R val : valueList.get(i)) {
 				inClause.value(val);
 			}
 			preds.add(inClause);

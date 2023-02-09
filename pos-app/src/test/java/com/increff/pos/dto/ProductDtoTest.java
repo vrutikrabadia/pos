@@ -13,8 +13,8 @@ import javax.validation.ConstraintViolationException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.TestUtil;
+import com.increff.pos.config.AbstractUnitTest;
+import com.increff.pos.config.TestUtil;
 import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.ProductForm;

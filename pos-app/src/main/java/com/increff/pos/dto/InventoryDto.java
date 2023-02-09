@@ -1,14 +1,5 @@
 package com.increff.pos.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.increff.pos.model.data.InventoryData;
@@ -22,6 +13,15 @@ import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ConvertUtil;
 import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Component
 public class InventoryDto {
@@ -32,137 +32,132 @@ public class InventoryDto {
     @Autowired
     private ProductService pService;
 
-    public void add(InventoryForm form) throws ApiException {
-        StringUtil.normalise(form, InventoryForm.class);
-        ValidateUtil.validateForms(form);
+    public void add(InventoryForm inventoryForm) throws ApiException {
+        StringUtil.normalise(inventoryForm, InventoryForm.class);
+        ValidateUtil.validateForms(inventoryForm);
 
-        ProductPojo p1 = pService.get(form.getBarcode());
-        InventoryPojo p = ConvertUtil.objectMapper(form, InventoryPojo.class);
+        ProductPojo productPojo = pService.getCheckByBarCode(inventoryForm.getBarcode());
+        InventoryPojo inventoryPojo = ConvertUtil.objectMapper(inventoryForm, InventoryPojo.class);
 
-        if (Objects.isNull(p1)) {
+        if (Objects.isNull(productPojo)) {
             throw new ApiException("Product does not exist.");
         }
 
-        p.setProductId(p1.getId());
+        inventoryPojo.setProductId(productPojo.getId());
 
         try {
-            service.getCheck(p.getProductId());
-        } catch (ApiException e) {
-            service.add(p);
+            service.getCheck(inventoryPojo.getProductId());
+        } catch (ApiException apiException) {
+            service.add(inventoryPojo);
             return;
         }
-        InventoryPojo iPojo = service.get(p.getProductId());
-        service.increaseQuantity(iPojo.getProductId(), p.getQuantity());
+        InventoryPojo checkPojo = service.getCheck(inventoryPojo.getProductId());
+        service.increaseQuantity(checkPojo.getProductId(), inventoryPojo.getQuantity());
 
     }
 
-    public void bulkAdd(List<InventoryForm> list) throws ApiException{
+    public void bulkAdd(List<InventoryForm> inventoryFormList) throws ApiException {
 
-        StringUtil.normaliseList(list, InventoryForm.class);
-        ValidateUtil.validateList(list);
+        StringUtil.normaliseList(inventoryFormList, InventoryForm.class);
+        ValidateUtil.validateList(inventoryFormList);
 
-        List<InventoryPojo> pojoList = checkProductandConvert(list);
+        List<InventoryPojo> inventoryPojoList = getCheckProductAndConvertToPojo(inventoryFormList);
 
+        service.bulkAdd(inventoryPojoList);
 
-        service.bulkAdd(pojoList);
-
-        
     }
 
-    public List<InventoryPojo> checkProductandConvert(List<InventoryForm> list) throws ApiException {
-        List<InventoryPojo> pojoList = new ArrayList<InventoryPojo>();
+    public List<InventoryPojo> getCheckProductAndConvertToPojo(List<InventoryForm> inventoryFormList) throws ApiException {
+        List<InventoryPojo> inventoryPojoList = new ArrayList<InventoryPojo>();
         JSONArray errorList = new JSONArray();
         Integer errorCount = 0;
-        for(InventoryForm form: list){
+        for (InventoryForm inventoryForm : inventoryFormList) {
 
             ProductPojo p1;
             try {
-                p1 = pService.get(form.getBarcode());
-            } catch (ApiException e) {
-                JSONObject error = new JSONObject(new Gson().toJson(form));
-                error.put("error", e.getMessage());
+                p1 = pService.getCheckByBarCode(inventoryForm.getBarcode());
+            } catch (ApiException apiException) {
+                JSONObject error = new JSONObject(new Gson().toJson(inventoryForm));
+                error.put("error", apiException.getMessage());
                 errorList.put(error);
                 errorCount++;
                 continue;
             }
 
-            JSONObject error = new JSONObject(new Gson().toJson(form));
+            JSONObject error = new JSONObject(new Gson().toJson(inventoryForm));
             error.put("error", "");
 
-            InventoryPojo p = ConvertUtil.objectMapper(form, InventoryPojo.class);
+            InventoryPojo inventoryPojo = ConvertUtil.objectMapper(inventoryForm, InventoryPojo.class);
 
-            p.setProductId(p1.getId());
+            inventoryPojo.setProductId(p1.getId());
 
-            pojoList.add(p);
+            inventoryPojoList.add(inventoryPojo);
         }
 
-        if(errorCount > 0){
+        if (errorCount > 0) {
             throw new ApiException(errorList.toString());
         }
-        return pojoList;
+        return inventoryPojoList;
     }
 
-    
 
     public InventoryData get(String barcode) throws ApiException {
         barcode = StringUtil.toLowerCase(barcode);
-        ProductPojo p = pService.get(barcode);
-        InventoryPojo p1 = service.get(p.getId());
+        ProductPojo productPojo = pService.getCheckByBarCode(barcode);
+        InventoryPojo checkPojo = service.getCheck(productPojo.getId());
 
-        InventoryData d = ConvertUtil.objectMapper(p1, InventoryData.class);
-        d.setBarcode(barcode);
-        return d;
+        InventoryData inventoryData = ConvertUtil.objectMapper(checkPojo, InventoryData.class);
+        inventoryData.setBarcode(barcode);
+        return inventoryData;
     }
 
     public SelectData<InventoryData> getAll(Integer start, Integer length, Integer draw, Optional<String> searchValue) throws ApiException {
-        List<InventoryData> list = new ArrayList<InventoryData>();
-        List<InventoryPojo> list1 = new ArrayList<InventoryPojo>();
+        List<InventoryData> inventoryDataList = new ArrayList<InventoryData>();
+        List<InventoryPojo> inventoryPojoList = new ArrayList<InventoryPojo>();
 
 
-        if(searchValue.isPresent() && !searchValue.get().isBlank()){
+        if (searchValue.isPresent() && !searchValue.get().isEmpty()) {
 
-            Integer totalProds = pService.getTotalEntries();
-            List<ProductPojo> pList = pService.getByQueryString(0, totalProds, StringUtil.toLowerCase(searchValue.get()));
-            
-            for(ProductPojo prod: pList){
-                InventoryPojo inv = new InventoryPojo();
-                try{
-                    inv = service.get(prod.getId());
+            Integer totalProducts = pService.getTotalEntries();
+            List<ProductPojo> productPojoList = pService.getByQueryString(0, totalProducts, StringUtil.toLowerCase(searchValue.get()));
+
+            for (ProductPojo productPojo : productPojoList) {
+                InventoryPojo inventoryPojo = new InventoryPojo();
+
+                inventoryPojo = service.get(productPojo.getId());
+
+                if (Objects.nonNull(inventoryPojo)) {
+                    inventoryPojoList.add(inventoryPojo);
                 }
-                catch(ApiException e){
-                    continue;
-                }
-                list1.add(inv);
             }
-        }
-        else{
-            list1 = service.getAllPaginated(start , length);
+        } else {
+            inventoryPojoList = service.getAllPaginated(start, length);
         }
 
-        for (InventoryPojo p : list1) {
-            ProductPojo prodPojo = pService.get(p.getProductId());
-            InventoryData iData = ConvertUtil.objectMapper(p, InventoryData.class);
-            iData.setBarcode(prodPojo.getBarcode());
-            list.add(iData);
+        for (InventoryPojo p : inventoryPojoList) {
+            ProductPojo productPojo = pService.getCheckById(p.getProductId());
+            InventoryData inventoryData = ConvertUtil.objectMapper(p, InventoryData.class);
+            inventoryData.setBarcode(productPojo.getBarcode());
+            inventoryDataList.add(inventoryData);
         }
-;
+        ;
         Integer totalEntries = service.getTotalEntries();
 
-        return new SelectData<InventoryData>(list, draw, totalEntries, totalEntries);
+        return new SelectData<InventoryData>(inventoryDataList, draw, totalEntries, totalEntries);
     }
 
-    public void update(InventoryForm form) throws ApiException {
-        StringUtil.normalise(form, InventoryForm.class);
-        ValidateUtil.validateForms(form);
+    public void update(InventoryForm inventoryForm) throws ApiException {
+        StringUtil.normalise(inventoryForm, InventoryForm.class);
+        ValidateUtil.validateForms(inventoryForm);
 
-        ProductPojo p1 = pService.get(form.getBarcode());
-        InventoryPojo p = ConvertUtil.objectMapper(form, InventoryPojo.class);
-        p.setProductId(p1.getId());
+        ProductPojo productPojo = pService.getCheckByBarCode(inventoryForm.getBarcode());
+        InventoryPojo inventoryPojo = ConvertUtil.objectMapper(inventoryForm, InventoryPojo.class);
+        inventoryPojo.setProductId(productPojo.getId());
 
-        InventoryPojo p2 = service.getCheck(p.getProductId());
-        p2.setQuantity(p.getQuantity());
+        InventoryPojo inventoryPojo1 = service.getCheck(inventoryPojo.getProductId());
+        inventoryPojo1.setQuantity(inventoryPojo.getQuantity());
 
-        service.update(p.getProductId(), p2);
+        service.update(inventoryPojo.getProductId(), inventoryPojo1);
     }
 
 }

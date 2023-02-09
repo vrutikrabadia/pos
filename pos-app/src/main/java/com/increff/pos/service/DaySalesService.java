@@ -19,15 +19,15 @@ public class DaySalesService {
     @Autowired
     private DaySalesDao dao;
 
-    public void add(PosDaySales pojo){
-        PosDaySales check = getByDate(pojo.getDate()); 
+    public void add(PosDaySales daySalesPojo){
+        PosDaySales check = getByDate(daySalesPojo.getDate()); 
 
         if(Objects.isNull(check)){
 
-            dao.insert(pojo); 
+            dao.insert(daySalesPojo); 
         }
         else{
-            update(pojo);
+            update(daySalesPojo);
         }      
     }
 
@@ -40,30 +40,25 @@ public class DaySalesService {
     }
 
     public PosDaySales getByDate(ZonedDateTime date){
-        List<PosDaySales> list = dao.selectInDateRange(date.withHour(0).withMinute(0).withSecond(0), date.withHour(23).withMinute(59).withSecond(59), 0, 1);
-        return list.isEmpty()?null:list.get(0);
+        List<PosDaySales> daySalesList = dao.selectInDateRange(date.withHour(0).withMinute(0).withSecond(0), date.withHour(23).withMinute(59).withSecond(59), 0, 1);
+        return daySalesList.isEmpty()?null:daySalesList.get(0);
     }
 
     public void update(PosDaySales pojo){
-        PosDaySales row = getByDate(pojo.getDate());
-
-        Integer newItemsCount = row.getInvoicedItemsCount()+pojo.getInvoicedItemsCount();
-        Double newRevenue = row.getTotalRevenue()+pojo.getTotalRevenue();
-        Integer newOrderCount = row.getInvoicedOrderCount()+pojo.getInvoicedOrderCount();
-        row.setInvoicedItemsCount(newItemsCount);
-        row.setInvoicedOrderCount(newOrderCount);
-        row.setTotalRevenue(newRevenue);
+        PosDaySales currentRow = getByDate(pojo.getDate());
+        
+        currentRow.setInvoicedItemsCount(pojo.getInvoicedItemsCount());
+        currentRow.setInvoicedOrderCount(pojo.getInvoicedOrderCount());
+        currentRow.setTotalRevenue(pojo.getTotalRevenue());
 
     }
 
     public Integer getTotalEntriesinDateRange(ZonedDateTime startDate, ZonedDateTime endDate){
-
-        return dao.getTotalEntriesInDateRange(startDate, endDate);
+        return dao.selectTotalEntriesInDateRange(startDate, endDate);
     }
 
     public Integer getTotalEntries(){
-        return dao.getTotalEntries();
+        return dao.selectTotalEntries();
     }
 
-    
 }

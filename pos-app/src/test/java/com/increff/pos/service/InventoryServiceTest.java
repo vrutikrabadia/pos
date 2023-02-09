@@ -7,8 +7,8 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.TestUtil;
+import com.increff.pos.config.AbstractUnitTest;
+import com.increff.pos.config.TestUtil;
 import com.increff.pos.pojo.InventoryPojo;
 
 public class InventoryServiceTest extends AbstractUnitTest {
@@ -20,7 +20,7 @@ public class InventoryServiceTest extends AbstractUnitTest {
     private TestUtil testUtil;
 
     @Test
-    public void testAddAndGet() throws ApiException {
+    public void testAddAndGet() {
         Integer prodId = testUtil.addBrandAndProduct("b1", "b2", "abcdefgh", "p1", 10.00);
         testUtil.addInventory(prodId, 10);
         InventoryPojo p = service.get(prodId);
@@ -30,7 +30,7 @@ public class InventoryServiceTest extends AbstractUnitTest {
     }
 
     @Test
-    public void testAddAndGetAll() throws ApiException {
+    public void testAddAndGetAll() {
         testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
         testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n2", 10.00, 10);
         testUtil.addBrandProductAndInventory("b3", "c3", "abcdefg2", "n3", 10.00, 10);
@@ -39,7 +39,7 @@ public class InventoryServiceTest extends AbstractUnitTest {
     }
 
     @Test
-    public void testAddAndGetAllPaginated() throws ApiException {
+    public void testAddAndGetAllPaginated() {
         testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
         testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n2", 10.00, 10);
         testUtil.addBrandProductAndInventory("b3", "c3", "abcdefg2", "n3", 10.00, 10);
@@ -73,7 +73,7 @@ public class InventoryServiceTest extends AbstractUnitTest {
     }
 
     @Test
-    public void testGetTotalEntries() throws ApiException {
+    public void testGetTotalEntries(){
         testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
         testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n2", 10.00, 10);
         testUtil.addBrandProductAndInventory("b3", "c3", "abcdefg2", "n3", 10.00, 10);

@@ -19,7 +19,7 @@ public class StringUtil {
 	 * @return String
 	 */
 	public static String toLowerCase(String string) {
-		return string == null ? null : string.trim().toLowerCase();
+		return Objects.isNull(string) ? null : string.trim().toLowerCase();
 	}
 
 	

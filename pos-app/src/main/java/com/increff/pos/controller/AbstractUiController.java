@@ -1,5 +1,7 @@
 package com.increff.pos.controller;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,12 +20,18 @@ public abstract class AbstractUiController {
 	@Autowired
 	private Properties properties;
 
+	
+	/** 
+	 * Returns a ModelAndView with info object and base url.
+	 * @param page
+	 * @return ModelAndView
+	 */
 	protected ModelAndView mav(String page) {
 		// Get current user
 		UserPrincipal principal = SecurityUtil.getPrincipal();
 
-		info.setEmail(principal == null ? "" : principal.getEmail());
-		info.setRole(principal == null ? "" : principal.getRole());
+		info.setEmail(Objects.isNull(principal) ? "" : principal.getEmail());
+		info.setRole(Objects.isNull(principal) ? "" : principal.getRole());
 		if(!info.getShown()) {
 			info.setShown(true);
 		}

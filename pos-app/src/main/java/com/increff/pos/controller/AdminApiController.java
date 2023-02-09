@@ -25,16 +25,16 @@ public class AdminApiController {
 	@Autowired
 	private UserDto dto;
 
-	@ApiOperation(value = "Adds a user")
+	@ApiOperation(value = "Adds a user.")
 	@RequestMapping(path = "/user", method = RequestMethod.POST)
-	public void addUser(@RequestBody UserForm form) throws ApiException {
-		dto.add(form);
+	public void addUser(@RequestBody UserForm userForm) throws ApiException {
+		dto.add(userForm);
 	}
 
-	@ApiOperation(value = "Deletes a user")
+	@ApiOperation(value = "Deletes a user given Id of the user.")
 	@RequestMapping(path = "/user/{id}", method = RequestMethod.DELETE)
-	public void deleteUser(@PathVariable Integer id) {
-		dto.delete(id);
+	public void deleteUser(@PathVariable Integer userId) {
+		dto.delete(userId);
 	}
 
 	@ApiOperation(value = "Gets list of all users")

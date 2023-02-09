@@ -1,36 +1,23 @@
 package com.increff.pos.dto;
 
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.increff.pos.model.data.BrandData;
 import com.increff.pos.model.data.InventoryReportData;
 import com.increff.pos.model.data.SalesReportData;
 import com.increff.pos.model.form.SalesReportForm;
-import com.increff.pos.pojo.BrandPojo;
-import com.increff.pos.pojo.InventoryPojo;
-import com.increff.pos.pojo.OrderItemsPojo;
-import com.increff.pos.pojo.OrderPojo;
-import com.increff.pos.pojo.ProductPojo;
-import com.increff.pos.service.ApiException;
-import com.increff.pos.service.BrandService;
-import com.increff.pos.service.InventoryService;
-import com.increff.pos.service.OrderItemsService;
-import com.increff.pos.service.OrderService;
-import com.increff.pos.service.ProductService;
+import com.increff.pos.pojo.*;
+import com.increff.pos.service.*;
 import com.increff.pos.util.ClientWrapper;
 import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.time.ZonedDateTime;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static java.util.Collections.singletonList;
 
 @Component
 public class ReportDto {
@@ -62,10 +49,10 @@ public class ReportDto {
 
     public String getInventoryReport() throws ApiException {
 
-        List<InventoryPojo> iList = iService.getAll();
-        HashMap<Integer, Integer> prodIdtoBrandCat = getProductIdToBrandCatMap(iList);
-        List<Integer> brandCatIds = prodIdtoBrandCat.values().stream().distinct().collect(Collectors.toList());
-        HashMap<Integer, Integer> resultMap = getbrandCatIdToQuantityMap(prodIdtoBrandCat, iList, brandCatIds);
+        List<InventoryPojo> inventoryPojoList = iService.getAll();
+        HashMap<Integer, Integer> productIdToBrandCatMap = getProductIdToBrandCatMap(inventoryPojoList);
+        List<Integer> brandCatIds = productIdToBrandCatMap.values().stream().distinct().collect(Collectors.toList());
+        HashMap<Integer, Integer> resultMap = getBrandCatIdToQuantityMap(productIdToBrandCatMap, inventoryPojoList, brandCatIds);
 
         return invReportFromMap(resultMap, brandCatIds);
     }
@@ -73,7 +60,7 @@ public class ReportDto {
     private String invReportFromMap(HashMap<Integer, Integer> resultMap, List<Integer> brandCatIds) {
         List<InventoryReportData> result = new ArrayList<InventoryReportData>();
 
-        List<BrandPojo> brandList = bService.getInColumn(Arrays.asList("id"), Arrays.asList(brandCatIds));
+        List<BrandPojo> brandList = bService.getInColumns(singletonList("id"), singletonList(brandCatIds));
 
         HashMap<Integer, BrandPojo> idtoBrandCat = (HashMap<Integer, BrandPojo>) brandList.stream()
                 .collect(Collectors.toMap(BrandPojo::getId, e -> e));
@@ -92,32 +79,29 @@ public class ReportDto {
     }
 
     protected HashMap<Integer, Integer> getProductIdToBrandCatMap(List<InventoryPojo> iList) throws ApiException {
-        List<Integer> idList = iList.stream().map(InventoryPojo::getProductId).collect(Collectors.toList());
+        List<Integer> productIdList = iList.stream().map(InventoryPojo::getProductId).collect(Collectors.toList());
         List<ProductPojo> productList;
         try {
-            productList = pService.getInColumn(Arrays.asList("id"), Arrays.asList(idList));
+            productList = pService.getInColumns(singletonList("id"), singletonList(productIdList));
         } catch (ApiException e) {
             throw new ApiException("Runtime Exception");
         }
 
-        HashMap<Integer, Integer> prodIdtoBrandCat = (HashMap<Integer, Integer>) productList.stream()
+        return (HashMap<Integer, Integer>) productList.stream()
                 .collect(Collectors.toMap(ProductPojo::getId, ProductPojo::getBrandCat));
-        return prodIdtoBrandCat;
     }
 
-    protected HashMap<Integer, Integer> getbrandCatIdToQuantityMap(HashMap<Integer, Integer> prodIdtoBrandCat,
-            List<InventoryPojo> iList, List<Integer> brandCatIds) {
+    protected HashMap<Integer, Integer> getBrandCatIdToQuantityMap(HashMap<Integer, Integer> productIdToBrandCat,
+                                                                   List<InventoryPojo> iList, List<Integer> brandCatIds) {
 
         HashMap<Integer, Integer> resultMap = (HashMap<Integer, Integer>) brandCatIds.stream()
                 .collect(Collectors.toMap(Function.identity(), i -> 0));
 
         for (InventoryPojo inv : iList) {
 
-            Integer newQuantity = resultMap.get(prodIdtoBrandCat.get(inv.getProductId())) + inv.getQuantity();
-            resultMap.put(prodIdtoBrandCat.get(inv.getProductId()), newQuantity);
-
+            Integer newQuantity = resultMap.get(productIdToBrandCat.get(inv.getProductId())) + inv.getQuantity();
+            resultMap.put(productIdToBrandCat.get(inv.getProductId()), newQuantity);
         }
-
         return resultMap;
     }
 
@@ -153,21 +137,21 @@ public class ReportDto {
 
         if ((Objects.nonNull(brand) && !brand.isEmpty())
                 && (Objects.nonNull(category) && !category.isEmpty())) {
-            BrandPojo bPojo = bService.get(brand, category);
+            BrandPojo bPojo = bService.getCheckByBrandCategory(brand, category);
             brandList.add(bPojo);
         } else if ((Objects.nonNull(brand) && !brand.isEmpty())
                 || (Objects.nonNull(category) && !category.isEmpty())) {
 
             if ((Objects.nonNull(brand) && !brand.isEmpty())) {
-                brandList = bService.getInColumn(Arrays.asList("brand"), Arrays.asList(Arrays.asList(brand)));
+                brandList = bService.getInColumns(singletonList("brand"), singletonList(singletonList(brand)));
             } else {
-                brandList = bService.getInColumn(Arrays.asList("category"), Arrays.asList(Arrays.asList(category)));
+                brandList = bService.getInColumns(singletonList("category"), singletonList(singletonList(category)));
             }
         }
 
         List<Integer> brandCatIds = brandList.stream().map(BrandPojo::getId).collect(Collectors.toList());
 
-        List<ProductPojo> prodList = pService.getInColumn(Arrays.asList("brandCat"), Arrays.asList(brandCatIds));
+        List<ProductPojo> prodList = pService.getInColumns(singletonList("brandCat"), singletonList(brandCatIds));
 
         List<Integer> prodIds = prodList.stream().map(ProductPojo::getId).collect(Collectors.toList());
 
@@ -181,18 +165,18 @@ public class ReportDto {
 
         List<OrderItemsPojo> itemsList = getOrderItems(sDate, eDate, null);
 
-        List<Integer> prodIds = new ArrayList<Integer>(itemsList.stream().map(OrderItemsPojo::getProductId).collect(Collectors.toSet()));
+        List<Integer> prodIds = itemsList.stream().map(OrderItemsPojo::getProductId).distinct().collect(Collectors.toList());
         
         List<ProductPojo> prodList;
         try {
-            prodList = pService.getInColumn(Arrays.asList("id"), Arrays.asList(prodIds));
+            prodList = pService.getInColumns(singletonList("id"), singletonList(prodIds));
         } catch (ApiException e) {
             throw new ApiException("Runtime exception");
         }
 
-        List<Integer> brandCatIds = new ArrayList<Integer>(prodList.stream().map(ProductPojo::getBrandCat).collect(Collectors.toSet()));
+        List<Integer> brandCatIds = prodList.stream().map(ProductPojo::getBrandCat).distinct().collect(Collectors.toList());
         
-        List<BrandPojo> brandList = bService.getInColumn(Arrays.asList("id"), Arrays.asList(brandCatIds));
+        List<BrandPojo> brandList = bService.getInColumns(singletonList("id"), singletonList(brandCatIds));
 
         return generateSalesReport(itemsList, brandList, prodList);
     }
@@ -207,7 +191,7 @@ public class ReportDto {
         }
 
         else {
-            return oItemsService.getInColumn(Arrays.asList("orderId"), Arrays.asList(orderIds));
+            return oItemsService.getInColumn(singletonList("orderId"), singletonList(orderIds));
         }
 
     }
@@ -218,7 +202,7 @@ public class ReportDto {
         HashMap<Integer, Integer> prodIdToBrandCatId = (HashMap<Integer, Integer>) prodList.stream()
                 .collect(Collectors.toMap(ProductPojo::getId, ProductPojo::getBrandCat));
       
-        HashMap<Integer, BrandPojo> idtoBrandCat = (HashMap<Integer, BrandPojo>) brandList.stream()
+        HashMap<Integer, BrandPojo> idToBrandCat = (HashMap<Integer, BrandPojo>) brandList.stream()
                 .collect(Collectors.toMap(BrandPojo::getId, e -> e));
 
         HashMap<Integer, Double> brandCatToRevenue = (HashMap<Integer, Double>) brandList.stream()
@@ -241,8 +225,8 @@ public class ReportDto {
         for(Integer key: brandCatToRevenue.keySet()){
             SalesReportData data = new SalesReportData();
 
-            data.setBrand(idtoBrandCat.get(key).getBrand());
-            data.setCategory(idtoBrandCat.get(key).getCategory());
+            data.setBrand(idToBrandCat.get(key).getBrand());
+            data.setCategory(idToBrandCat.get(key).getCategory());
             data.setQuantity(brandCatToQuantity.get(key));
             data.setRevenue(brandCatToRevenue.get(key));
 

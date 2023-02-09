@@ -15,7 +15,7 @@ public class Properties {
     private String cacheLocation;
 
     @Value("${supervisor.email}")
-    private String supEmail;
+    private String supervisorEmail;
 
     @Value("${app.name}")
 	private String name;

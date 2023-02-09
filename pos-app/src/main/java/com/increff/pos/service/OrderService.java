@@ -2,6 +2,7 @@ package com.increff.pos.service;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import javax.transaction.Transactional;
 
@@ -20,32 +21,31 @@ public class OrderService {
     private OrderDao dao;
 
     @Autowired
-    private OrderItemsService iService;
+    private OrderItemsService itemsService;
 
      
-    public OrderPojo add(List<OrderItemsPojo> list) throws ApiException{
-        OrderPojo p = new OrderPojo();
-        p.setEditable(true);
+    public OrderPojo add(List<OrderItemsPojo> itemsPojoList) throws ApiException{
+        OrderPojo orderPojo = new OrderPojo();
+        orderPojo.setEditable(true);
         
-        dao.insert(p);
+        dao.insert(orderPojo);
 
-        iService.add(p.getId(), list);
-
-        return p;
+        itemsService.add(orderPojo.getId(), itemsPojoList);
+        return orderPojo;
     }
 
       
-    public OrderPojo get(Integer id) throws ApiException{
-        return getCheck(id);
+    public OrderPojo get(Integer orderId) throws ApiException{
+        return dao.selectByColumn("id", orderId);
     }
 
      
-    public OrderPojo getCheck(Integer id) throws ApiException{
-        OrderPojo p =dao.selectByColumn("id", id);
-        if(p == null){
+    public OrderPojo getCheck(Integer orderId) throws ApiException{
+        OrderPojo orderPojo = get(orderId);
+        if(Objects.isNull(orderPojo)){
             throw new ApiException("Order does not exists");
         }
-        return p;
+        return orderPojo;
     }
 
      
@@ -60,7 +60,7 @@ public class OrderService {
     }
 
     public Integer getTotalEntries(){
-        return dao.getTotalEntries();
+        return dao.selectTotalEntries();
     }
 
     public List<OrderPojo> getInDateRange(ZonedDateTime startDate, ZonedDateTime endDate){

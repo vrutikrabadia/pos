@@ -27,14 +27,14 @@ public class LoginController {
 
 	@ApiOperation(value = "signup user")
 	@RequestMapping(path = "/signup", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public ModelAndView signup(HttpServletRequest req, LoginForm f) throws ApiException{
-		return dto.signup(req, f);
+	public ModelAndView signup(HttpServletRequest req, LoginForm loginForm) throws ApiException{
+		return dto.signup(req, loginForm);
 	}
 	
 	@ApiOperation(value = "Logs in a user")
 	@RequestMapping(path = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public ModelAndView login(HttpServletRequest req, LoginForm f) throws ApiException {
-		return dto.login(req, f);
+	public ModelAndView login(HttpServletRequest req, LoginForm loginForm) throws ApiException {
+		return dto.login(req, loginForm);
 
 	}
 

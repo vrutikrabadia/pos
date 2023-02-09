@@ -29,26 +29,45 @@ import com.increff.pos.service.ApiException;
 @RestControllerAdvice
 public class AppRestControllerAdvice {
 
+        
+        /** 
+         * APIException handler
+         * @param apiException
+         * @return MessageData
+         */
         @ExceptionHandler(ApiException.class)
         @ResponseStatus(HttpStatus.BAD_REQUEST)
-        public MessageData handle(ApiException e) {
+        public MessageData handle(ApiException apiException) {
                 MessageData data = new MessageData();
-                data.setMessage(e.getMessage());
+                data.setMessage(apiException.getMessage());
                 return data;
         }
 
+        
+        /** 
+         * Throwable handler
+         * @param exception
+         * @return MessageData
+         */
         @ExceptionHandler(Throwable.class)
         @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-        public MessageData handle(Throwable e) {
+        public MessageData handle(Throwable exception) {
                 MessageData data = new MessageData();
-                data.setMessage("An unknown error has occurred - " + e.getMessage());
+                data.setMessage("An unknown error has occurred - " + exception.getMessage());
                 return data;
         }
 
+
+        
+        /** 
+         * ConstraintViolationException handler
+         * @param constraintException
+         * @return MessageData
+         */
         @ExceptionHandler(ConstraintViolationException.class)
         @ResponseStatus(HttpStatus.BAD_REQUEST)
-        public final MessageData handleConstraintViolation(ConstraintViolationException ex) {
-                List<String> details = ex.getConstraintViolations()
+        public final MessageData handleConstraintViolation(ConstraintViolationException constraintException) {
+                List<String> details = constraintException.getConstraintViolations()
                                 .parallelStream()
                                 .map(e -> e.getMessage())
                                 .collect(Collectors.toList());
@@ -58,6 +77,7 @@ public class AppRestControllerAdvice {
                 data.setMessage(details.toString());
                 return data;
         }
+
 
         private static class Editor<T> extends PropertyEditorSupport {
 
@@ -81,6 +101,11 @@ public class AppRestControllerAdvice {
                 }
         }
 
+        
+        /** 
+         * InitBinder to register custom parsers for date time types in the request parameters
+         * @param binder
+         */
         @InitBinder
         public void initBinder(WebDataBinder binder) {
                 binder.registerCustomEditor(

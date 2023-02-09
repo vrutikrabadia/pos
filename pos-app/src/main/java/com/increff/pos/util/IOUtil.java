@@ -2,6 +2,7 @@ package com.increff.pos.util;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Objects;
 
 import lombok.Generated;
 
@@ -9,7 +10,7 @@ import lombok.Generated;
 public class IOUtil {
 
 	public static void closeQuietly(Closeable c) {
-		if (c == null) {
+		if (Objects.isNull(c)) {
 			return;
 		}
 

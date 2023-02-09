@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -13,8 +14,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.TestUtil;
+import com.increff.pos.config.AbstractUnitTest;
+import com.increff.pos.config.TestUtil;
 import com.increff.pos.model.data.BrandData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.BrandForm;
@@ -103,7 +104,7 @@ public class BrandDtoTest extends AbstractUnitTest {
 
         List<BrandData> d = dto.getAll(0, 1, 1, testUtil.empty).getData();
 
-        BrandData d1 = dto.get(d.get(0).getId());
+        BrandData d1 = dto.getById(d.get(0).getId());
 
         assertEquals(d1.getBrand(), brand);
         assertEquals(d1.getCategory(), category);
@@ -118,7 +119,7 @@ public class BrandDtoTest extends AbstractUnitTest {
 
         BrandData d = dto.get(brand, category);
 
-        if (d == null) {
+        if (Objects.isNull(d)) {
             assertTrue(false);
         } else {
             assertEquals(d.getCategory(), category);
