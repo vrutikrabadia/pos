@@ -19,12 +19,12 @@ public class AboutApiController {
 	@Autowired
 	private AboutAppService service;
 
-	@ApiOperation(value = "Gives application name and version")
+	@ApiOperation(value = "Get Application Name and Version.")
 	@RequestMapping(path = "", method = RequestMethod.GET)
 	public AboutAppData getDetails() {
-		AboutAppData d = new AboutAppData();
-		d.setName(service.getName());
-		d.setVersion(service.getVersion());
-		return d;
+		AboutAppData appDetails = new AboutAppData();
+		appDetails.setName(service.getName());
+		appDetails.setVersion(service.getVersion());
+		return appDetails;
 	}
 }

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.increff.pos.AbstractUnitTest;
+import com.increff.pos.config.AbstractUnitTest;
 
 
 public class AboutAppServiceTest extends AbstractUnitTest {

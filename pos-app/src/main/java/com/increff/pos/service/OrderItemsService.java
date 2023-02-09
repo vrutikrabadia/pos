@@ -24,37 +24,37 @@ public class OrderItemsService {
     DaySalesService sService;
 
      
-    public void add(Integer orderId,List<OrderItemsPojo> list) throws ApiException{
+    public void add(Integer orderId,List<OrderItemsPojo> orderItemsList) throws ApiException{
         
         Double revenue = 0.0;
         Integer totalQuantity = 0;
-        for(OrderItemsPojo p: list){
-            revenue = revenue + (p.getQuantity()*p.getSellingPrice());
-            totalQuantity += p.getQuantity();
-            iService.reduceQuantity(p.getProductId(), p.getQuantity());
-            p.setOrderId(orderId);
-            dao.insert(p);
+        for(OrderItemsPojo item: orderItemsList){
+            revenue = revenue + (item.getQuantity()*item.getSellingPrice());
+            totalQuantity += item.getQuantity();
+            iService.reduceQuantity(item.getProductId(), item.getQuantity());
+            item.setOrderId(orderId);
+            dao.insert(item);
         }
 
     }
 
-    public void add(OrderItemsPojo item){
-        dao.insert(item);
+    public void add(OrderItemsPojo orderItem){
+        dao.insert(orderItem);
     }
 
      
-    public OrderItemsPojo selectById(Integer id){
-        return dao.selectByColumn("id",id);
+    public OrderItemsPojo getById(Integer itemId){
+        return dao.selectByColumn("id",itemId);
     }
 
      
-    public List<OrderItemsPojo> selectByOrderId(Integer orderId){
-        return dao.selectMultiple("orderId", orderId);
+    public List<OrderItemsPojo> getByOrderId(Integer orderId){
+        return dao.selectMultipleEntriesByColumn("orderId", orderId);
     }
 
 
     public <T> List<OrderItemsPojo> getInColumn(List<String> columns, List<List<T>> values){
-        return dao.selectByColumnUsingIn(columns, values);
+        return dao.selectInColumns(columns, values);
     }
     
 }

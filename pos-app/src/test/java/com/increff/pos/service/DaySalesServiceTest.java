@@ -8,8 +8,8 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.TestUtil;
+import com.increff.pos.config.AbstractUnitTest;
+import com.increff.pos.config.TestUtil;
 import com.increff.pos.pojo.PosDaySales;
 import com.increff.pos.util.DateTimeProvider;
 
@@ -40,15 +40,14 @@ public class DaySalesServiceTest extends AbstractUnitTest {
         PosDaySales pojo = testUtil.getDaySalesPojo(5, 5, 25.0);
         service.add(pojo);
 
-        PosDaySales pojo1 = testUtil.getDaySalesPojo(5, 1, 25.0);
+        PosDaySales pojo1 = testUtil.getDaySalesPojo(2, 1, 46.0);
         service.add(pojo1);
         List<PosDaySales> list = service.getAllPaginated(0, 5);
-        
-        assertEquals(Integer.valueOf(10), list.get(0).getInvoicedItemsCount());
-        assertEquals(Integer.valueOf(6), list.get(0).getInvoicedOrderCount());
-        assertEquals(Double.valueOf(50.0), list.get(0).getTotalRevenue());
-        
+
         assertEquals(1, list.size());
+        assertEquals(Integer.valueOf(2), list.get(0).getInvoicedItemsCount());
+        assertEquals(Integer.valueOf(1), list.get(0).getInvoicedOrderCount());
+        assertEquals(Double.valueOf(46.0), list.get(0).getTotalRevenue());
     }
 
     @Test

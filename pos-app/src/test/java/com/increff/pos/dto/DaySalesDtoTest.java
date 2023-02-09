@@ -7,8 +7,8 @@ import java.time.ZonedDateTime;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.TestUtil;
+import com.increff.pos.config.AbstractUnitTest;
+import com.increff.pos.config.TestUtil;
 import com.increff.pos.model.data.DaySalesData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.service.ApiException;
@@ -62,7 +62,7 @@ public class DaySalesDtoTest extends AbstractUnitTest{
 
         DateTimeProvider.getInstance().setTime(customAppTime.plusDays(1));
 
-        dto.scheduler();
+        dto.daySalesScheduler();
 
         SelectData<DaySalesData> daySalesList = dto.getAll(0, 5, 1);
 

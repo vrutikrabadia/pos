@@ -11,8 +11,8 @@ import java.util.Optional;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.TestUtil;
+import com.increff.pos.config.AbstractUnitTest;
+import com.increff.pos.config.TestUtil;
 import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.data.OrderItemsData;
 import com.increff.pos.model.data.SelectData;

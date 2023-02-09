@@ -8,8 +8,6 @@ import org.apache.commons.io.FileUtils;
 
 import com.increff.pos.service.ApiException;
 
-//TODO: Add docs in the code after verification
-
 /**
  * Used for conversionn of File to Base64 string and vice versa.
  */
@@ -41,7 +39,7 @@ public class Base64Util {
     public static void decodeBase64ToFile(String base64, String filePath) throws ApiException{
         File file = new File(filePath);
 
-        try (FileOutputStream fos = new FileOutputStream(file);) {
+        try (FileOutputStream fos = new FileOutputStream(file)) {
             byte[] decoder = Base64.getDecoder().decode(base64);
 
             fos.write(decoder);

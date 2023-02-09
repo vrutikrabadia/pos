@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.TestUtil;
+import com.increff.pos.config.AbstractUnitTest;
+import com.increff.pos.config.TestUtil;
 import com.increff.pos.pojo.OrderItemsPojo;
 
 public class OrderItemsServiceTest extends AbstractUnitTest{
@@ -39,7 +39,7 @@ public class OrderItemsServiceTest extends AbstractUnitTest{
 
         service.add(orderId,itemsList);
 
-        List<OrderItemsPojo> itemsList1 = service.selectByOrderId(orderId);
+        List<OrderItemsPojo> itemsList1 = service.getByOrderId(orderId);
 
         assertEquals(6, itemsList1.size());
 
@@ -70,7 +70,7 @@ public class OrderItemsServiceTest extends AbstractUnitTest{
 
         service.add(orderId,itemsList);
 
-        List<OrderItemsPojo> itemsList1 = service.selectByOrderId(orderId);
+        List<OrderItemsPojo> itemsList1 = service.getByOrderId(orderId);
 
         assertEquals(6, itemsList1.size());
 
@@ -92,11 +92,11 @@ public class OrderItemsServiceTest extends AbstractUnitTest{
 
         service.add(orderId,itemsList);
 
-        List<OrderItemsPojo> itemsList1 = service.selectByOrderId(orderId);
+        List<OrderItemsPojo> itemsList1 = service.getByOrderId(orderId);
 
         List<Integer> itemsId = itemsList1.stream().map(OrderItemsPojo::getId).collect(Collectors.toList());
 
-        OrderItemsPojo item = service.selectById(itemsId.get(1));
+        OrderItemsPojo item = service.getById(itemsId.get(1));
 
         assertEquals(itemsId.get(1), item.getId());
     }

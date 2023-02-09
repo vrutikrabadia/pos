@@ -37,79 +37,64 @@ public class DaySalesDto {
 
 
     public SelectData<DaySalesData> getAll(Integer start, Integer length, Integer draw) throws ApiException{
-        List<DaySalesData> dataList = new ArrayList<DaySalesData>();
+        List<DaySalesData> daySalesDataList = new ArrayList<DaySalesData>();
 
-        List<PosDaySales> pojoList = service.getAllPaginated(start, length);
+        List<PosDaySales> daySalesPojoList = service.getAllPaginated(start, length);
     
-        for(PosDaySales pojo: pojoList){
-            DaySalesData data = ConvertUtil.objectMapper(pojo, DaySalesData.class); 
+        for(PosDaySales daySalesPojo: daySalesPojoList){
+            DaySalesData data = ConvertUtil.objectMapper(daySalesPojo, DaySalesData.class); 
             
-            dataList.add(data);
+            daySalesDataList.add(data);
         }
 
         Integer totalEntries = service.getTotalEntries();
-        return new SelectData<DaySalesData>(dataList, draw, totalEntries, totalEntries);
+        return new SelectData<DaySalesData>(daySalesDataList, draw, totalEntries, totalEntries);
     }
 
     public SelectData<DaySalesData> getInDateRange(Integer start, Integer length, Integer draw, ZonedDateTime startDate, ZonedDateTime endDate) throws ApiException{
-        List<DaySalesData> dataList = new ArrayList<DaySalesData>();
-        ZonedDateTime sDate = startDate;
-        ZonedDateTime eDate = endDate;
-        
+        List<DaySalesData> daySalesDataList = new ArrayList<DaySalesData>();
 
-        if(sDate.compareTo(eDate)>0){
+        if(startDate.compareTo(endDate)>0){
             throw new ApiException("Start Date should be less than End Date.");
         }
-        List<PosDaySales> pojoList = service.getByDateRange(sDate, eDate,start, length);
+        List<PosDaySales> daySalesPojoList = service.getByDateRange(startDate, endDate,start, length);
 
         
-        for(PosDaySales pojo: pojoList){
-            DaySalesData data = ConvertUtil.objectMapper(pojo, DaySalesData.class);
+        for(PosDaySales daySalesPojo: daySalesPojoList){
+            DaySalesData data = ConvertUtil.objectMapper(daySalesPojo, DaySalesData.class);
             
-            dataList.add(data);
-            
+            daySalesDataList.add(data);
         }
 
-        Integer totalEntries = service.getTotalEntriesinDateRange(sDate, eDate);
-        return new SelectData<DaySalesData>(dataList, draw, totalEntries, totalEntries);
+        Integer totalEntries = service.getTotalEntriesinDateRange(startDate, endDate);
+        return new SelectData<DaySalesData>(daySalesDataList, draw, totalEntries, totalEntries);
     }
 
     
     
     @Scheduled(fixedDelay = 1000*60*60*24)
-    public void scheduler(){
+    public void daySalesScheduler(){
         //get start of day and end of day of previous day
         ZonedDateTime start = DateTimeProvider.getInstance().timeNow().minusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
         ZonedDateTime end = DateTimeProvider.getInstance().timeNow().minusDays(1).withHour(23).withMinute(59).withSecond(59).withNano(999999999);
 
-        PosDaySales daySalesPojo = service.getByDate(start);
+        List<OrderPojo> orderPojoList = oService.getInDateRange(start, end);
 
-        Integer currentItemCount = 0;
-        Double currentTotalRevenue = 0.0;
-        Integer currentOrderCount = 0;
-        if(daySalesPojo!=null){
-            currentItemCount = daySalesPojo.getInvoicedItemsCount();
-            currentTotalRevenue = daySalesPojo.getTotalRevenue();
-            currentOrderCount = daySalesPojo.getInvoicedOrderCount();
-        }
+        List<Integer> orderIdList = orderPojoList.stream().map(OrderPojo::getId).collect(Collectors.toList());
 
-        List<OrderPojo> orderList = oService.getInDateRange(start, end);
-
-        List<Integer> orderId = orderList.stream().map(OrderPojo::getId).collect(Collectors.toList());
-
-        List<OrderItemsPojo> itemsList = oItemsService.getInColumn(Arrays.asList("orderId"), Arrays.asList(orderId));
+        List<OrderItemsPojo> itemsPojoList = oItemsService.getInColumn(Arrays.asList("orderId"), Arrays.asList(orderIdList));
         
-        Integer itemCount = itemsList.stream().collect(Collectors.summingInt(OrderItemsPojo::getQuantity));
-        Double totalRevenue = itemsList.stream().mapToDouble(i->i.getQuantity()*i.getSellingPrice()).sum();
+        Integer itemCount = itemsPojoList.stream().collect(Collectors.summingInt(OrderItemsPojo::getQuantity));
+        Double totalRevenue = itemsPojoList.stream().mapToDouble(i->i.getQuantity()*i.getSellingPrice()).sum();
 
-        PosDaySales daySales = new PosDaySales();
+        PosDaySales daySalesPojo = new PosDaySales();
 
-        daySales.setDate(start);
-        daySales.setInvoicedItemsCount(itemCount-currentItemCount);
-        daySales.setTotalRevenue(totalRevenue-currentTotalRevenue);
-        daySales.setInvoicedOrderCount(orderId.size()-currentOrderCount);
+        daySalesPojo.setDate(start);
+        daySalesPojo.setInvoicedItemsCount(itemCount);
+        daySalesPojo.setTotalRevenue(totalRevenue);
+        daySalesPojo.setInvoicedOrderCount(orderIdList.size());
 
-        service.add(daySales);
+        service.add(daySalesPojo);
 
     }
 }

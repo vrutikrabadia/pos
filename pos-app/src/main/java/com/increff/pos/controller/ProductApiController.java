@@ -24,41 +24,40 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping(path = "/api/products")
 public class ProductApiController {
-    
 
     @Autowired
     private ProductDto dto;
 
-
-
     @ApiOperation(value = "Adds product")
     @RequestMapping(path = "", method = RequestMethod.POST)
-    public void add(@RequestBody ProductForm form)throws ApiException{
-        dto.add(form);
+    public void add(@RequestBody ProductForm productForm) throws ApiException {
+        dto.add(productForm);
     }
 
     @ApiOperation(value = "Adds products in bulk")
     @RequestMapping(path = "/bulk-add", method = RequestMethod.POST)
-    public void bulkAdddd(@RequestBody List<ProductForm> list)throws ApiException{
-        dto.bulkAdd(list);
+    public void bulkAdddd(@RequestBody List<ProductForm> productFormList) throws ApiException {
+        dto.bulkAdd(productFormList);
     }
 
     @ApiOperation(value = "Gets product by id")
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
-    public ProductData get(@PathVariable Integer id)throws ApiException{
-        return dto.get(id);
+    public ProductData get(@PathVariable Integer productId) throws ApiException {
+        return dto.get(productId);
     }
 
     @ApiOperation(value = "Gets all products")
     @RequestMapping(path = "", method = RequestMethod.GET)
-    public SelectData<ProductData> getAll(@RequestParam(defaultValue="1") Integer draw, @RequestParam(defaultValue="0") Integer start, @RequestParam(defaultValue="20") Integer length, @RequestParam(value="search[value]") Optional<String> searchValue) throws ApiException{
+    public SelectData<ProductData> getAll(@RequestParam(defaultValue = "1") Integer draw,
+            @RequestParam(defaultValue = "0") Integer start, @RequestParam(defaultValue = "20") Integer length,
+            @RequestParam(value = "search[value]") Optional<String> searchValue) throws ApiException {
         return dto.getAll(start, length, draw, searchValue);
     }
 
     @ApiOperation(value = "Update product by id")
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-    public void update(@PathVariable Integer id, @RequestBody ProductForm form)throws ApiException{
-        dto.update(id, form);
+    public void update(@PathVariable Integer productId, @RequestBody ProductForm productForm) throws ApiException {
+        dto.update(productId, productForm);
     }
 
 }

@@ -22,10 +22,10 @@ public class BrandDao extends AbstractDao<BrandPojo>{
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
         CriteriaQuery<BrandPojo> cq = cb.createQuery(BrandPojo.class);
-        Root<BrandPojo> brandCat = cq.from(BrandPojo.class);
+        Root<BrandPojo> root = cq.from(BrandPojo.class);
 
-        Predicate bPredicate = cb.equal(brandCat.get("brand"), brand);
-        Predicate cPredicate = cb.equal(brandCat.get("category"), category);
+        Predicate bPredicate = cb.equal(root.get("brand"), brand);
+        Predicate cPredicate = cb.equal(root.get("category"), category);
         cq.where(cb.and(bPredicate, cPredicate));
         TypedQuery<BrandPojo> query = em.createQuery(cq);
 

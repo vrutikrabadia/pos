@@ -1,6 +1,7 @@
 package com.increff.pos.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.transaction.Transactional;
 
@@ -18,32 +19,39 @@ public class InventoryService {
     private InventoryDao dao;
 
      
-    public void add(InventoryPojo p){
-        dao.insert(p);
+    public void add(InventoryPojo inventoryPojo){
+        dao.insert(inventoryPojo);
     }
 
-    public void bulkAdd(List<InventoryPojo> list){
-        for(InventoryPojo inv: list){
+    public void bulkAdd(List<InventoryPojo> inventoryPojoList){
+        for(InventoryPojo inventory: inventoryPojoList){
             try{
-                getCheck(inv.getProductId());
+                getCheck(inventory.getProductId());
             }
-            catch(ApiException e){
-                add(inv);
+            catch(ApiException apiException){
+                add(inventory);
                 continue;
             }
 
             try{
-                increaseQuantity(inv.getProductId(), inv.getQuantity());
+                increaseQuantity(inventory.getProductId(), inventory.getQuantity());
             }
             catch(ApiException e){
-                continue;
             }
         }
     }
 
-    public InventoryPojo get(Integer id) throws ApiException{
-        return getCheck(id);
-    } 
+    public InventoryPojo get(Integer productId){
+        return dao.selectByColumn("productId", productId);
+    }
+
+    public InventoryPojo getCheck(Integer productId) throws ApiException{
+        InventoryPojo inventoryPojo = get(productId);
+        if(Objects.isNull(inventoryPojo)){
+            throw new ApiException("Inventory does not exist for thr product");
+        }
+        return inventoryPojo;
+    }
     
      
     public List<InventoryPojo> getAllPaginated(Integer offset, Integer pageSize){
@@ -54,42 +62,34 @@ public class InventoryService {
         return dao.selectAll();
     }
 
-    public void update(Integer id, InventoryPojo p) throws ApiException{
-        InventoryPojo p1 = getCheck(id);
-        p1.setQuantity(p.getQuantity());
+    public void update(Integer productId, InventoryPojo inventoryPojo) throws ApiException{
+        InventoryPojo checkPojo = getCheck(productId);
+        checkPojo.setQuantity(inventoryPojo.getQuantity());
     }
 
-    
-    public InventoryPojo getCheck(Integer id) throws ApiException{
-        InventoryPojo p = dao.selectByColumn("productId", id);
-        if(p == null){
-            throw new ApiException("Inventory does not exist for thr product");
-        }
-        return p;
-    }
 
-    public void checkInventory(Integer id, Integer quantity) throws ApiException{
-        InventoryPojo inv = getCheck(id);
-        if(inv.getQuantity() < quantity){
+    public void checkInventory(Integer productId, Integer quantity) throws ApiException{
+        InventoryPojo inventory = getCheck(productId);
+        if(inventory.getQuantity() < quantity){
             throw new ApiException("Insufficient Inventory");
         }
     }
      
-    public void reduceQuantity(Integer id, Integer quantity) throws ApiException{
-        InventoryPojo p = getCheck(id);
-        if(p.getQuantity() < quantity){
+    public void reduceQuantity(Integer productId, Integer quantity) throws ApiException{
+        InventoryPojo inventoryPojo = getCheck(productId);
+        if(inventoryPojo.getQuantity() < quantity){
             throw new ApiException("Insufficienf Inventory");
         }
-        p.setQuantity(p.getQuantity()-quantity);
+        inventoryPojo.setQuantity(inventoryPojo.getQuantity()-quantity);
     } 
 
      
-    public void increaseQuantity(Integer id, Integer quantity) throws ApiException{
-        InventoryPojo p = getCheck(id);
-        p.setQuantity(p.getQuantity()+quantity);
+    public void increaseQuantity(Integer productId, Integer quantity) throws ApiException{
+        InventoryPojo inventoryPojo = getCheck(productId);
+        inventoryPojo.setQuantity(inventoryPojo.getQuantity()+quantity);
     } 
 
     public Integer getTotalEntries(){
-        return dao.getTotalEntries();
+        return dao.selectTotalEntries();
     }
 }

@@ -31,23 +31,23 @@ public class InventoryApiController {
 
     @ApiOperation(value="Adds Inventory")
     @RequestMapping(path="", method = RequestMethod.POST)
-    public void add(@RequestBody InventoryForm form) throws ApiException{
-        dto.add(form);
+    public void add(@RequestBody InventoryForm inventoryForm) throws ApiException{
+        dto.add(inventoryForm);
     }
 
     @ApiOperation(value="Adds Inventory Bulk")
     @RequestMapping(path="/bulk-add", method = RequestMethod.POST)
-    public void bulkAdd(@RequestBody List<InventoryForm> list) throws ApiException{
-        dto.bulkAdd(list);
+    public void bulkAdd(@RequestBody List<InventoryForm> inventoryFormList) throws ApiException{
+        dto.bulkAdd(inventoryFormList);
     }
 
-    @ApiOperation(value = "Get inventory by id")
+    @ApiOperation(value = "Get inventory using product barcode")
     @RequestMapping(path="/{barcode}", method = RequestMethod.GET)
     public InventoryData get(@PathVariable String barcode) throws ApiException{
         return dto.get(barcode);
     }
 
-    @ApiOperation(value = "Get inventory ")
+    @ApiOperation(value = "Get inventory of all products")
     @RequestMapping(path="", method = RequestMethod.GET)
     public SelectData<InventoryData> getAll(@RequestParam Integer draw,@RequestParam Integer start, @RequestParam Integer length, @RequestParam(value="search[value]") Optional<String> searchValue) throws ApiException{
         return dto.getAll(start, length, draw, searchValue);
@@ -55,8 +55,8 @@ public class InventoryApiController {
 
     @ApiOperation(value = "Update inventory by barcode")
     @RequestMapping(path="", method = RequestMethod.PUT)
-    public void update(@RequestBody InventoryForm f) throws ApiException{
-        dto.update(f);
+    public void update(@RequestBody InventoryForm inventoryForm) throws ApiException{
+        dto.update(inventoryForm);
     }
 
 }

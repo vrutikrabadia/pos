@@ -1,8 +1,9 @@
-package com.increff.pos;
+package com.increff.pos.config;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
+import com.increff.pos.model.form.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,12 +13,6 @@ import com.increff.pos.dao.InventoryDao;
 import com.increff.pos.dao.OrderDao;
 import com.increff.pos.dao.OrderItemsDao;
 import com.increff.pos.dao.ProductDao;
-import com.increff.pos.model.form.BrandForm;
-import com.increff.pos.model.form.InventoryForm;
-import com.increff.pos.model.form.OrderForm;
-import com.increff.pos.model.form.OrderItemsForm;
-import com.increff.pos.model.form.ProductForm;
-import com.increff.pos.model.form.SalesReportForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.InventoryPojo;
 import com.increff.pos.pojo.OrderItemsPojo;
@@ -50,8 +45,14 @@ public class TestUtil {
     @Autowired
     private OrderItemsDao oiDao;
 
+    @Autowired
+    private PropertiesTest propertiesTest;
+
     public Optional<String> empty = Optional.empty();
 
+    public PropertiesTest getProperties(){
+        return propertiesTest;
+    }
     public  BrandForm getBrandForm(String brand, String category){
         BrandForm f = new BrandForm();
         f.setBrand(brand);
@@ -90,6 +91,13 @@ public class TestUtil {
     public  OrderForm getOrderForm(){
         OrderForm form = new OrderForm();
         return form;    
+    }
+
+    public LoginForm getLoginForm(String username, String password){
+        LoginForm form = new LoginForm();
+        form.setEmail(username);
+        form.setPassword(password);
+        return form;
     }
 
     public  OrderItemsForm getItemsForm(String barCode, Integer quantity, Double sellingPrice){

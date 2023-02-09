@@ -31,8 +31,8 @@ public class ReportsApiController {
 
     @ApiOperation(value = "Get Sales report")
     @RequestMapping(path = "/reports/sales", method = RequestMethod.POST)
-    public String getSalesReport(@RequestBody SalesReportForm form) throws ApiException, com.increff.pdf.service.ApiException {
-        return dto.getSalesReport(form);
+    public String getSalesReport(@RequestBody SalesReportForm salesReportForm) throws ApiException, com.increff.pdf.service.ApiException {
+        return dto.getSalesReport(salesReportForm);
     }
 
     @ApiOperation(value = "Get Brand report")

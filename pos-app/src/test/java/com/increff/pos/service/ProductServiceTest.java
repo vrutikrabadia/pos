@@ -9,8 +9,8 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.increff.pos.AbstractUnitTest;
-import com.increff.pos.TestUtil;
+import com.increff.pos.config.AbstractUnitTest;
+import com.increff.pos.config.TestUtil;
 import com.increff.pos.pojo.ProductPojo;
 
 public class ProductServiceTest extends AbstractUnitTest {
@@ -24,7 +24,7 @@ public class ProductServiceTest extends AbstractUnitTest {
     @Test
     public void testAdd() throws ApiException {
         Integer id = testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
-        ProductPojo p1 = service.get(id);
+        ProductPojo p1 = service.getCheckById(id);
         assertEquals("n1", p1.getName());
         assertEquals("abcdefgh", p1.getBarcode());
         assertEquals(10.00, p1.getMrp(), 0.001);
@@ -48,12 +48,12 @@ public class ProductServiceTest extends AbstractUnitTest {
     @Test
     public void testUpdate() throws ApiException {
         Integer id = testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
-        ProductPojo p1 = service.get(id);
+        ProductPojo p1 = service.getCheckById(id);
         p1.setName("name1");
         p1.setBarcode("barcode1");
         p1.setMrp(100.00);
         service.update(id, p1);
-        ProductPojo p2 = service.get(id);
+        ProductPojo p2 = service.getCheckById(id);
         assertEquals("name1", p2.getName());
         assertEquals("barcode1", p2.getBarcode());
         assertEquals(100.00, p2.getMrp(), 0.001);
@@ -62,7 +62,7 @@ public class ProductServiceTest extends AbstractUnitTest {
     @Test
     public void testGetByBarcode() throws ApiException {
         testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
-        ProductPojo p1 = service.get("abcdefgh");
+        ProductPojo p1 = service.getCheckByBarCode("abcdefgh");
         assertEquals("n1", p1.getName());
         assertEquals("abcdefgh", p1.getBarcode());
         assertEquals(10.00, p1.getMrp(), 0.001);
@@ -71,7 +71,7 @@ public class ProductServiceTest extends AbstractUnitTest {
     @Test
     public void testGetById() throws ApiException {
         Integer id = testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
-        ProductPojo p1 = service.get(id);
+        ProductPojo p1 = service.getCheckById(id);
         assertEquals("n1", p1.getName());
         assertEquals("abcdefgh", p1.getBarcode());
         assertEquals(10.00, p1.getMrp(), 0.001);
@@ -82,7 +82,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         Integer brandId = testUtil.addBrand("b1", "c1");
         testUtil.addProduct("abcdefgh", brandId, "n1", 10.00);
         testUtil.addProduct("abcdefg1", brandId, "n2", 10.00);
-        List<ProductPojo> p1 = service.getByBrandCat(brandId);
+        List<ProductPojo> p1 = service.getByBrandCatId(brandId);
 
         assertEquals(2, p1.size());
     }
@@ -116,16 +116,16 @@ public class ProductServiceTest extends AbstractUnitTest {
         testUtil.addProduct("abcdefgh", brandId, "n1", 10.00);
         testUtil.addProduct("a1cdefgh", brandId, "n2", 10.00);
 
-        List<ProductPojo> p1 = service.getInColumn(Arrays.asList("name"), Arrays.asList(Arrays.asList("n1", "n2")));
+        List<ProductPojo> p1 = service.getInColumns(Arrays.asList("name"), Arrays.asList(Arrays.asList("n1", "n2")));
         assertEquals(2, p1.size());
     }
 
     @Test
     public void testGetBarcodeNotExists() {
-        Integer id = testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
+        testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
 
         try {
-            ProductPojo p1 = service.get("abcdefg1");
+            service.getCheckByBarCode("abcdefg1");
         } catch (ApiException e) {
             return;
         }
@@ -135,9 +135,9 @@ public class ProductServiceTest extends AbstractUnitTest {
 
     @Test 
     public void testGeProductNotExists(){
-        Integer id = testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
+        testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
         try{
-            service.get(99999999);
+            service.getCheckById(99999999);
         }
         catch(ApiException e){
             return;

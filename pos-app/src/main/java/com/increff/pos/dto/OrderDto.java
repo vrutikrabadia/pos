@@ -52,104 +52,103 @@ public class OrderDto {
     @Autowired
     private Properties properties;
 
-    public OrderData add(List<OrderItemsForm> list) throws ApiException {
-        List<OrderItemsPojo> list1 = new ArrayList<OrderItemsPojo>();
+
+
+    public OrderData add(List<OrderItemsForm> orderItemsForms) throws ApiException {
+        List<OrderItemsPojo> orderItemsPojos = new ArrayList<OrderItemsPojo>();
         JSONArray errorList = new JSONArray();
         Set<String> barcodeSet = new HashSet<String>();
-        StringUtil.normaliseList(list, OrderItemsForm.class);
-        ValidateUtil.validateForms(list);
+        StringUtil.normaliseList(orderItemsForms, OrderItemsForm.class);
+        ValidateUtil.validateForms(orderItemsForms);
 
-        for (OrderItemsForm f : list) {
+        for (OrderItemsForm orderItemsForm : orderItemsForms) {
 
-            if (barcodeSet.contains(f.getBarcode())) {
-                JSONObject error = new JSONObject(new Gson().toJson(f));
+            if (barcodeSet.contains(orderItemsForm.getBarcode())) {
+                JSONObject error = new JSONObject(new Gson().toJson(orderItemsForm));
 
                 error.put("error", "Duplicate products in the order.");
                 errorList.put(error);
             }
 
-            barcodeSet.add(f.getBarcode());
+            barcodeSet.add(orderItemsForm.getBarcode());
 
-            OrderItemsPojo p = ConvertUtil.objectMapper(f, OrderItemsPojo.class);
+            OrderItemsPojo orderItemsPojo = ConvertUtil.objectMapper(orderItemsForm, OrderItemsPojo.class);
 
             ProductPojo product = new ProductPojo();
             try {
-                product = pService.get(f.getBarcode());
+                product = pService.getCheckByBarCode(orderItemsForm.getBarcode());
             } catch (ApiException e) {
-                JSONObject error = new JSONObject(new Gson().toJson(f));
+                JSONObject error = new JSONObject(new Gson().toJson(orderItemsForm));
 
                 error.put("error", e.getMessage());
                 errorList.put(error);
             }
-            p.setProductId(product.getId());
+            orderItemsPojo.setProductId(product.getId());
 
             try {
-                invService.checkInventory(product.getId(), f.getQuantity());
-            } catch (ApiException e) {
-                JSONObject error = new JSONObject(new Gson().toJson(f));
+                invService.checkInventory(product.getId(), orderItemsForm.getQuantity());
+            } catch (ApiException apiException) {
+                JSONObject error = new JSONObject(new Gson().toJson(orderItemsForm));
 
-                error.put("error", e.getMessage()+" for "+f.getBarcode());
+                error.put("error", apiException.getMessage()+" for "+orderItemsForm.getBarcode());
                 errorList.put(error);
             }
 
-            list1.add(p);
+            orderItemsPojos.add(orderItemsPojo);
         }
 
         if (errorList.length() > 0) {
             throw new ApiException(errorList.toString());
         }
-        OrderPojo order = service.add(list1);
+        OrderPojo order = service.add(orderItemsPojos);
 
-        OrderData data = ConvertUtil.objectMapper(order, OrderData.class);
-
-        return data;
+        return ConvertUtil.objectMapper(order, OrderData.class);
 
     }
 
-    public OrderData get(Integer id) throws ApiException {
-        OrderPojo p = service.get(id);
-        OrderData data = ConvertUtil.objectMapper(p, OrderData.class);
-
-        return data;
+    public OrderData get(Integer orderId) throws ApiException {
+        OrderPojo orderPojo = service.getCheck(orderId);
+        return ConvertUtil.objectMapper(orderPojo, OrderData.class);
     }
 
     public SelectData<OrderData> getAll(Integer start, Integer length, Integer draw, Optional<String> searchValue) {
-        List<OrderData> list = new ArrayList<OrderData>();
-        List<OrderPojo> list1 = new ArrayList<OrderPojo>();
-        if (searchValue.isPresent() && !searchValue.get().isBlank()) {
+        List<OrderData> orderDataList = new ArrayList<OrderData>();
+        List<OrderPojo> orderPojoList = new ArrayList<OrderPojo>();
+        if (searchValue.isPresent() && !searchValue.get().isEmpty()) {
             try {
-                list1.add(service.get(Integer.valueOf(searchValue.get())));
+                orderPojoList.add(service.getCheck(Integer.valueOf(searchValue.get())));
             } catch (ApiException e) {
-                list1 = service.getAllPaginated(start, length);
+                orderPojoList = service.getAllPaginated(start, length);
             }
         } else {
-            list1 = service.getAllPaginated(start, length);
+            orderPojoList = service.getAllPaginated(start, length);
         }
 
-        for (OrderPojo p : list1) {
-            OrderData data = ConvertUtil.objectMapper(p, OrderData.class);
+        for (OrderPojo orderPojo : orderPojoList) {
+            OrderData orderData = ConvertUtil.objectMapper(orderPojo, OrderData.class);
 
-            list.add(data);
+            orderDataList.add(orderData);
         }
 
         Integer totalEntries = service.getTotalEntries();
-        return new SelectData<OrderData>(list, draw, totalEntries, totalEntries);
+
+        return new SelectData<OrderData>(orderDataList, draw, totalEntries, totalEntries);
     }
 
     public List<OrderItemsData> getByOrderId(Integer orderId) throws ApiException {
-        List<OrderItemsData> list = new ArrayList<OrderItemsData>();
-        List<OrderItemsPojo> list1 = iService.selectByOrderId(orderId);
+        List<OrderItemsData> itemsDataList = new ArrayList<OrderItemsData>();
+        List<OrderItemsPojo> itemsPojoList = iService.getByOrderId(orderId);
 
-        for (OrderItemsPojo p : list1) {
+        for (OrderItemsPojo orderItemsPojo : itemsPojoList) {
 
-            ProductPojo product = pService.get(p.getProductId());
-            OrderItemsData data = ConvertUtil.objectMapper(p, OrderItemsData.class);
+            ProductPojo product = pService.getCheckById(orderItemsPojo.getProductId());
+            OrderItemsData data = ConvertUtil.objectMapper(orderItemsPojo, OrderItemsData.class);
             data.setBarcode(product.getBarcode());
 
-            list.add(data);
+            itemsDataList.add(data);
         }
 
-        return list;
+        return itemsDataList;
 
     }
 
@@ -162,22 +161,22 @@ public class OrderDto {
             return Base64Util.encodeFileToBase64Binary(filePath);
         }
 
-        OrderPojo order = service.get(orderId);
+        OrderPojo order = service.getCheck(orderId);
 
         InvoiceData invoiceData = ConvertUtil.objectMapper(order, InvoiceData.class);
-        List<OrderItemsPojo> itemsList = iService.selectByOrderId(orderId);
+        List<OrderItemsPojo> itemsList = iService.getByOrderId(orderId);
 
-        List<InvoiceItemsData> invItems = new ArrayList<InvoiceItemsData>();
+        List<InvoiceItemsData> invoiceItemsData = new ArrayList<InvoiceItemsData>();
 
         for (OrderItemsPojo item : itemsList) {
             InvoiceItemsData itemData = ConvertUtil.objectMapper(item, InvoiceItemsData.class);
-            ProductPojo prod = pService.get(item.getProductId());
-            itemData.setBarcode(prod.getBarcode());
-            itemData.setName(prod.getName());
-            invItems.add(itemData);
+            ProductPojo product = pService.getCheckById(item.getProductId());
+            itemData.setBarcode(product.getBarcode());
+            itemData.setName(product.getName());
+            invoiceItemsData.add(itemData);
         }
 
-        invoiceData.setItemsList(invItems);
+        invoiceData.setItemsList(invoiceItemsData);
 
         String base64 = InvoiceGenerator.generateInvoice(invoiceData);
 
