@@ -13,7 +13,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
-import com.increff.pos.service.ApiException;
 
 /**
  * Contains method that validates the input forms recieved in the request.

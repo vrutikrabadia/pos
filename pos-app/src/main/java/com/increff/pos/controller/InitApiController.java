@@ -12,7 +12,7 @@ import com.increff.pos.model.Roles;
 import com.increff.pos.model.data.InfoData;
 import com.increff.pos.model.form.UserForm;
 import com.increff.pos.pojo.UserPojo;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.UserService;
 
 import io.swagger.annotations.ApiOperation;
@@ -52,7 +52,7 @@ public class InitApiController extends AbstractUiController {
 	private static UserPojo convert(UserForm userForm) {
 		UserPojo userPojo = new UserPojo();
 		userPojo.setEmail(userForm.getEmail());
-		userPojo.setRole(Roles.operator);
+		userPojo.setRole(Roles.OPERATOR);
 		userPojo.setPassword(userForm.getPassword());
 		return userPojo;
 	}

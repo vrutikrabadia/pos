@@ -15,7 +15,7 @@ public class UserForm {
 	@NotBlank(message = "Password cannot be blank")
 	private String password;
 	
-	@NotBlank(message = "Role cannot be blank, select one from [supervisor, operator]")
+	@NotBlank(message = "Role cannot be blank, select one from [SUPERVISOR, OPERATOR]")
 	private String role;
 
 }

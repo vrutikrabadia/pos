@@ -9,20 +9,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pos.dto.ReportDto;
 import com.increff.pos.model.form.SalesReportForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @Api
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/reports")
 public class ReportsApiController {
 
     @Autowired
     private ReportDto dto;
-
-
     @ApiOperation(value = "Get Inventory report")
     @RequestMapping(path = "/reports/inventory", method = RequestMethod.GET)
     public String getInventoryReport() throws ApiException, com.increff.pdf.service.ApiException {

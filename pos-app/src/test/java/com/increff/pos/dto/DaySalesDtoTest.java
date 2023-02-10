@@ -11,7 +11,7 @@ import com.increff.pos.config.AbstractUnitTest;
 import com.increff.pos.config.TestUtil;
 import com.increff.pos.model.data.DaySalesData;
 import com.increff.pos.model.data.SelectData;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.util.DateTimeProvider;
 
 

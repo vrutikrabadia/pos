@@ -7,7 +7,7 @@ import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.InventoryForm;
 import com.increff.pos.pojo.InventoryPojo;
 import com.increff.pos.pojo.ProductPojo;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ConvertUtil;
@@ -36,7 +36,7 @@ public class InventoryDto {
         StringUtil.normalise(inventoryForm, InventoryForm.class);
         ValidateUtil.validateForms(inventoryForm);
 
-        ProductPojo productPojo = pService.getCheckByBarCode(inventoryForm.getBarcode());
+        ProductPojo productPojo = pService.getCheckByBarcode(inventoryForm.getBarcode());
         InventoryPojo inventoryPojo = ConvertUtil.objectMapper(inventoryForm, InventoryPojo.class);
 
         if (Objects.isNull(productPojo)) {
@@ -75,7 +75,7 @@ public class InventoryDto {
 
             ProductPojo p1;
             try {
-                p1 = pService.getCheckByBarCode(inventoryForm.getBarcode());
+                p1 = pService.getCheckByBarcode(inventoryForm.getBarcode());
             } catch (ApiException apiException) {
                 JSONObject error = new JSONObject(new Gson().toJson(inventoryForm));
                 error.put("error", apiException.getMessage());
@@ -103,7 +103,7 @@ public class InventoryDto {
 
     public InventoryData get(String barcode) throws ApiException {
         barcode = StringUtil.toLowerCase(barcode);
-        ProductPojo productPojo = pService.getCheckByBarCode(barcode);
+        ProductPojo productPojo = pService.getCheckByBarcode(barcode);
         InventoryPojo checkPojo = service.getCheck(productPojo.getId());
 
         InventoryData inventoryData = ConvertUtil.objectMapper(checkPojo, InventoryData.class);
@@ -111,15 +111,15 @@ public class InventoryDto {
         return inventoryData;
     }
 
-    public SelectData<InventoryData> getAll(Integer start, Integer length, Integer draw, Optional<String> searchValue) throws ApiException {
+    public SelectData<InventoryData> getAll(Integer start, Integer length, Integer draw, String searchValue) throws ApiException {
         List<InventoryData> inventoryDataList = new ArrayList<InventoryData>();
         List<InventoryPojo> inventoryPojoList = new ArrayList<InventoryPojo>();
 
 
-        if (searchValue.isPresent() && !searchValue.get().isEmpty()) {
+        if (Objects.nonNull(searchValue) && !searchValue.isEmpty()) {
 
             Integer totalProducts = pService.getTotalEntries();
-            List<ProductPojo> productPojoList = pService.getByQueryString(0, totalProducts, StringUtil.toLowerCase(searchValue.get()));
+            List<ProductPojo> productPojoList = pService.getByQueryString(0, totalProducts, StringUtil.toLowerCase(searchValue));
 
             for (ProductPojo productPojo : productPojoList) {
                 InventoryPojo inventoryPojo = new InventoryPojo();
@@ -150,7 +150,7 @@ public class InventoryDto {
         StringUtil.normalise(inventoryForm, InventoryForm.class);
         ValidateUtil.validateForms(inventoryForm);
 
-        ProductPojo productPojo = pService.getCheckByBarCode(inventoryForm.getBarcode());
+        ProductPojo productPojo = pService.getCheckByBarcode(inventoryForm.getBarcode());
         InventoryPojo inventoryPojo = ConvertUtil.objectMapper(inventoryForm, InventoryPojo.class);
         inventoryPojo.setProductId(productPojo.getId());
 

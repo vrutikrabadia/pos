@@ -6,11 +6,12 @@ import java.util.Objects;
 
 import javax.transaction.Transactional;
 
+import com.increff.pos.util.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.increff.pos.dao.OrderDao;
-import com.increff.pos.pojo.OrderItemsPojo;
+import com.increff.pos.pojo.OrderItemPojo;
 import com.increff.pos.pojo.OrderPojo;
 
 @Service
@@ -23,10 +24,8 @@ public class OrderService {
     @Autowired
     private OrderItemsService itemsService;
 
-     
-    public OrderPojo add(List<OrderItemsPojo> itemsPojoList) throws ApiException{
+    public OrderPojo add(List<OrderItemPojo> itemsPojoList) throws ApiException{
         OrderPojo orderPojo = new OrderPojo();
-        orderPojo.setEditable(true);
         
         dao.insert(orderPojo);
 
@@ -60,7 +59,7 @@ public class OrderService {
     }
 
     public Integer getTotalEntries(){
-        return dao.selectTotalEntries();
+        return dao.countTotalEntries();
     }
 
     public List<OrderPojo> getInDateRange(ZonedDateTime startDate, ZonedDateTime endDate){

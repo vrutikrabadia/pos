@@ -20,7 +20,7 @@ function searchDateRange() {
         });
     }
     var table = $('#day-sales-table').DataTable();
-    table.ajax.url(getDaySalesUrl() + "/dateRange?startDate=" + startDate + "&endDate=" + endDate).load();
+    table.ajax.url(getDaySalesUrl() + "/date-range?startDate=" + startDate + "&endDate=" + endDate).load();
 
 
 }

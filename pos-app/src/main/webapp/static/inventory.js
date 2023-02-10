@@ -287,7 +287,7 @@ function getConditionalColumns(){
 		{ "data": "quantity" },
 	];
 
-	if(user == 'supervisor'){
+	if(user == 'SUPERVISOR'){
 		columns.push({
 				"data":null,
 				"render":function(o){return '<button class="btn" title="edit" onclick="displayEditInventory(\'' + o.barcode + '\')"><img src='+editButton+ '></button>'}

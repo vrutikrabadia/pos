@@ -37,3 +37,4 @@ jetty.log
 
 *.iml
 
+/htmlReport/

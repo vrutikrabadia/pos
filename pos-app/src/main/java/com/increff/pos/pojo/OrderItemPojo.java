@@ -1,7 +1,5 @@
 package com.increff.pos.pojo;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,11 +16,10 @@ import lombok.Setter;
         uniqueConstraints = {@UniqueConstraint(name="unique_order_id_product_id", columnNames = {"orderId", "productId"})})
 @Getter
 @Setter
-public class OrderItemsPojo extends AbstractPojo implements Serializable {
+public class OrderItemPojo extends AbstractPojo  {
     
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(nullable=false)
     private Integer id;
 
     @Column(nullable=false)

@@ -1,12 +1,9 @@
 package com.increff.pos.dto;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
+import com.increff.pos.model.form.OrderForm;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +17,10 @@ import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.data.OrderItemsData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.OrderItemsForm;
-import com.increff.pos.pojo.OrderItemsPojo;
+import com.increff.pos.pojo.OrderItemPojo;
 import com.increff.pos.pojo.OrderPojo;
 import com.increff.pos.pojo.ProductPojo;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.OrderItemsService;
 import com.increff.pos.service.OrderService;
@@ -33,6 +30,8 @@ import com.increff.pos.util.Base64Util;
 import com.increff.pos.util.ConvertUtil;
 import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
+
+import javax.transaction.Transactional;
 
 @Component
 public class OrderDto {
@@ -53,11 +52,12 @@ public class OrderDto {
     private Properties properties;
 
 
-
-    public OrderData add(List<OrderItemsForm> orderItemsForms) throws ApiException {
-        List<OrderItemsPojo> orderItemsPojos = new ArrayList<OrderItemsPojo>();
+    @Transactional(rollbackOn = ApiException.class)
+    public OrderData add(OrderForm orderForm) throws ApiException {
+        List<OrderItemPojo> orderItemPojos = new ArrayList<OrderItemPojo>();
         JSONArray errorList = new JSONArray();
         Set<String> barcodeSet = new HashSet<String>();
+        List<OrderItemsForm> orderItemsForms = orderForm.getOrderItems();
         StringUtil.normaliseList(orderItemsForms, OrderItemsForm.class);
         ValidateUtil.validateForms(orderItemsForms);
 
@@ -72,18 +72,18 @@ public class OrderDto {
 
             barcodeSet.add(orderItemsForm.getBarcode());
 
-            OrderItemsPojo orderItemsPojo = ConvertUtil.objectMapper(orderItemsForm, OrderItemsPojo.class);
+            OrderItemPojo orderItemPojo = ConvertUtil.objectMapper(orderItemsForm, OrderItemPojo.class);
 
             ProductPojo product = new ProductPojo();
             try {
-                product = pService.getCheckByBarCode(orderItemsForm.getBarcode());
+                product = pService.getCheckByBarcode(orderItemsForm.getBarcode());
             } catch (ApiException e) {
                 JSONObject error = new JSONObject(new Gson().toJson(orderItemsForm));
 
                 error.put("error", e.getMessage());
                 errorList.put(error);
             }
-            orderItemsPojo.setProductId(product.getId());
+            orderItemPojo.setProductId(product.getId());
 
             try {
                 invService.checkInventory(product.getId(), orderItemsForm.getQuantity());
@@ -94,13 +94,17 @@ public class OrderDto {
                 errorList.put(error);
             }
 
-            orderItemsPojos.add(orderItemsPojo);
+            orderItemPojos.add(orderItemPojo);
         }
 
         if (errorList.length() > 0) {
             throw new ApiException(errorList.toString());
         }
-        OrderPojo order = service.add(orderItemsPojos);
+        OrderPojo order = service.add(orderItemPojos);
+
+        for(OrderItemPojo orderItemPojo : orderItemPojos) {
+            invService.reduceQuantity(orderItemPojo.getProductId(), orderItemPojo.getQuantity());
+        }
 
         return ConvertUtil.objectMapper(order, OrderData.class);
 
@@ -111,12 +115,12 @@ public class OrderDto {
         return ConvertUtil.objectMapper(orderPojo, OrderData.class);
     }
 
-    public SelectData<OrderData> getAll(Integer start, Integer length, Integer draw, Optional<String> searchValue) {
+    public SelectData<OrderData> getAll(Integer start, Integer length, Integer draw, String searchValue) {
         List<OrderData> orderDataList = new ArrayList<OrderData>();
         List<OrderPojo> orderPojoList = new ArrayList<OrderPojo>();
-        if (searchValue.isPresent() && !searchValue.get().isEmpty()) {
+        if (Objects.nonNull(searchValue)&&!searchValue.isEmpty()) {
             try {
-                orderPojoList.add(service.getCheck(Integer.valueOf(searchValue.get())));
+                orderPojoList.add(service.getCheck(Integer.valueOf(searchValue)));
             } catch (ApiException e) {
                 orderPojoList = service.getAllPaginated(start, length);
             }
@@ -137,12 +141,12 @@ public class OrderDto {
 
     public List<OrderItemsData> getByOrderId(Integer orderId) throws ApiException {
         List<OrderItemsData> itemsDataList = new ArrayList<OrderItemsData>();
-        List<OrderItemsPojo> itemsPojoList = iService.getByOrderId(orderId);
+        List<OrderItemPojo> itemsPojoList = iService.getByOrderId(orderId);
 
-        for (OrderItemsPojo orderItemsPojo : itemsPojoList) {
+        for (OrderItemPojo orderItemPojo : itemsPojoList) {
 
-            ProductPojo product = pService.getCheckById(orderItemsPojo.getProductId());
-            OrderItemsData data = ConvertUtil.objectMapper(orderItemsPojo, OrderItemsData.class);
+            ProductPojo product = pService.getCheckById(orderItemPojo.getProductId());
+            OrderItemsData data = ConvertUtil.objectMapper(orderItemPojo, OrderItemsData.class);
             data.setBarcode(product.getBarcode());
 
             itemsDataList.add(data);
@@ -152,7 +156,7 @@ public class OrderDto {
 
     }
 
-    public String generateInvoice(Integer orderId) throws ApiException, Exception {
+    public String generateInvoice(Integer orderId) throws ApiException, com.increff.pdf.service.ApiException {
 
         String filePath = new File(properties.getCacheLocation()+"/invoice"+orderId+".pdf").getAbsolutePath();
         File file = new File(filePath);
@@ -164,11 +168,11 @@ public class OrderDto {
         OrderPojo order = service.getCheck(orderId);
 
         InvoiceData invoiceData = ConvertUtil.objectMapper(order, InvoiceData.class);
-        List<OrderItemsPojo> itemsList = iService.getByOrderId(orderId);
+        List<OrderItemPojo> itemsList = iService.getByOrderId(orderId);
 
         List<InvoiceItemsData> invoiceItemsData = new ArrayList<InvoiceItemsData>();
 
-        for (OrderItemsPojo item : itemsList) {
+        for (OrderItemPojo item : itemsList) {
             InvoiceItemsData itemData = ConvertUtil.objectMapper(item, InvoiceItemsData.class);
             ProductPojo product = pService.getCheckById(item.getProductId());
             itemData.setBarcode(product.getBarcode());

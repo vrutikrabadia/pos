@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.List;
 
+import com.increff.pos.util.ApiException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -52,7 +53,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         p1.setName("name1");
         p1.setBarcode("barcode1");
         p1.setMrp(100.00);
-        service.update(id, p1);
+        service.update(p1);
         ProductPojo p2 = service.getCheckById(id);
         assertEquals("name1", p2.getName());
         assertEquals("barcode1", p2.getBarcode());
@@ -62,7 +63,7 @@ public class ProductServiceTest extends AbstractUnitTest {
     @Test
     public void testGetByBarcode() throws ApiException {
         testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
-        ProductPojo p1 = service.getCheckByBarCode("abcdefgh");
+        ProductPojo p1 = service.getCheckByBarcode("abcdefgh");
         assertEquals("n1", p1.getName());
         assertEquals("abcdefgh", p1.getBarcode());
         assertEquals(10.00, p1.getMrp(), 0.001);
@@ -125,7 +126,7 @@ public class ProductServiceTest extends AbstractUnitTest {
         testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "n1", 10.00);
 
         try {
-            service.getCheckByBarCode("abcdefg1");
+            service.getCheckByBarcode("abcdefg1");
         } catch (ApiException e) {
             return;
         }

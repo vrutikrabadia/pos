@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 
 import com.increff.pos.model.data.DaySalesData;
 import com.increff.pos.model.data.SelectData;
-import com.increff.pos.pojo.PosDaySales;
-import com.increff.pos.pojo.OrderItemsPojo;
+import com.increff.pos.pojo.DaySalesPojo;
+import com.increff.pos.pojo.OrderItemPojo;
 import com.increff.pos.pojo.OrderPojo;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.DaySalesService;
 import com.increff.pos.service.OrderItemsService;
 import com.increff.pos.service.OrderService;
@@ -39,9 +39,9 @@ public class DaySalesDto {
     public SelectData<DaySalesData> getAll(Integer start, Integer length, Integer draw) throws ApiException{
         List<DaySalesData> daySalesDataList = new ArrayList<DaySalesData>();
 
-        List<PosDaySales> daySalesPojoList = service.getAllPaginated(start, length);
+        List<DaySalesPojo> daySalesPojoList = service.getAllPaginated(start, length);
     
-        for(PosDaySales daySalesPojo: daySalesPojoList){
+        for(DaySalesPojo daySalesPojo: daySalesPojoList){
             DaySalesData data = ConvertUtil.objectMapper(daySalesPojo, DaySalesData.class); 
             
             daySalesDataList.add(data);
@@ -57,16 +57,16 @@ public class DaySalesDto {
         if(startDate.compareTo(endDate)>0){
             throw new ApiException("Start Date should be less than End Date.");
         }
-        List<PosDaySales> daySalesPojoList = service.getByDateRange(startDate, endDate,start, length);
+        List<DaySalesPojo> daySalesPojoList = service.getByDateRange(startDate, endDate,start, length);
 
         
-        for(PosDaySales daySalesPojo: daySalesPojoList){
+        for(DaySalesPojo daySalesPojo: daySalesPojoList){
             DaySalesData data = ConvertUtil.objectMapper(daySalesPojo, DaySalesData.class);
             
             daySalesDataList.add(data);
         }
 
-        Integer totalEntries = service.getTotalEntriesinDateRange(startDate, endDate);
+        Integer totalEntries = service.getTotalEntriesInDateRange(startDate, endDate);
         return new SelectData<DaySalesData>(daySalesDataList, draw, totalEntries, totalEntries);
     }
 
@@ -82,15 +82,15 @@ public class DaySalesDto {
 
         List<Integer> orderIdList = orderPojoList.stream().map(OrderPojo::getId).collect(Collectors.toList());
 
-        List<OrderItemsPojo> itemsPojoList = oItemsService.getInColumn(Arrays.asList("orderId"), Arrays.asList(orderIdList));
+        List<OrderItemPojo> itemsPojoList = oItemsService.getInColumn(Arrays.asList("orderId"), Arrays.asList(orderIdList));
         
-        Integer itemCount = itemsPojoList.stream().collect(Collectors.summingInt(OrderItemsPojo::getQuantity));
+        Integer itemCount = itemsPojoList.stream().collect(Collectors.summingInt(OrderItemPojo::getQuantity));
         Double totalRevenue = itemsPojoList.stream().mapToDouble(i->i.getQuantity()*i.getSellingPrice()).sum();
 
-        PosDaySales daySalesPojo = new PosDaySales();
+        DaySalesPojo daySalesPojo = new DaySalesPojo();
 
         daySalesPojo.setDate(start);
-        daySalesPojo.setInvoicedItemsCount(itemCount);
+        daySalesPojo.setInvoicedItemCount(itemCount);
         daySalesPojo.setTotalRevenue(totalRevenue);
         daySalesPojo.setInvoicedOrderCount(orderIdList.size());
 

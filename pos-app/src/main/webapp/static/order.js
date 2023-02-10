@@ -321,12 +321,13 @@ function placeOrder() {
         });
         return;
     }
-    // var jsonObj = arrayToJson();
-    // console.log(jsonObj);
+    let data = {
+        "orderItems": wholeOrder
+    };
     $.ajax({
         url: url,
         type: 'POST',
-        data: JSON.stringify(wholeOrder),
+        data: JSON.stringify(data),
         headers: {
             'Content-Type': 'application/json'
         },

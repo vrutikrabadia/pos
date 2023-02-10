@@ -18,7 +18,7 @@ import lombok.Setter;
         uniqueConstraints = {@UniqueConstraint(name="unique_barcode", columnNames = {"barcode"})})
 @Getter
 @Setter
-public class ProductPojo extends AbstractPojo implements Serializable{
+public class ProductPojo extends AbstractPojo {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,10 +14,10 @@ import lombok.Setter;
 @Table(name = "inventory")
 @Getter
 @Setter
-public class InventoryPojo extends AbstractPojo implements Serializable{
+public class InventoryPojo extends AbstractPojo {
     
     @Id
-    @Column(nullable=false)
+
     private Integer productId;
     
     @Column(nullable=false)

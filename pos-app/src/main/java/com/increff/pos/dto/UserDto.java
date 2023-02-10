@@ -22,7 +22,7 @@ import com.increff.pos.model.data.UserPrincipal;
 import com.increff.pos.model.form.LoginForm;
 import com.increff.pos.model.form.UserForm;
 import com.increff.pos.pojo.UserPojo;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.UserService;
 import com.increff.pos.spring.Properties;
 import com.increff.pos.util.ConvertUtil;
@@ -140,10 +140,10 @@ public class UserDto {
         
         UserPojo userPojo = ConvertUtil.objectMapper(loginForm, UserPojo.class);
         if(userPojo.getEmail().equals(properties.getSupervisorEmail())){
-            userPojo.setRole(Roles.supervisor);
+            userPojo.setRole(Roles.SUPERVISOR);
         }
         else{
-            userPojo.setRole(Roles.operator);
+            userPojo.setRole(Roles.OPERATOR);
         }
         service.add(userPojo);
     }

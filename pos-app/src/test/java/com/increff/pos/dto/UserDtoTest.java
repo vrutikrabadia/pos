@@ -14,7 +14,7 @@ import com.increff.pos.config.AbstractUnitTest;
 import com.increff.pos.model.data.UserData;
 import com.increff.pos.model.form.LoginForm;
 import com.increff.pos.model.form.UserForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.util.PasswordUtil;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -38,7 +38,7 @@ public class UserDtoTest extends AbstractUnitTest {
     public void testAdd() throws ApiException {
         String email = "email@email.com";
         String password = "password";
-        String role = "operator";
+        String role = "OPERATOR";
         UserForm form = new UserForm();
         form.setEmail(email);
         form.setPassword(password);
@@ -53,7 +53,7 @@ public class UserDtoTest extends AbstractUnitTest {
     public void testAddDuplicateUser() throws ApiException {
         String email = "email@email.com";
         String password = "password";
-        String role = "operator";
+        String role = "OPERATOR";
         UserForm form = new UserForm();
         form.setEmail(email);
         form.setPassword(password);
@@ -66,7 +66,7 @@ public class UserDtoTest extends AbstractUnitTest {
     public void testGetAll() throws ApiException {
         String email = "email@email.com";
         String password = "password";
-        String role = "operator";
+        String role = "OPERATOR";
         UserForm form = new UserForm();
         form.setEmail(email);
         form.setPassword(password);
@@ -79,7 +79,7 @@ public class UserDtoTest extends AbstractUnitTest {
     public void testDelete() throws ApiException {
         String email = "email@email.com";
         String password = "password";
-        String role = "operator";
+        String role = "OPERATOR";
         UserForm form = new UserForm();
         form.setEmail(email);
         form.setPassword(password);
@@ -102,12 +102,12 @@ public class UserDtoTest extends AbstractUnitTest {
         userDto.add(form);
         UserData data = userDto.get(email);
         assertEquals(data.getEmail(), email);
-        assertEquals(data.getRole(), "supervisor");
+        assertEquals(data.getRole(), "SUPERVISOR");
     }
 
     @Test
     public void testAddByLoginFormOperator() throws ApiException {
-        String email = "operator@pos.com";
+        String email = "OPERATOR@pos.com";
         String password = "password";
         LoginForm form = new LoginForm();
         form.setEmail(email);
@@ -115,7 +115,7 @@ public class UserDtoTest extends AbstractUnitTest {
         userDto.add(form);
         UserData data = userDto.get(email);
         assertEquals(data.getEmail(), email);
-        assertEquals(data.getRole(), "operator");
+        assertEquals(data.getRole(), "OPERATOR");
     }
 
     @Test
@@ -149,7 +149,7 @@ public class UserDtoTest extends AbstractUnitTest {
         userDto.signup(request, form);
         UserPojo user = userService.get(testUtil.getProperties().getSupervisorEmail());
         checkEquals(user, form);
-        assertEquals("supervisor", user.getRole().toString());
+        assertEquals("SUPERVISOR", user.getRole().toString());
     }
 
     private void checkEquals(UserPojo user, LoginForm form){

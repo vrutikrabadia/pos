@@ -20,7 +20,9 @@ import com.increff.pos.spring.SpringConfig;
 		excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = { SpringConfig.class })//
 )
 @PropertySources({ //
-		@PropertySource(value = "classpath:./com/increff/pos/test.properties", ignoreResourceNotFound = true) //
+		@PropertySource(value = "classpath:./com/increff/pos/test.properties", ignoreResourceNotFound = true),
+		@PropertySource(value = "classpath:./com/increff/pos/pdfClient.properties", ignoreResourceNotFound = true),
+		 //
 })
 public class QaConfig {
 	@Value("${server.timezone}")

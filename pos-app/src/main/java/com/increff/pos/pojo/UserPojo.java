@@ -18,6 +18,7 @@ import lombok.Setter;
 @Getter
 @Table(name = "users")
 @Setter
+// TODO: add unique constraint on email
 public class UserPojo {
 
 	@Id

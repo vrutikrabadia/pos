@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import javax.transaction.Transactional;
 
+import com.increff.pos.util.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,34 +30,30 @@ public class ProductService {
         }
     }
 
+    public ProductPojo getByBarcode(String barcode) {
+        return dao.selectByColumn("barcode", barcode);
+    }
+
     public ProductPojo getCheckById(Integer productId) throws ApiException {
         ProductPojo productPojo = getById(productId);
         if (Objects.isNull(productPojo)) {
+            // TODO: follow one convention in error message.
             throw new ApiException("Product does not exist with id: " + productId);
         }
         return productPojo;
     }
 
-    public ProductPojo getCheckByBarCode(String barcode) throws ApiException {
+    public ProductPojo getCheckByBarcode(String barcode) throws ApiException {
         ProductPojo productPojo = dao.selectByColumn("barcode", barcode);
         if (Objects.isNull(productPojo)) {
+
+            // TODO: send the barcode.
             throw new ApiException("Product with barcode does not exist");
         }
         return productPojo;
     }
 
-    public boolean checkBarcode(Integer id, String barcode) {
-        ProductPojo productPojo = dao.selectByColumn("barcode", barcode);
-        if (Objects.isNull(productPojo)) {
-            return false;
-        }
-        if (productPojo.getId() == id) {
-            return false;
-        }
-        return true;
-    }
-
-    public ProductPojo getById(Integer productId) throws ApiException {
+    public ProductPojo getById(Integer productId) {
 
         return dao.selectByColumn("id",productId);
       
@@ -70,8 +67,8 @@ public class ProductService {
         return dao.selectAll();
     }
 
-    public void update(Integer id, ProductPojo productPojo) throws ApiException {
-        ProductPojo checkPojo = getCheckById(id);
+    public void update(ProductPojo productPojo) throws ApiException {
+        ProductPojo checkPojo = getCheckById(productPojo.getId());
 
         checkPojo.setName(productPojo.getName());
         checkPojo.setMrp(productPojo.getMrp());
@@ -89,9 +86,10 @@ public class ProductService {
     }
 
     public Integer getTotalEntries() {
-        return dao.selectTotalEntries();
+        return dao.countTotalEntries();
     }
 
+    // TODO: AFTER VERIFICATION: throw exception in DAO.
     public <T> List<ProductPojo> getInColumns(List<String> column, List<List<T>>values) throws ApiException{
         if(column.size() != values.size()){
             throw new ApiException("Column and Values size mismatch");

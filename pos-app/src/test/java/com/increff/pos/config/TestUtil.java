@@ -15,9 +15,9 @@ import com.increff.pos.dao.OrderItemsDao;
 import com.increff.pos.dao.ProductDao;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.InventoryPojo;
-import com.increff.pos.pojo.OrderItemsPojo;
+import com.increff.pos.pojo.OrderItemPojo;
 import com.increff.pos.pojo.OrderPojo;
-import com.increff.pos.pojo.PosDaySales;
+import com.increff.pos.pojo.DaySalesPojo;
 import com.increff.pos.pojo.ProductPojo;
 import com.increff.pos.util.DateTimeProvider;
 
@@ -109,8 +109,8 @@ public class TestUtil {
         return form;
     }
 
-    public  OrderItemsPojo getItemsPojo(Integer orderId, Integer prodId, Integer quantity, Double sellingPrice){
-        OrderItemsPojo pojo = new OrderItemsPojo();
+    public OrderItemPojo getItemsPojo(Integer orderId, Integer prodId, Integer quantity, Double sellingPrice){
+        OrderItemPojo pojo = new OrderItemPojo();
 
         pojo.setOrderId(orderId);
         pojo.setProductId(prodId);
@@ -176,7 +176,7 @@ public class TestUtil {
 
 
     public  void addOrderItem(Integer orderId, Integer prodId, Integer quantity, Double sellingPrice){
-        OrderItemsPojo item = new OrderItemsPojo();
+        OrderItemPojo item = new OrderItemPojo();
         item.setOrderId(orderId);
         item.setProductId(prodId);
         item.setQuantity(quantity);
@@ -193,20 +193,20 @@ public class TestUtil {
     }
 
     public  void addDaySales(ZonedDateTime date, Integer itemsCount, Integer orderCount, Double sales){
-        PosDaySales dPojo = new PosDaySales();
+        DaySalesPojo dPojo = new DaySalesPojo();
         dPojo.setDate(date);
-        dPojo.setInvoicedItemsCount(itemsCount);
+        dPojo.setInvoicedItemCount(itemsCount);
         dPojo.setInvoicedOrderCount(orderCount);
         dPojo.setTotalRevenue(sales);
 
         dDao.insert(dPojo);
     }
 
-    public  PosDaySales getDaySalesPojo(Integer itemsCount, Integer orderCount, Double totalRevenue){
-        PosDaySales pojo = new PosDaySales();
+    public DaySalesPojo getDaySalesPojo(Integer itemsCount, Integer orderCount, Double totalRevenue){
+        DaySalesPojo pojo = new DaySalesPojo();
 
         pojo.setDate(DateTimeProvider.getInstance().timeNow().withHour(12).withMinute(0).withSecond(0));
-        pojo.setInvoicedItemsCount(itemsCount);
+        pojo.setInvoicedItemCount(itemsCount);
         pojo.setInvoicedOrderCount(orderCount);
         pojo.setTotalRevenue(totalRevenue);
 

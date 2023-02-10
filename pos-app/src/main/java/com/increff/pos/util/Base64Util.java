@@ -6,8 +6,6 @@ import java.util.Base64;
 
 import org.apache.commons.io.FileUtils;
 
-import com.increff.pos.service.ApiException;
-
 /**
  * Used for conversionn of File to Base64 string and vice versa.
  */

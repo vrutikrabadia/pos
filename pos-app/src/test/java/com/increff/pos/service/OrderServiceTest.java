@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import com.increff.pos.util.ApiException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,7 +24,7 @@ public class OrderServiceTest extends AbstractUnitTest{
     private TestUtil testUtil;
 
     @Test
-    public void testAddAndGet() throws ApiException{
+    public void testAddAndGet() throws ApiException {
         Integer orderId = testUtil.addOrder();
 
         OrderPojo p = service.get(orderId);

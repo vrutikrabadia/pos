@@ -17,13 +17,13 @@ public class SalesReportForm {
     @ApiModelProperty(required = true,example = "2020-07-14T21:56:00Z")
     @JsonDeserialize(using = CustomZonedDateTimeDeserializer.class)
     @NotNull(message = "Start Date cannot be blank")
-    ZonedDateTime startDate;
+    private ZonedDateTime startDate;
     
     @ApiModelProperty(required = true,example = "2020-07-14T21:56:00Z")
     @JsonDeserialize(using = CustomZonedDateTimeDeserializer.class)
     @NotNull(message = "End Date cannot be blank")
-    ZonedDateTime endDate;
+    private ZonedDateTime endDate;
 
-    String brand;
-    String category;
+    private String brand;
+    private String category;
 }

@@ -17,7 +17,7 @@ import com.increff.pos.model.data.BrandData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.BrandForm;
 import com.increff.pos.pojo.BrandPojo;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.BrandService;
 import com.increff.pos.util.ConvertUtil;
 import com.increff.pos.util.ExceptionUtil;
@@ -61,13 +61,13 @@ public class BrandDto {
         return ConvertUtil.objectMapper(p, BrandData.class);
     }
 
-    public SelectData<BrandData> getAll(Integer start, Integer length, Integer draw, Optional<String> searchValue) {
+    public SelectData<BrandData> getAll(Integer start, Integer length, Integer draw, String searchValue) {
 
         List<BrandPojo> pojoList = new ArrayList<BrandPojo>();
         List<BrandData> dataList = new ArrayList<BrandData>();
 
-        if (searchValue.isPresent() && !searchValue.get().isEmpty()) {
-            pojoList = service.searchQueryString(start, length, StringUtil.toLowerCase(searchValue.get()));
+    if (Objects.nonNull(searchValue) && !searchValue.isEmpty()) {
+            pojoList = service.searchQueryString(start, length, StringUtil.toLowerCase(searchValue));
         } else {
             pojoList = service.getAllPaginated(start, length);
         }

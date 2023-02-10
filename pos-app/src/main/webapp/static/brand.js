@@ -32,7 +32,7 @@ function addBrand(event){
 }
 
 function updateBrand(event){
-	$('#update-brand').attr('disabled', true);
+	$('#update-brand').attr('disabled',true);
 	//Get the ID
 	var id = $("#brand-edit-form input[name=id]").val();	
 	var url = getBrandUrl() + "/" + id;
@@ -292,7 +292,7 @@ function getConditionalColumns(){
 		{ "data": "brand" },
 		{ "data": "category" },
 	];
-	if(user == "supervisor"){
+	if(user == "SUPERVISOR"){
 		columns.push(
 			{
 				"data":null,

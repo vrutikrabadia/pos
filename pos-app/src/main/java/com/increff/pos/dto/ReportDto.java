@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -23,15 +22,15 @@ import com.increff.pos.model.data.BrandData;
 import com.increff.pos.model.form.SalesReportForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.InventoryPojo;
-import com.increff.pos.pojo.OrderItemsPojo;
+import com.increff.pos.pojo.OrderItemPojo;
 import com.increff.pos.pojo.OrderPojo;
 import com.increff.pos.pojo.ProductPojo;
-import com.increff.pos.service.ApiException;
 import com.increff.pos.service.BrandService;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.OrderItemsService;
 import com.increff.pos.service.OrderService;
 import com.increff.pos.service.ProductService;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.util.ConvertUtil;
 import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
@@ -170,7 +169,7 @@ public class ReportDto {
 
         List<Integer> prodIds = prodList.stream().map(ProductPojo::getId).collect(Collectors.toList());
 
-        List<OrderItemsPojo> itemsList = getOrderItems(sDate, eDate, prodIds);
+        List<OrderItemPojo> itemsList = getOrderItems(sDate, eDate, prodIds);
 
         return generateSalesReport(itemsList, brandList, prodList);
 
@@ -178,9 +177,9 @@ public class ReportDto {
 
     private String generateSalesReportOnlyDates(ZonedDateTime sDate, ZonedDateTime eDate) throws ApiException, com.increff.pdf.service.ApiException {
 
-        List<OrderItemsPojo> itemsList = getOrderItems(sDate, eDate, null);
+        List<OrderItemPojo> itemsList = getOrderItems(sDate, eDate, null);
 
-        List<Integer> prodIds = new ArrayList<Integer>(itemsList.stream().map(OrderItemsPojo::getProductId).collect(Collectors.toSet()));
+        List<Integer> prodIds = itemsList.stream().map(OrderItemPojo::getProductId).distinct().collect(Collectors.toList());
         
         List<ProductPojo> prodList;
         try {
@@ -196,7 +195,7 @@ public class ReportDto {
         return generateSalesReport(itemsList, brandList, prodList);
     }
 
-    protected List<OrderItemsPojo> getOrderItems(ZonedDateTime sDate, ZonedDateTime eDate, List<Integer> prodIds) {
+    protected List<OrderItemPojo> getOrderItems(ZonedDateTime sDate, ZonedDateTime eDate, List<Integer> prodIds) {
         List<OrderPojo> orderList = oService.getInDateRange(sDate, eDate);
 
         List<Integer> orderIds = orderList.stream().map(OrderPojo::getId).collect(Collectors.toList());
@@ -211,7 +210,7 @@ public class ReportDto {
 
     }
 
-    private String generateSalesReport(List<OrderItemsPojo> itemlsList, List<BrandPojo> brandList,
+    private String generateSalesReport(List<OrderItemPojo> itemlsList, List<BrandPojo> brandList,
             List<ProductPojo> prodList) throws com.increff.pdf.service.ApiException {
 
         HashMap<Integer, Integer> prodIdToBrandCatId = (HashMap<Integer, Integer>) prodList.stream()
@@ -226,7 +225,7 @@ public class ReportDto {
         HashMap<Integer, Integer> brandCatToQuantity = (HashMap<Integer, Integer>) brandList.stream()
                 .collect(Collectors.toMap(BrandPojo::getId, e -> 0));
 
-        for (OrderItemsPojo item : itemlsList) {
+        for (OrderItemPojo item : itemlsList) {
             Integer brandCatId = prodIdToBrandCatId.get(item.getProductId());
             Integer newQuantity = brandCatToQuantity.get(brandCatId) + item.getQuantity();
             Double newRevenue = brandCatToRevenue.get(brandCatId) + (item.getQuantity()*item.getSellingPrice());
@@ -256,7 +255,7 @@ public class ReportDto {
     public String getBrandReport() throws com.increff.pdf.service.ApiException {
 
         Integer totalBrands = bService.getTotalEntries();
-        List<BrandData> brandList = bDto.getAll(0, totalBrands, 1, Optional.empty()).getData();
+        List<BrandData> brandList = bDto.getAll(0, totalBrands, 1, null).getData();
 
         List<BrandReportData> brandReportData = brandList.stream().map(e->ConvertUtil.objectMapper(e, BrandReportData.class)).collect(Collectors.toList());
 

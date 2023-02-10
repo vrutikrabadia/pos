@@ -4,7 +4,7 @@
 
 <head th:replace="snippets.html :: name_head"></head>
 
-<body th:if="${info.getRole() == 'supervisor'}">
+<body th:if="${info.getRole() == 'SUPERVISOR'}">
 
 <nav th:replace="snippets.html :: name_app_navbar"></nav>
 
@@ -103,8 +103,8 @@
 				  <div class="col-sm-10">
 					  <select name="role" id="inputRole" class="form-control">
 						  
-						  <option value="operator">Operator</option>		
-						  <option value="supervisor">Supervisor</option>			
+						  <option value="OPERATOR">Operator</option>		
+						  <option value="SUPERVISOR">Supervisor</option>
 					  </select>
 				  </div>
 				</div>
@@ -126,8 +126,8 @@
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	
-		var user = /*[[${info.getRole()}]]*/ 'operator';
-		var userEmail = /*[[${info.getEmail()}]]*/ 'operator@pos.com';
+		var user = /*[[${info.getRole()}]]*/ 'OPERATOR';
+		var userEmail = /*[[${info.getEmail()}]]*/ 'OPERATOR@pos.com';
 	
 	/*]]>*/
 </script>

@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 
 import lombok.Getter;
 
+import java.util.List;
+
 @Component
 @Getter
 public class Properties {

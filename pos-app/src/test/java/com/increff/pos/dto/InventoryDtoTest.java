@@ -17,7 +17,7 @@ import com.increff.pos.config.TestUtil;
 import com.increff.pos.model.data.InventoryData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.InventoryForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 
 public class InventoryDtoTest extends AbstractUnitTest{
     
@@ -44,7 +44,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
         
         dto.add(f);
 
-        List<InventoryData> d = dto.getAll(0,1,1,testUtil.empty).getData();
+        List<InventoryData> d = dto.getAll(0,1,1,null).getData();
         
         assertEquals(d.get(0).getBarcode(), barcode);
         assertEquals(d.get(0).getQuantity(), quantity);
@@ -78,7 +78,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.add(f1);
 
-        List<InventoryData> d = dto.getAll(0,10,1,testUtil.empty).getData();
+        List<InventoryData> d = dto.getAll(0,10,1,null).getData();
 
         assertEquals(d.size(), 2);
 
@@ -105,7 +105,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.update(f);
 
-        List<InventoryData> d = dto.getAll(0,1,1,testUtil.empty).getData();
+        List<InventoryData> d = dto.getAll(0,1,1,null).getData();
         assertEquals(d.get(0).getQuantity(), updatedQuantity);
     }
 
@@ -142,7 +142,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.add(f);
         dto.add(f);
-        List<InventoryData> d = dto.getAll(0,1, 1, testUtil.empty).getData();
+        List<InventoryData> d = dto.getAll(0,1, 1, null).getData();
         
         Integer finalQuantity = 10;
 
@@ -259,7 +259,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.add(f);
 
-        SelectData<InventoryData> data = dto.getAll(0,5,0,Optional.of("1a"));
+        SelectData<InventoryData> data = dto.getAll(0,5,0,"1a");
 
         assertEquals(1, data.getData().size());
     }
@@ -295,7 +295,7 @@ public class InventoryDtoTest extends AbstractUnitTest{
 
         dto.bulkAdd(forms);
 
-        List<InventoryData> d = dto.getAll(0,2,1,testUtil.empty).getData();
+        List<InventoryData> d = dto.getAll(0,2,1,null).getData();
         assertEquals(d.get(0).getQuantity(), quantity);
         assertEquals(d.get(1).getQuantity(), quantity);
 

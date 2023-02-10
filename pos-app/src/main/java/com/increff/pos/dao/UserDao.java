@@ -17,14 +17,14 @@ public class UserDao extends AbstractDao<UserPojo> {
     }
 
 	public Integer deleteById(Integer id) {
-		CriteriaBuilder cb = em().getCriteriaBuilder();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
 
         CriteriaDelete<UserPojo> cq = cb.createCriteriaDelete(UserPojo.class);
 		Root<UserPojo> root = cq.from(UserPojo.class);
 		Predicate idPredicate = cb.equal(root.get("id"), id);
 
 		cq.where(idPredicate);
-		return em().createQuery(cq).executeUpdate();
+		return em.createQuery(cq).executeUpdate();
 	}
 
 

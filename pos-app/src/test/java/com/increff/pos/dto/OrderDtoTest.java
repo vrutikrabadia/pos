@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.increff.pos.model.form.OrderForm;
+import org.hibernate.criterion.Order;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,54 +19,70 @@ import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.data.OrderItemsData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.OrderItemsForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 
-public class OrderDtoTest extends AbstractUnitTest{
+public class OrderDtoTest extends AbstractUnitTest {
     @Autowired
     private OrderDto dto;
-    
+
     @Autowired
     private TestUtil testUtil;
 
+    @Autowired
+    private InventoryDto inventoryDto;
+
 
     @Test
-    public void testAddAndGet() throws ApiException{
-        
+    public void testAddAndGet() throws ApiException {
+
         testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
         testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
 
         List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
-        
+
         itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
         itemsList.add(testUtil.getItemsForm("abcdefg1", 5, 15.00));
-       
-        dto.add(itemsList);
 
+        OrderForm orderForm = new OrderForm();
+        orderForm.setOrderItems(itemsList);
 
-        SelectData<OrderData> orderList = dto.getAll(0, 5, 1, testUtil.empty);
+        dto.add(orderForm);
+
+        SelectData<OrderData> orderList = dto.getAll(0, 5, 1, null);
 
         assertEquals(1, orderList.getData().size());
 
         List<OrderItemsData> itemsList1 = dto.getByOrderId(orderList.getData().get(0).getId());
-    
+
         assertEquals(2, itemsList1.size());
+
+        Integer expectedQuantity = 5;
+
+        Integer inventory1 = inventoryDto.get("abcdefgh").getQuantity();
+        Integer inventory2 = inventoryDto.get("abcdefg1").getQuantity();
+
+        assertEquals(expectedQuantity, inventory1);
+        assertEquals(expectedQuantity, inventory2);
     }
 
     @Test
-    public void testDuplicateProductAddition(){
-        
+    public void testDuplicateProductAddition() {
+
         testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
         testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
 
-        
+
         List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
-        
+
         itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
         itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
 
-        try{
-            dto.add(itemsList);
-        }catch(ApiException e){
+        try {
+            OrderForm orderForm = new OrderForm();
+            orderForm.setOrderItems(itemsList);
+
+            dto.add(orderForm);
+        } catch (ApiException e) {
             return;
         }
 
@@ -72,19 +90,22 @@ public class OrderDtoTest extends AbstractUnitTest{
 
     }
 
-    @Test 
-    public void testBarCodeNotExists(){
-        
+    @Test
+    public void testBarCodeNotExists() {
+
         testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
 
         List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
-        
+
         itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
         itemsList.add(testUtil.getItemsForm("abcdefg1", 5, 15.00));
 
-        try{
-            dto.add(itemsList);
-        }catch(ApiException e){
+        try {
+            OrderForm orderForm = new OrderForm();
+            orderForm.setOrderItems(itemsList);
+
+            dto.add(orderForm);
+        } catch (ApiException e) {
             return;
         }
 
@@ -93,19 +114,22 @@ public class OrderDtoTest extends AbstractUnitTest{
 
 
     @Test
-    public void testQuantityNotAvailable(){
-        
+    public void testQuantityNotAvailable() {
+
         testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
         testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
 
         List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
-        
+
         itemsList.add(testUtil.getItemsForm("abcdefgh", 15, 15.00));
         itemsList.add(testUtil.getItemsForm("abcdefg1", 5, 15.00));
 
-        try{
-            dto.add(itemsList);
-        }catch(ApiException e){
+        try {
+            OrderForm orderForm = new OrderForm();
+            orderForm.setOrderItems(itemsList);
+
+            dto.add(orderForm);
+        } catch (ApiException e) {
             return;
         }
 
@@ -113,85 +137,92 @@ public class OrderDtoTest extends AbstractUnitTest{
     }
 
     @Test
-    public void testGenerateInvoice() throws ApiException{
-            
-            testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
-            testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
-    
-            List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
-            
-            itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
-            itemsList.add(testUtil.getItemsForm("abcdefg1", 5, 15.00));
-    
-            dto.add(itemsList);
-            
-            SelectData<OrderData> orderList = dto.getAll(0, 5, 1, testUtil.empty);
+    public void testGenerateInvoice() throws ApiException {
 
-            String base64 = null;
+        testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
+        testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
 
+        List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
 
-            try{
-                base64 = dto.generateInvoice(orderList.getData().get(0).getId());
-            }catch(Exception e){
-                
-            }
-            assertEquals(true, Objects.nonNull(base64));
+        itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
+        itemsList.add(testUtil.getItemsForm("abcdefg1", 5, 15.00));
+
+        OrderForm orderForm = new OrderForm();
+        orderForm.setOrderItems(itemsList);
+
+        dto.add(orderForm);
+
+        String base64 = null;
+
+        SelectData<OrderData> orderList = dto.getAll(0, 5, 1, null);
+
+        try {
+            base64 = dto.generateInvoice(orderList.getData().get(0).getId());
+        } catch (Exception e) {
+
+        }
+
+        assertEquals(true, Objects.nonNull(base64));
 
     }
 
     @Test
-    public void testGetById() throws ApiException{
-            
-            testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
-            testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
-    
-            List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
-            
-            itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
-            itemsList.add(testUtil.getItemsForm("abcdefg1", 5, 15.00));
-        
-            try{
-                dto.add(itemsList);
-            }catch(ApiException e){
-                fail();
-            }
-            
-            SelectData<OrderData> oData= dto.getAll(0, 5, 1, testUtil.empty);
+    public void testGetById() throws ApiException {
 
-            Integer orderId = oData.getData().get(0).getId();
+        testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
+        testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
 
-            OrderData orderData = dto.get(orderId);
-    
-            assertEquals(orderId, orderData.getId());
+        List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
+
+        itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
+        itemsList.add(testUtil.getItemsForm("abcdefg1", 5, 15.00));
+
+        try {
+            OrderForm orderForm = new OrderForm();
+            orderForm.setOrderItems(itemsList);
+
+            dto.add(orderForm);
+        } catch (ApiException e) {
+            fail();
+        }
+
+        SelectData<OrderData> oData = dto.getAll(0, 5, 1, null);
+
+        Integer orderId = oData.getData().get(0).getId();
+
+        OrderData orderData = dto.get(orderId);
+
+        assertEquals(orderId, orderData.getId());
     }
 
     @Test
-    public void testSearchByValue(){
-            
-            testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
-            testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
-    
-            List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
-            
-            itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
-            itemsList.add(testUtil.getItemsForm("abcdefg1", 5, 15.00));
-        
-            try{
-                dto.add(itemsList);
-            }catch(ApiException e){
-                fail();
-            }
-    
-            SelectData<OrderData> oData= dto.getAll(0, 5, 1, testUtil.empty);
-    
-            Integer orderId = oData.getData().get(0).getId();
-    
-            SelectData<OrderData> orderData = dto.getAll(0, 5, 1, Optional.of(orderId.toString()));
-    
-            assertEquals(1, orderData.getData().size());
+    public void testSearchByValue() {
+
+        testUtil.addBrandProductAndInventory("b1", "c1", "abcdefgh", "n1", 10.00, 10);
+        testUtil.addBrandProductAndInventory("b2", "c2", "abcdefg1", "n1", 10.00, 10);
+
+        List<OrderItemsForm> itemsList = new ArrayList<OrderItemsForm>();
+
+        itemsList.add(testUtil.getItemsForm("abcdefgh", 5, 15.00));
+        itemsList.add(testUtil.getItemsForm("abcdefg1", 5, 15.00));
+
+        try {
+            OrderForm orderForm = new OrderForm();
+            orderForm.setOrderItems(itemsList);
+
+            dto.add(orderForm);
+        } catch (ApiException e) {
+            fail();
+        }
+
+        SelectData<OrderData> oData = dto.getAll(0, 5, 1, null);
+
+        Integer orderId = oData.getData().get(0).getId();
+
+        SelectData<OrderData> orderData = dto.getAll(0, 5, 1, orderId.toString());
+
+        assertEquals(1, orderData.getData().size());
     }
 
-
-   
 
 }
