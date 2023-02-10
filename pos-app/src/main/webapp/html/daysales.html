@@ -4,7 +4,7 @@
 
 <head th:replace="snippets.html :: name_head"></head>
 
-<body th:if="${info.getRole() == 'supervisor'}">
+<body th:if="${info.getRole() == 'SUPERVISOR'}">
 
 <nav th:replace="snippets.html :: name_app_navbar"></nav>
 
@@ -129,7 +129,7 @@
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	
-		var user = /*[[${info.getRole()}]]*/ 'operator';
+		var user = /*[[${info.getRole()}]]*/ 'OPERATOR';
 	
 	/*]]>*/
 </script>

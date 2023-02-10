@@ -6,7 +6,6 @@ import java.util.Objects;
 
 import lombok.Generated;
 
-@Generated
 public class IOUtil {
 
 	public static void closeQuietly(Closeable c) {

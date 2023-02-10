@@ -1,30 +1,25 @@
 package com.increff.pos.controller;
 
-import java.beans.PropertyEditorSupport;
-import java.text.Format;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.validation.ConstraintViolationException;
-
+import com.increff.pos.model.data.MessageData;
+import com.increff.pos.util.ApiException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.RestClientException;
 
-import com.increff.pos.model.data.MessageData;
-import com.increff.pos.service.ApiException;
+import javax.validation.ConstraintViolationException;
+import java.beans.PropertyEditorSupport;
+import java.net.ConnectException;
+import java.text.Format;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class AppRestControllerAdvice {
@@ -78,6 +73,27 @@ public class AppRestControllerAdvice {
                 return data;
         }
 
+
+        @ExceptionHandler(HttpMessageNotReadableException.class)
+        @ResponseStatus(HttpStatus.BAD_REQUEST)
+        public MessageData handleException(HttpMessageNotReadableException e) {
+                MessageData data = new MessageData();
+                data.setMessage("Invalid inputs. Could not parse the request body.");
+                return data;
+        }
+
+        @ExceptionHandler(RestClientException.class)
+        @ResponseStatus(HttpStatus.BAD_GATEWAY)
+        public MessageData handleException(RestClientException e) {
+                MessageData data = new MessageData();
+                String errorMessage = e.getMessage();
+                int startIndex = errorMessage.indexOf("\"");
+                int endIndex = errorMessage.lastIndexOf("\"");
+                String url = errorMessage.substring(startIndex + 1, endIndex);
+
+                data.setMessage("Could not connect to the "+ url.split("/")[3].toUpperCase() +" server. Please try again later.");
+                return data;
+        }
 
         private static class Editor<T> extends PropertyEditorSupport {
 

@@ -15,7 +15,7 @@ import com.increff.pos.dto.ProductDto;
 import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.ProductForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -36,28 +36,28 @@ public class ProductApiController {
 
     @ApiOperation(value = "Adds products in bulk")
     @RequestMapping(path = "/bulk-add", method = RequestMethod.POST)
-    public void bulkAdddd(@RequestBody List<ProductForm> productFormList) throws ApiException {
+    public void bulkAdd(@RequestBody List<ProductForm> productFormList) throws ApiException {
         dto.bulkAdd(productFormList);
     }
 
     @ApiOperation(value = "Gets product by id")
-    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/{productId}", method = RequestMethod.GET)
     public ProductData get(@PathVariable Integer productId) throws ApiException {
         return dto.get(productId);
     }
 
     @ApiOperation(value = "Gets all products")
     @RequestMapping(path = "", method = RequestMethod.GET)
-    public SelectData<ProductData> getAll(@RequestParam(defaultValue = "1") Integer draw,
-            @RequestParam(defaultValue = "0") Integer start, @RequestParam(defaultValue = "20") Integer length,
-            @RequestParam(value = "search[value]") Optional<String> searchValue) throws ApiException {
+    public SelectData<ProductData> getAll(@RequestParam Integer draw,
+            @RequestParam Integer start, @RequestParam Integer length,
+            @RequestParam(value = "search[value]") String searchValue) throws ApiException {
         return dto.getAll(start, length, draw, searchValue);
     }
 
     @ApiOperation(value = "Update product by id")
-    @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-    public void update(@PathVariable Integer productId, @RequestBody ProductForm productForm) throws ApiException {
-        dto.update(productId, productForm);
+    @RequestMapping(path = "", method = RequestMethod.PUT)
+    public void update(@RequestBody ProductForm productForm) throws ApiException {
+        dto.update(productForm);
     }
 
 }

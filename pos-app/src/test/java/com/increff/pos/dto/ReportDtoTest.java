@@ -16,8 +16,8 @@ import com.increff.pos.config.AbstractUnitTest;
 import com.increff.pos.config.TestUtil;
 import com.increff.pos.model.form.SalesReportForm;
 import com.increff.pos.pojo.InventoryPojo;
-import com.increff.pos.pojo.OrderItemsPojo;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.pojo.OrderItemPojo;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.util.DateTimeProvider;
 
 public class ReportDtoTest extends AbstractUnitTest{
@@ -31,7 +31,7 @@ public class ReportDtoTest extends AbstractUnitTest{
     //brand report tests
 
     @Test
-    public void testGetBrandReport(){
+    public void testGetBrandReport() throws ApiException {
         
         //add brand
         testUtil.addBrand("brand1", "category1");
@@ -131,7 +131,7 @@ public class ReportDtoTest extends AbstractUnitTest{
         
         DateTimeProvider.getInstance().setTime(customAppTime.plusDays(2));
 
-        List<OrderItemsPojo> itemsList = dto.getOrderItems(DateTimeProvider.getInstance().timeNow().minusDays(2), DateTimeProvider.getInstance().timeNow().plusDays(1), null);
+        List<OrderItemPojo> itemsList = dto.getOrderItems(DateTimeProvider.getInstance().timeNow().minusDays(2), DateTimeProvider.getInstance().timeNow().plusDays(1), null);
         assertEquals(2, itemsList.size());
 
         itemsList = dto.getOrderItems(DateTimeProvider.getInstance().timeNow().minusDays(3), DateTimeProvider.getInstance().timeNow().plusDays(1), null);

@@ -6,6 +6,7 @@ import com.increff.pos.model.data.SalesReportData;
 import com.increff.pos.model.form.SalesReportForm;
 import com.increff.pos.pojo.*;
 import com.increff.pos.service.*;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.util.ClientWrapper;
 import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.ValidateUtil;
@@ -57,7 +58,7 @@ public class ReportDto {
         return invReportFromMap(resultMap, brandCatIds);
     }
 
-    private String invReportFromMap(HashMap<Integer, Integer> resultMap, List<Integer> brandCatIds) {
+    private String invReportFromMap(HashMap<Integer, Integer> resultMap, List<Integer> brandCatIds) throws ApiException {
         List<InventoryReportData> result = new ArrayList<InventoryReportData>();
 
         List<BrandPojo> brandList = bService.getInColumns(singletonList("id"), singletonList(brandCatIds));
@@ -75,7 +76,7 @@ public class ReportDto {
             result.add(res);
         }
         
-        return clientWrapper.pdfClient.getPdfBase64(result, "/api/reports/inventory");
+        return clientWrapper.getPdfClient().getPdfBase64(result, "inventoryReport");
     }
 
     protected HashMap<Integer, Integer> getProductIdToBrandCatMap(List<InventoryPojo> iList) throws ApiException {
@@ -155,7 +156,7 @@ public class ReportDto {
 
         List<Integer> prodIds = prodList.stream().map(ProductPojo::getId).collect(Collectors.toList());
 
-        List<OrderItemsPojo> itemsList = getOrderItems(sDate, eDate, prodIds);
+        List<OrderItemPojo> itemsList = getOrderItems(sDate, eDate, prodIds);
 
         return generateSalesReport(itemsList, brandList, prodList);
 
@@ -163,9 +164,9 @@ public class ReportDto {
 
     private String generateSalesReportOnlyDates(ZonedDateTime sDate, ZonedDateTime eDate) throws ApiException {
 
-        List<OrderItemsPojo> itemsList = getOrderItems(sDate, eDate, null);
+        List<OrderItemPojo> itemsList = getOrderItems(sDate, eDate, null);
 
-        List<Integer> prodIds = itemsList.stream().map(OrderItemsPojo::getProductId).distinct().collect(Collectors.toList());
+        List<Integer> prodIds = itemsList.stream().map(OrderItemPojo::getProductId).distinct().collect(Collectors.toList());
         
         List<ProductPojo> prodList;
         try {
@@ -181,7 +182,7 @@ public class ReportDto {
         return generateSalesReport(itemsList, brandList, prodList);
     }
 
-    protected List<OrderItemsPojo> getOrderItems(ZonedDateTime sDate, ZonedDateTime eDate, List<Integer> prodIds) {
+    protected List<OrderItemPojo> getOrderItems(ZonedDateTime sDate, ZonedDateTime eDate, List<Integer> prodIds) {
         List<OrderPojo> orderList = oService.getInDateRange(sDate, eDate);
 
         List<Integer> orderIds = orderList.stream().map(OrderPojo::getId).collect(Collectors.toList());
@@ -196,8 +197,8 @@ public class ReportDto {
 
     }
 
-    private String generateSalesReport(List<OrderItemsPojo> itemlsList, List<BrandPojo> brandList,
-            List<ProductPojo> prodList) {
+    private String generateSalesReport(List<OrderItemPojo> itemlsList, List<BrandPojo> brandList,
+                                       List<ProductPojo> prodList) throws ApiException {
 
         HashMap<Integer, Integer> prodIdToBrandCatId = (HashMap<Integer, Integer>) prodList.stream()
                 .collect(Collectors.toMap(ProductPojo::getId, ProductPojo::getBrandCat));
@@ -211,7 +212,7 @@ public class ReportDto {
         HashMap<Integer, Integer> brandCatToQuantity = (HashMap<Integer, Integer>) brandList.stream()
                 .collect(Collectors.toMap(BrandPojo::getId, e -> 0));
 
-        for (OrderItemsPojo item : itemlsList) {
+        for (OrderItemPojo item : itemlsList) {
             Integer brandCatId = prodIdToBrandCatId.get(item.getProductId());
             Integer newQuantity = brandCatToQuantity.get(brandCatId) + item.getQuantity();
             Double newRevenue = brandCatToRevenue.get(brandCatId) + (item.getQuantity()*item.getSellingPrice());
@@ -233,17 +234,17 @@ public class ReportDto {
             result.add(data);
         }
 
-        return clientWrapper.pdfClient.getPdfBase64(result, "/api/reports/sales");
+        return clientWrapper.getPdfClient().getPdfBase64(result, "salesReport");
     }
 
     //functions for brand report
 
-    public String getBrandReport() {
+    public String getBrandReport() throws ApiException {
 
         Integer totalBrands = bService.getTotalEntries();
-        List<BrandData> brandList = bDto.getAll(0, totalBrands, 1, Optional.empty()).getData();
+        List<BrandData> brandList = bDto.getAll(0, totalBrands, 1, null).getData();
 
-        return clientWrapper.pdfClient.getPdfBase64(brandList, "/api/reports/brands");
+        return clientWrapper.getPdfClient().getPdfBase64(brandList, "brandReport");
     }
 
     

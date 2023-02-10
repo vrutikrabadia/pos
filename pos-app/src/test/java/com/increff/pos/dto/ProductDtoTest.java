@@ -19,7 +19,7 @@ import com.increff.pos.model.data.ProductData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.ProductForm;
 import com.increff.pos.pojo.ProductPojo;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.util.ConvertUtil;
 
 public class ProductDtoTest extends AbstractUnitTest{
@@ -51,7 +51,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         String barcodeNormalised = "1a3t5tq8";
         String nameNormalised = "name1";
 
-        List<ProductData> d = dto.getAll(0,1,1,testUtil.empty).getData();
+        List<ProductData> d = dto.getAll(0,1,1,null).getData();
 
         assertEquals(d.get(0).getBarcode(), barcodeNormalised);
         assertEquals(d.get(0).getBrand(), brand);
@@ -98,9 +98,9 @@ public class ProductDtoTest extends AbstractUnitTest{
         
         dto.add(f1);
 
-        List<ProductData> d = dto.getAll(0,1,1,testUtil.empty).getData();
+        List<ProductData> d = dto.getAll(0,1,1,null).getData();
 
-        String barcode1 = "1a3t5tq7";
+        String barcode1 = "1a3t5tq8";
         String name1 = "name2";
         Double mrp1 = 25.36;
 
@@ -110,9 +110,9 @@ public class ProductDtoTest extends AbstractUnitTest{
         f1.setBarcode(barcode1);
         f1.setMrp(mrp1);
 
-        dto.update(d.get(0).getId(), f1);
+        dto.update(f1);
 
-        d = dto.getAll(0,1,1, testUtil.empty).getData();
+        d = dto.getAll(0,1,1, null).getData();
 
         assertEquals(d.get(0).getName(), name1);
         assertEquals(String.valueOf(d.get(0).getMrp()), String.valueOf(mrp1));
@@ -124,7 +124,7 @@ public class ProductDtoTest extends AbstractUnitTest{
     @Test
     public void testGetById() throws ApiException{
         testUtil.addBrandAndProduct("b1", "c1", "abcdefgh", "p1", 10.00);
-        List<ProductData> d = dto.getAll(0,1,1,testUtil.empty).getData();
+        List<ProductData> d = dto.getAll(0,1,1,null).getData();
         ProductData p = dto.get(d.get(0).getId());
         assertEquals(p.getBarcode(), d.get(0).getBarcode());
     }
@@ -150,7 +150,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         ProductForm form1 = testUtil.getProductForm(barcode1, brand, category, name1, mrp1);
         dto.add(form1);
 
-        List<ProductData> d = dto.getAll(0,10,1,testUtil.empty).getData();
+        List<ProductData> d = dto.getAll(0,10,1,null).getData();
 
 
         assertEquals(d.size(), 2);
@@ -230,7 +230,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         
         dto.add(f1);
 
-        List<ProductData> d = dto.getAll(0,1, 1, testUtil.empty).getData();
+        List<ProductData> d = dto.getAll(0,1, 1, null).getData();
 
         String barcode1 = "1a3t5tq7";
         String name1 = "name2";
@@ -243,7 +243,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         f1.setMrp(mrp1);
 
         try{
-            dto.update(d.get(0).getId(), f1);
+            dto.update(f1);
         }
         catch(ConstraintViolationException e){
             return;
@@ -264,7 +264,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         SelectData<ProductData> list = new SelectData<ProductData>(null, null, null, null);
 
         try{
-            list = dto.getAll(0, 5, 0, Optional.of("1a3"));
+            list = dto.getAll(0, 5, 0, "1a3");
         }
         catch(ApiException e){
             fail();
@@ -273,7 +273,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         assertEquals(1, list.getData().size());
 
         try{
-            list = dto.getAll(0, 5, 0, Optional.of("brand1"));
+            list = dto.getAll(0, 5, 0, "brand1");
         }
         catch(ApiException e){
             fail();
@@ -282,7 +282,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         assertEquals(1, list.getData().size());
 
         try{
-            list = dto.getAll(0, 5, 0, Optional.of("cate"));
+            list = dto.getAll(0, 5, 0, "cate");
         }
         catch(ApiException e){
             fail();
@@ -291,7 +291,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         assertEquals(1, list.getData().size());
 
         try{
-            list = dto.getAll(0, 5, 0, Optional.of("name"));
+            list = dto.getAll(0, 5, 0, "name");
         }
         catch(ApiException e){
             fail();
@@ -300,7 +300,7 @@ public class ProductDtoTest extends AbstractUnitTest{
         assertEquals(1, list.getData().size());
 
         try{
-            list = dto.getAll(0, 5, 0, Optional.of("xyz"));
+            list = dto.getAll(0, 5, 0, "xyz");
         }
         catch(ApiException e){
             fail();
@@ -381,7 +381,7 @@ public class ProductDtoTest extends AbstractUnitTest{
 
         dto.bulkAdd(productList);
 
-        List<ProductData> list = dto.getAll(0, 5, 0, testUtil.empty).getData();
+        List<ProductData> list = dto.getAll(0, 5, 0, null).getData();
 
         assertEquals(2, list.size());
     }

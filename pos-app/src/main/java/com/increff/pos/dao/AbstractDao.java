@@ -30,12 +30,9 @@ public abstract class AbstractDao<T> {
 		cb = em.getCriteriaBuilder();
 	}
 
-	protected <R> R getSingle(TypedQuery<R> query) {
+	// TODO: AFTER VERIFICATION: throw exception if more than one entry
+	protected <R> R getSingle(TypedQuery<R> query){
 		return query.getResultList().stream().findFirst().orElse(null);
-	}
-
-	protected EntityManager em() {
-		return em;
 	}
 
 	public T insert(T p) {
@@ -67,9 +64,8 @@ public abstract class AbstractDao<T> {
 		return query.getResultList();
 	}
 
-	public Integer selectTotalEntries() {
+	public Integer countTotalEntries()  {
 
-		
 		CriteriaQuery<Long> cqLongClass = cb.createQuery(Long.class);
 		cqLongClass.select(cb.count(cqLongClass.from(pojoClass)));
 		TypedQuery<Long> query = em.createQuery(cqLongClass);
@@ -112,8 +108,9 @@ public abstract class AbstractDao<T> {
 		return getSingle(query);
 	}
 
+	// TODO: AFTER VERIFICATION: validate for empty list in service
 	public <R> List<T> selectInColumns(List<String> columnList, List<List<R>> valueList) {
-		
+
 		CriteriaQuery<T> cq = cb.createQuery(pojoClass);
 		Root<T> root = cq.from(pojoClass);
 

@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import javax.transaction.Transactional;
 
+import com.increff.pos.util.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,25 +24,18 @@ public class InventoryService {
         dao.insert(inventoryPojo);
     }
 
-    public void bulkAdd(List<InventoryPojo> inventoryPojoList){
+    public void bulkAdd(List<InventoryPojo> inventoryPojoList) throws ApiException {
         for(InventoryPojo inventory: inventoryPojoList){
-            try{
-                getCheck(inventory.getProductId());
-            }
-            catch(ApiException apiException){
+            InventoryPojo check = get(inventory.getProductId());
+            if(Objects.isNull(check)){
                 add(inventory);
                 continue;
             }
-
-            try{
-                increaseQuantity(inventory.getProductId(), inventory.getQuantity());
-            }
-            catch(ApiException e){
-            }
+            increaseQuantity(inventory.getProductId(), inventory.getQuantity());
         }
     }
 
-    public InventoryPojo get(Integer productId){
+    public InventoryPojo get(Integer productId) {
         return dao.selectByColumn("productId", productId);
     }
 
@@ -52,8 +46,7 @@ public class InventoryService {
         }
         return inventoryPojo;
     }
-    
-     
+
     public List<InventoryPojo> getAllPaginated(Integer offset, Integer pageSize){
         return dao.selectAllPaginated(offset, pageSize);
     }
@@ -68,6 +61,7 @@ public class InventoryService {
     }
 
 
+    //  TODO: throw id in exception for all methods below this
     public void checkInventory(Integer productId, Integer quantity) throws ApiException{
         InventoryPojo inventory = getCheck(productId);
         if(inventory.getQuantity() < quantity){
@@ -78,7 +72,7 @@ public class InventoryService {
     public void reduceQuantity(Integer productId, Integer quantity) throws ApiException{
         InventoryPojo inventoryPojo = getCheck(productId);
         if(inventoryPojo.getQuantity() < quantity){
-            throw new ApiException("Insufficienf Inventory");
+            throw new ApiException("Insufficient Inventory");
         }
         inventoryPojo.setQuantity(inventoryPojo.getQuantity()-quantity);
     } 
@@ -89,7 +83,7 @@ public class InventoryService {
         inventoryPojo.setQuantity(inventoryPojo.getQuantity()+quantity);
     } 
 
-    public Integer getTotalEntries(){
-        return dao.selectTotalEntries();
+    public Integer getTotalEntries() {
+        return dao.countTotalEntries();
     }
 }

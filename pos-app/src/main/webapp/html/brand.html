@@ -17,7 +17,7 @@
 	<div class="col-4">
 		<h3>Brands</h3>
 	</div>
-	 <div class="col-8 .icons-form" th:if="${info.getRole() == 'supervisor'}" >
+	 <div class="col-8 .icons-form" th:if="${info.getRole() == 'SUPERVISOR'}" >
 		<div class="form-inline" style="justify-content: flex-end;">
 			
 			  <button type="button" class="btn " title="add new brand/category" id="add-brand-modal-toggle">Add</button>
@@ -43,7 +43,7 @@
 	      <th scope="col">S.No.</th>
 	      <th scope="col">Brand</th>
 	      <th scope="col">Category</th>
-	      <th scope="col" th:if="${info.getRole() == 'supervisor'}">Actions</th>
+	      <th scope="col" th:if="${info.getRole() == 'SUPERVISOR'}">Actions</th>
 	    </tr>
 	  </thead>
 	  <tbody>
@@ -51,7 +51,7 @@
 	      <td>1</td>
 	      <td>Dabur</td>
 	      <td>Health</td>
-	      <td th:if="${info.getRole() == 'supervisor'}">Edit | Delete</td>
+	      <td th:if="${info.getRole() == 'SUPERVISOR'}">Edit | Delete</td>
 	    </tr>
 	  </tbody>
 	</table>
@@ -60,7 +60,7 @@
 </div>
 
 <!-- brand Add Modal -->
-<div class="modal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" id="add-brand-modal" th:if="${info.getRole() == 'supervisor'}">
+<div class="modal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" id="add-brand-modal" th:if="${info.getRole() == 'SUPERVISOR'}">
 	<div class="modal-dialog" role="document">
 	  <div class="modal-content">
 		<div class="modal-header">
@@ -94,7 +94,7 @@
   </div>
 
 <!-- brand Edit Modal -->
-<div class="modal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" id="edit-brand-modal" th:if="${info.getRole() == 'supervisor'}">
+<div class="modal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" id="edit-brand-modal" th:if="${info.getRole() == 'SUPERVISOR'}">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -130,7 +130,7 @@
 
 
 <!-- brand Upload Modal -->
-<div class="modal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" id="upload-brand-modal" th:if="${info.getRole() == 'supervisor'}">
+<div class="modal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" id="upload-brand-modal" th:if="${info.getRole() == 'SUPERVISOR'}">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       
@@ -167,12 +167,12 @@
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	
-		var user = /*[[${info.getRole()}]]*/ 'operator';
+		var user = /*[[${info.getRole()}]]*/ 'OPERATOR';
 	
 	/*]]>*/
 </script>
 
-<script th:src="@{/static/brand.js}"/></script>
+<script th:src="@{/static/brand.js}"></script>
 
 </body>	
 

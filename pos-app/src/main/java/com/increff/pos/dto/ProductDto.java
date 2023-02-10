@@ -6,7 +6,7 @@ import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.ProductForm;
 import com.increff.pos.pojo.BrandPojo;
 import com.increff.pos.pojo.ProductPojo;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 import com.increff.pos.service.BrandService;
 import com.increff.pos.service.ProductService;
 import com.increff.pos.util.ConvertUtil;
@@ -41,8 +41,8 @@ public class ProductDto {
         ProductPojo productPojo = ConvertUtil.objectMapper(productForm, ProductPojo.class);
         productPojo.setBrandCat(brandPojo.getId());
 
-
-        if (service.checkBarcode(0, productPojo.getBarcode())) {
+        ProductPojo check = service.getByBarcode(productPojo.getBarcode());
+        if (Objects.nonNull(check)) {
             throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
         }
 
@@ -137,16 +137,16 @@ public class ProductDto {
         return productData;
     }
 
-    public SelectData<ProductData> getAll(Integer start, Integer length, Integer draw, Optional<String> searchValue) throws ApiException {
+    public SelectData<ProductData> getAll(Integer start, Integer length, Integer draw, String searchValue) throws ApiException {
         List<ProductPojo> productPojoList = new ArrayList<ProductPojo>();
         List<ProductData> productDataList = new ArrayList<ProductData>();
 
-        if(searchValue.isPresent() && !searchValue.get().isEmpty()){
+        if(Objects.nonNull(searchValue)&&!searchValue.isEmpty()){
             Integer totalBrands = bService.getTotalEntries();
             
-            productPojoList = service.getByQueryString(start, length, searchValue.get());
+            productPojoList = service.getByQueryString(start, length, searchValue);
             
-            List<BrandPojo> brandPojoList = bService.searchQueryString(0, totalBrands, StringUtil.toLowerCase(searchValue.get()));
+            List<BrandPojo> brandPojoList = bService.searchQueryString(0, totalBrands, StringUtil.toLowerCase(searchValue));
 
             for(BrandPojo brandPojo: brandPojoList){
                 productPojoList.addAll(service.getByBrandCatId(brandPojo.getId()));
@@ -171,17 +171,15 @@ public class ProductDto {
         return new SelectData<ProductData>(productDataList, draw, totalProducts, totalProducts);
     }
 
-    public void update(Integer productId, ProductForm productForm) throws ApiException {
+    public void update(ProductForm productForm) throws ApiException {
         StringUtil.normalise(productForm, ProductForm.class);
         ValidateUtil.validateForms(productForm);
 
         ProductPojo productPojo = ConvertUtil.objectMapper(productForm, ProductPojo.class);
 
-        if (service.checkBarcode(productId, productPojo.getBarcode())) {
-            throw new ApiException("DUPLICATE BARCODE: Product with barcode already exists.");
-        }
-
-        service.update(productId, productPojo);
+        ProductPojo check = service.getCheckByBarcode(productPojo.getBarcode());
+        productPojo.setId(check.getId());
+        service.update(productPojo);
     }
 
 }

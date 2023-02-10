@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import javax.transaction.Transactional;
 
+import com.increff.pos.util.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class BrandService {
         }
     }
 
-    public BrandPojo getById(Integer bCatId) {
+    public BrandPojo getById(Integer bCatId) throws ApiException {
         return dao.selectByColumn("id", bCatId);
 
     }
@@ -55,7 +56,7 @@ public class BrandService {
 
 
     public Integer getTotalEntries() {
-        return dao.selectTotalEntries();
+        return dao.countTotalEntries();
     }
 
     public List<BrandPojo> searchQueryString(Integer pageNo, Integer pageSize,String queryString){
@@ -63,7 +64,7 @@ public class BrandService {
         return dao.selectByQueryString(pageNo, pageSize,queryString, columnList );
     }
 
-    public <T> List<BrandPojo> getInColumns(List<String> columnList,List<List<T>> valueList){
+    public <T> List<BrandPojo> getInColumns(List<String> columnList,List<List<T>> valueList) {
         return dao.selectInColumns(columnList, valueList);
     }
 

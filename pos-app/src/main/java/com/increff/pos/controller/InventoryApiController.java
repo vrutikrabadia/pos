@@ -15,7 +15,7 @@ import com.increff.pos.dto.InventoryDto;
 import com.increff.pos.model.data.InventoryData;
 import com.increff.pos.model.data.SelectData;
 import com.increff.pos.model.form.InventoryForm;
-import com.increff.pos.service.ApiException;
+import com.increff.pos.util.ApiException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,7 +49,7 @@ public class InventoryApiController {
 
     @ApiOperation(value = "Get inventory of all products")
     @RequestMapping(path="", method = RequestMethod.GET)
-    public SelectData<InventoryData> getAll(@RequestParam Integer draw,@RequestParam Integer start, @RequestParam Integer length, @RequestParam(value="search[value]") Optional<String> searchValue) throws ApiException{
+    public SelectData<InventoryData> getAll(@RequestParam Integer draw,@RequestParam Integer start, @RequestParam Integer length, @RequestParam(value="search[value]") String searchValue) throws ApiException{
         return dto.getAll(start, length, draw, searchValue);
     }
 

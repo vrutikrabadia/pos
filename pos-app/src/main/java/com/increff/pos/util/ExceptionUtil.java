@@ -10,7 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
-import com.increff.pos.service.ApiException;
 
 /**
  * Used to handle the exceptions being thrown in the applications.

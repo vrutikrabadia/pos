@@ -34,7 +34,7 @@ function addProduct(event){
 }
 
 function getBrandList(){
-	var url = getBrandUrl()+ "?draw=1&start=0&length=100";
+	var url = getBrandUrl()+ "?draw=1&start=0&length=100&search[value]=";
 	$.ajax({
 	   url: url,
 	   type: 'GET',
@@ -72,7 +72,7 @@ function updateProduct(event){
 	
 	//Get the ID
 	var id = $("#product-edit-form input[name=id]").val();	
-	var url = getProductUrl() + "/" + id;
+	var url = getProductUrl();
 
 	//Set the values to update
 	var $form = $("#product-edit-form");
@@ -306,7 +306,7 @@ function getConditionalColumns(){
 			"render":function(o){return parseFloat(o.mrp).toFixed(2)} 
 		},
 	];
-	if(user == 'supervisor'){
+	if(user == 'SUPERVISOR'){
 		columns.push(
 			{
 				"data":null,

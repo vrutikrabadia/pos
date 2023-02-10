@@ -16,14 +16,12 @@ import lombok.Setter;
 @Table(name = "orders")
 @Getter
 @Setter
-public class OrderPojo extends AbstractPojo implements Serializable{
+public class OrderPojo extends AbstractPojo {
     
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(nullable=false)
+
     private Integer id;
     
-    
-    @Column(nullable=false)
-    private boolean editable;
+
 }

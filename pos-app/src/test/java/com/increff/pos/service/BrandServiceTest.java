@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 
+import com.increff.pos.util.ApiException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

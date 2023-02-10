@@ -14,15 +14,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
+// TODO: make it plural
 @Table( name = "brand",
         uniqueConstraints = {@UniqueConstraint(name="unique_brand_category", columnNames = {"brand", "category"})})
 @Getter
 @Setter
-public class BrandPojo extends AbstractPojo implements Serializable{
+public class BrandPojo extends AbstractPojo {
     
     @Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(nullable=false)
 	private Integer id;
     
     @Column(nullable=false)

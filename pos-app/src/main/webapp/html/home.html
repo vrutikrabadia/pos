@@ -73,7 +73,7 @@
 						</div>
 					</a>
 				</div>
-				<div class="col-lg-6 col-xxl-4 mb-5" th:if="${info.getRole() == 'supervisor'}">
+				<div class="col-lg-6 col-xxl-4 mb-5" th:if="${info.getRole() == 'SUPERVISOR'}">
 					<a th:href="@{/ui/day-sales}" title="Day sales">
 						<div class="card bg-light border-0 h-100">
 							<div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
@@ -83,7 +83,7 @@
 						</div>
 					</a>
 				</div>
-				<div class="col-lg-6 col-xxl-4 mb-5" th:if="${info.getRole() == 'supervisor'}">
+				<div class="col-lg-6 col-xxl-4 mb-5" th:if="${info.getRole() == 'SUPERVISOR'}">
 					
 					<a th:href="@{/ui/admin}" title="User management">
 						<div class="card bg-light border-0 h-100">
@@ -102,7 +102,7 @@
 	<script th:inline="javascript">
 		/*<![CDATA[*/
 		
-			var user = /*[[${info.getRole()}]]*/ 'operator';
+			var user = /*[[${info.getRole()}]]*/ 'OPERATOR';
 		
 		/*]]>*/
 	</script>

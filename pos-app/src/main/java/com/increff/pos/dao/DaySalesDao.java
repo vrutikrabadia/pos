@@ -11,33 +11,33 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.stereotype.Repository;
 
-import com.increff.pos.pojo.PosDaySales;
+import com.increff.pos.pojo.DaySalesPojo;
 
 @Repository
-public class DaySalesDao extends AbstractDao<PosDaySales>{
+public class DaySalesDao extends AbstractDao<DaySalesPojo>{
 
     public DaySalesDao() {
-        super(PosDaySales.class);
+        super(DaySalesPojo.class);
     }
     
-    public List<PosDaySales> selectInDateRange(ZonedDateTime startDate, ZonedDateTime endDate, Integer offset, Integer pageSize){
+    public List<DaySalesPojo> selectInDateRange(ZonedDateTime startDate, ZonedDateTime endDate, Integer offset, Integer pageSize){
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
-        CriteriaQuery<PosDaySales> cq = cb.createQuery(PosDaySales.class);
-        Root<PosDaySales> root = cq.from(PosDaySales.class);
+        CriteriaQuery<DaySalesPojo> cq = cb.createQuery(DaySalesPojo.class);
+        Root<DaySalesPojo> root = cq.from(DaySalesPojo.class);
 
         Predicate datePredicate = cb.between(root.get("date"), startDate, endDate);
         cq.where(datePredicate);
-        TypedQuery<PosDaySales> query = em.createQuery(cq);
+        TypedQuery<DaySalesPojo> query = em.createQuery(cq);
 
         return query.setFirstResult(offset).setMaxResults(pageSize).getResultList();
     }
 
 
-    public Integer selectTotalEntriesInDateRange(ZonedDateTime startDate, ZonedDateTime endDate){
+    public Integer countTotalEntriesInDateRange(ZonedDateTime startDate, ZonedDateTime endDate){
 		CriteriaBuilder cb = em.getCriteriaBuilder();
     	CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        Root<PosDaySales> root = cq.from(PosDaySales.class);
+        Root<DaySalesPojo> root = cq.from(DaySalesPojo.class);
     	cq.select(cb.count(root));
     	Predicate datePredicate = cb.between(root.get("date"), startDate, endDate);
         cq.where(datePredicate);

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.increff.pos.config.AbstractUnitTest;
 import com.increff.pos.config.TestUtil;
-import com.increff.pos.pojo.PosDaySales;
+import com.increff.pos.pojo.DaySalesPojo;
 import com.increff.pos.util.DateTimeProvider;
 
 public class DaySalesServiceTest extends AbstractUnitTest {
@@ -23,13 +23,13 @@ public class DaySalesServiceTest extends AbstractUnitTest {
 
     @Test
     public void testAddAndGetNew() {
-        PosDaySales pojo = testUtil.getDaySalesPojo(5, 5, 25.0);
+        DaySalesPojo pojo = testUtil.getDaySalesPojo(5, 5, 25.0);
         service.add(pojo);
 
-        List<PosDaySales> list = service.getAllPaginated(0, 5);
+        List<DaySalesPojo> list = service.getAllPaginated(0, 5);
 
         assertEquals(1, list.size());
-        assertEquals(Integer.valueOf(5), list.get(0).getInvoicedItemsCount());
+        assertEquals(Integer.valueOf(5), list.get(0).getInvoicedItemCount());
         assertEquals(Integer.valueOf(5), list.get(0).getInvoicedOrderCount());
         assertEquals(Double.valueOf(25.0), list.get(0).getTotalRevenue());
 
@@ -37,15 +37,15 @@ public class DaySalesServiceTest extends AbstractUnitTest {
 
     @Test
     public void testUpdate() {
-        PosDaySales pojo = testUtil.getDaySalesPojo(5, 5, 25.0);
+        DaySalesPojo pojo = testUtil.getDaySalesPojo(5, 5, 25.0);
         service.add(pojo);
 
-        PosDaySales pojo1 = testUtil.getDaySalesPojo(2, 1, 46.0);
+        DaySalesPojo pojo1 = testUtil.getDaySalesPojo(2, 1, 46.0);
         service.add(pojo1);
-        List<PosDaySales> list = service.getAllPaginated(0, 5);
+        List<DaySalesPojo> list = service.getAllPaginated(0, 5);
 
         assertEquals(1, list.size());
-        assertEquals(Integer.valueOf(2), list.get(0).getInvoicedItemsCount());
+        assertEquals(Integer.valueOf(2), list.get(0).getInvoicedItemCount());
         assertEquals(Integer.valueOf(1), list.get(0).getInvoicedOrderCount());
         assertEquals(Double.valueOf(46.0), list.get(0).getTotalRevenue());
     }
@@ -58,11 +58,11 @@ public class DaySalesServiceTest extends AbstractUnitTest {
         for (int i = 1; i <= 5; i++) {
             DateTimeProvider.getInstance().setTime(customAppTime.plusDays(i));
 
-            PosDaySales pojo = testUtil.getDaySalesPojo(i, i, i * 5.0);
+            DaySalesPojo pojo = testUtil.getDaySalesPojo(i, i, i * 5.0);
             service.add(pojo);
         }
 
-        List<PosDaySales> list = service.getAllPaginated(0, 2);
+        List<DaySalesPojo> list = service.getAllPaginated(0, 2);
 
         assertEquals(2, list.size());
     }
@@ -75,13 +75,13 @@ public class DaySalesServiceTest extends AbstractUnitTest {
         for (int i = 1; i <= 5; i++) {
             DateTimeProvider.getInstance().setTime(customAppTime.plusDays(i));
 
-            PosDaySales pojo = testUtil.getDaySalesPojo(i, i, i * 5.0);
+            DaySalesPojo pojo = testUtil.getDaySalesPojo(i, i, i * 5.0);
             service.add(pojo);
         }
 
-        PosDaySales pojo = service.getByDate(customAppTime.plusDays(3));
+        DaySalesPojo pojo = service.getByDate(customAppTime.plusDays(3));
 
-        assertEquals(Integer.valueOf(3), pojo.getInvoicedItemsCount());
+        assertEquals(Integer.valueOf(3), pojo.getInvoicedItemCount());
         assertEquals(Integer.valueOf(3), pojo.getInvoicedOrderCount());
         assertEquals(Double.valueOf(15.0), pojo.getTotalRevenue());
     }
@@ -94,11 +94,11 @@ public class DaySalesServiceTest extends AbstractUnitTest {
         for (int i = 1; i <= 5; i++) {
             DateTimeProvider.getInstance().setTime(customAppTime.plusDays(i));
 
-            PosDaySales pojo = testUtil.getDaySalesPojo(i, i, i * 5.0);
+            DaySalesPojo pojo = testUtil.getDaySalesPojo(i, i, i * 5.0);
             service.add(pojo);
         }
 
-        List<PosDaySales> pojo = service.getByDateRange(customAppTime.plusDays(2), customAppTime.plusDays(4), 0, 5);
+        List<DaySalesPojo> pojo = service.getByDateRange(customAppTime.plusDays(2), customAppTime.plusDays(4), 0, 5);
 
         assertEquals(3, pojo.size());
     }
@@ -110,12 +110,12 @@ public class DaySalesServiceTest extends AbstractUnitTest {
 
         for (int i = 1; i <= 5; i++) {
             DateTimeProvider.getInstance().setTime(customAppTime.plusDays(i));
-            PosDaySales pojo = testUtil.getDaySalesPojo(i, i, i * 5.0);
+            DaySalesPojo pojo = testUtil.getDaySalesPojo(i, i, i * 5.0);
             service.add(pojo);
 
         }
 
-        Integer pojo = service.getTotalEntriesinDateRange(customAppTime.plusDays(2).withHour(0),
+        Integer pojo = service.getTotalEntriesInDateRange(customAppTime.plusDays(2).withHour(0),
                 customAppTime.plusDays(4).withHour(23).withMinute(59).withSecond(59));
 
         assertEquals(Integer.valueOf(3), pojo);
@@ -128,7 +128,7 @@ public class DaySalesServiceTest extends AbstractUnitTest {
 
         for (int i = 1; i <= 5; i++) {
             DateTimeProvider.getInstance().setTime(customAppTime.plusDays(i));
-            PosDaySales pojo = testUtil.getDaySalesPojo(i, i, i * 5.0);
+            DaySalesPojo pojo = testUtil.getDaySalesPojo(i, i, i * 5.0);
             service.add(pojo);
 
         }

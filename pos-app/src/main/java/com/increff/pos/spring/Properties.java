@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 
 import lombok.Getter;
 
+import java.util.List;
+
 @Component
 @Getter
 public class Properties {
@@ -23,6 +25,14 @@ public class Properties {
 	@Value("${app.version}")
 	private String version;
 
-    @Value("${pdfapp.url}")
+    @Value("${pdfApp.url}")
     private String pdfAppUrl;
+
+    @Value("#{'${pdfApp.endpointNames}'.split(',')}")
+    private List<String> pdfEndpointNames;
+
+    @Value("#{'${pdfApp.endpointUrls}'.split(',')}")
+    private List<String> pdfEndpointUrls;
+
+
 }

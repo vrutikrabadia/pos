@@ -17,7 +17,7 @@
 	<div class="col-4">
 		<h3>Inventory</h3>
 	</div>
-	 <div class="col-8 icons-form" th:if="${info.getRole() == 'supervisor'}" >
+	 <div class="col-8 icons-form" th:if="${info.getRole() == 'SUPERVISOR'}" >
 		<div class="form-inline" style="justify-content: flex-end;">
 		
 			  <button type="button" class="btn " id="add-inventory-modal-toggle" title="Add Inventory">Add</button>
@@ -45,14 +45,14 @@
 	    <tr>
 	      <th scope="col">Barcode</th>
 	      <th scope="col">Quantity</th>
-	      <th scope="col" th:if="${info.getRole() == 'supervisor'}">Actions</th>
+	      <th scope="col" th:if="${info.getRole() == 'SUPERVISOR'}">Actions</th>
 	    </tr>
 	  </thead>
 	  <tbody>
 	    <tr>
 	      <td>12345678</td>
 	      <td>5</td>
-	      <td th:if="${info.getRole() == 'supervisor'}">Edit | Delete</td>
+	      <td th:if="${info.getRole() == 'SUPERVISOR'}">Edit | Delete</td>
 	    </tr>
 	  </tbody>
 	</table>
@@ -61,7 +61,7 @@
 </div>
 
 <!-- inventory Add Modal -->
-<div class="modal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" id="add-inventory-modal" th:if="${info.getRole() == 'supervisor'}">
+<div class="modal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" id="add-inventory-modal" th:if="${info.getRole() == 'SUPERVISOR'}">
 	<div class="modal-dialog" role="document">
 	  <div class="modal-content">
 		<div class="modal-header">
@@ -95,7 +95,7 @@
   </div>
 
 <!-- inventory Edit Modal -->
-<div class="modal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" id="edit-inventory-modal" th:if="${info.getRole() == 'supervisor'}">
+<div class="modal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" id="edit-inventory-modal" th:if="${info.getRole() == 'SUPERVISOR'}">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -129,7 +129,7 @@
 
 
 <!-- inventory Upload Modal -->
-<div class="modal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" id="upload-inventory-modal" th:if="${info.getRole() == 'supervisor'}">
+<div class="modal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" id="upload-inventory-modal" th:if="${info.getRole() == 'SUPERVISOR'}">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       
@@ -165,11 +165,11 @@
 <script th:inline="javascript">
 	/*<![CDATA[*/
 	
-		var user = /*[[${info.getRole()}]]*/ 'operator';
+		var user = /*[[${info.getRole()}]]*/ 'OPERATOR';
 	
 	/*]]>*/
 </script>
-<script th:src="@{/static/inventory.js}"/></script>
+<script th:src="@{/static/inventory.js}"></script>
 
 </body>	
 
