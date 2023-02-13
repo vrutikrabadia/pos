@@ -2,12 +2,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.increff</groupId>
-	<artifactId>pos</artifactId>
+	<groupId>com.increff.pos</groupId>
+	<artifactId>pos-app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>pos</name>
-	<url>http://maven.apache.org</url>
+	<name>pos-app</name>
 	
 	<properties>
 		
@@ -16,24 +15,27 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<!-- Project dependencies -->
+		<json.version>20210307</json.version>
+		<gson.version>2.10.1</gson.version>
+		<hibernate-validator.version>6.0.13.Final</hibernate-validator.version>
+		<javax.el.version>3.0.0</javax.el.version>
+		<jackson.jsr.version>2.14.1</jackson.jsr.version>
+		<javax.annotation.version>1.3.2</javax.annotation.version>
+		<lambok.version>1.18.24</lambok.version>
 		<spring.version>5.3.16</spring.version>
+		<spring.security.version>4.2.13.RELEASE</spring.security.version>
+		<javax.servlet.version>3.1.0</javax.servlet.version>
 		<swagger.version>2.4.0</swagger.version>
-		<jackson.version>2.9.8</jackson.version>
 		<thymeleaf.version>3.0.9.RELEASE</thymeleaf.version>
 		<hibernate.version>5.6.1.Final</hibernate.version>
 		<mysql.version>8.0.17</mysql.version>
-		<junit.version>4.12</junit.version>
+		<apache.commons-dbcp.version>1.4</apache.commons-dbcp.version>
+		<apache.commons-lang3.version>3.12.0</apache.commons-lang3.version>
+		<apache.commons-io.version>2.6</apache.commons-io.version>
 		<log4j.version>1.2.17</log4j.version>
+		<slf4j.version>1.7.5</slf4j.version>
+		<junit.version>4.12</junit.version>
 		<h2.version>1.4.200</h2.version>
-		<javax.servlet.version>3.1.0</javax.servlet.version>
-		<commons-dbcp.version>1.4</commons-dbcp.version>
-		<lambok.version>1.18.24</lambok.version>
-		<javax.version>3.0.0</javax.version>
-		<hibernate-validator.version>6.0.13.Final</hibernate-validator.version>
-		<dom.version>2.3.0-jaxb-1.0.6</dom.version>
-		<fop.version>2.7</fop.version>
-		<json.version>20210307</json.version>
-		<gson.version>2.10.1</gson.version>
 		<!-- Jetty configuration -->
 		<jetty.version>9.4.21.v20190926</jetty.version>
 		<jetty.http.port>9000</jetty.http.port>
@@ -66,7 +68,28 @@
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.el</artifactId>
-			<version>${javax.version}</version>
+			<version>${javax.el.version}</version>
+		</dependency>
+
+		<!--- Data types  -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>${jackson.jsr.version}</version>
+		</dependency>
+
+		<!--- Annotations -->
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>${javax.annotation.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lambok.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- SPRING -->
@@ -75,30 +98,39 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-			<version>4.2.13.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-			<version>4.2.13.RELEASE</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		<!-- Using Swagger for REST API documentation -->
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${javax.servlet.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Spring Security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+		
+
+		<!-- SWAGGER -->
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
@@ -109,17 +141,10 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${swagger.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-jsr310</artifactId>
-			<version>2.14.1</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.annotation</groupId>
-			<artifactId>javax.annotation-api</artifactId>
-			<version>1.3.2</version>
-		</dependency>
-		<!-- THYMELEAF -->
+
+
+
+		<!--- THYMELEAF -->
 		<dependency>
 			<groupId>org.thymeleaf</groupId>
 			<artifactId>thymeleaf</artifactId>
@@ -130,6 +155,8 @@
 			<artifactId>thymeleaf-spring4</artifactId>
 			<version>${thymeleaf.version}</version>
 		</dependency>
+
+
 		<!-- Database related stuff -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -137,38 +164,47 @@
 			<version>${hibernate.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>5.2.3.Final</version>
-		</dependency>
-		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysql.version}</version>
 		</dependency>
-		<!-- Apache commons -->
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
-			<version>1.4</version>
+			<version>${apache.commons-dbcp.version}</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+
+
+		<!-- Apache commons -->
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.12.0</version>
+			<version>${apache.commons-lang3.version}</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
+			<version>${apache.commons-io.version}</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/log4j/log4j -->
+
+		<!-- Logging -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>${log4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>${slf4j.version}</version>
+
 		</dependency>
 		<!-- Test -->
 		<dependency>
@@ -183,56 +219,34 @@
 			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>${h2.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<!-- Provided -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>${javax.servlet.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>${lambok.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
 	</dependencies>
+
+
 	<build>
 		<plugins>
-
+			<!---Plugin used to run tests and generate report in file-->
 			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.5.3</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
+					<redirectTestOutputToFile>true</redirectTestOutputToFile>
 				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id> <!-- this is used for inheritance merges -->
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
+			<!---Plugin used to generate war file-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.3.1</version>
 			</plugin>
+
+
 			<!-- Jetty plugin, for web application testing -->
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
@@ -244,7 +258,7 @@
 					<systemProperties>
 						<systemProperty>
 							<name>log4j.configuration</name>
-							<value>file:./src/main/resources/com/increff/pos/log4j.properties</value>
+								<value>file:./src/main/resources/com/increff/pos/log4j.properties</value>
 						</systemProperty>
 					</systemProperties>
 					<httpConnector>
@@ -255,81 +269,17 @@
 					</webApp>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.7.1</version>
-			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.8</version>
-				<configuration>
-					<excludes>
-						<exclude>com/increff/pos/controller/*</exclude>
-						<exclude>com/increff/pos/model/data/*</exclude>
-						<exclude>com/increff/pos/model/form/*</exclude>
-						<exclude>com/increff/pos/spring/*</exclude>
-						<exclude>com/increff/pos/dao/*</exclude>
-						<exclude>com/increff/pos/pojo/*</exclude>
-						<exclude>com/increff/pos/utils/CookieUtil.java</exclude>
-						<exclude>com/increff/pos/utils/SecutiryUtil.java</exclude>
-						<exclude>com/increff/pos/utils/UserPrincipal.java</exclude>
-						<exclude>com/increff/pos/utils/IOUtil.java</exclude>
 
-					</excludes>
-				 </configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<!-- attached to Maven test phase -->
-					<execution>
-						<id>report</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+			<!---Plugin used to generate javadoc-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.10.4</version>
 				<configuration>
 					<additionalparam>-Xdoclint:none</additionalparam>
-					<additionalOptions>-Xdoclint:none</additionalOptions>
 					<additionalJOption>-Xdoclint:none</additionalJOption>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.0</version>
-				<configuration>
-					<useUnlimitedThreads>true</useUnlimitedThreads>
-					<runOrder>random</runOrder>
-					<redirectTestOutputToFile>true</redirectTestOutputToFile>
-					<rerunFailingTestsCount>1</rerunFailingTestsCount>
-					<forkedProcessExitTimeoutInSeconds>2</forkedProcessExitTimeoutInSeconds>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-	<reporting>
-		<plugins>
-			<!-- SureFire Report plugin as part of site generation -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>3.0.0-M4</version>
-				<configuration>
-				</configuration>
-			</plugin>
-
-		</plugins>
-	</reporting>
 </project>
