@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import com.increff.pdf.model.form.BrandReportForm;
 import com.increff.pdf.model.form.InventoryReportForm;
 import com.increff.pdf.model.form.SalesReportForm;
-import com.increff.pdf.service.ApiException;
+import com.increff.pdf.util.ApiException;
 import com.increff.pdf.util.PdfUtil;
 import com.increff.pdf.util.XmlUtils;
 

@@ -18,8 +18,6 @@ import org.apache.fop.apps.MimeConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.increff.pdf.service.ApiException;
-
 @Component
 public class PdfUtil {
 

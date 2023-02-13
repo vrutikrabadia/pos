@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.increff.pdf.model.data.MessageData;
-import com.increff.pdf.service.ApiException;
+import com.increff.pdf.util.ApiException;
 
 @RestControllerAdvice
 public class AppRestControllerAdvice {

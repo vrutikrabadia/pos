@@ -12,7 +12,7 @@ import com.increff.pdf.dto.ReportDto;
 import com.increff.pdf.model.form.BrandReportForm;
 import com.increff.pdf.model.form.InventoryReportForm;
 import com.increff.pdf.model.form.SalesReportForm;
-import com.increff.pdf.service.ApiException;
+import com.increff.pdf.util.ApiException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

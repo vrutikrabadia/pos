@@ -37,7 +37,6 @@ public class ProductService {
     public ProductPojo getCheckById(Integer productId) throws ApiException {
         ProductPojo productPojo = getById(productId);
         if (Objects.isNull(productPojo)) {
-            // TODO: follow one convention in error message.
             throw new ApiException("Product does not exist with id: " + productId);
         }
         return productPojo;
@@ -47,8 +46,7 @@ public class ProductService {
         ProductPojo productPojo = dao.selectByColumn("barcode", barcode);
         if (Objects.isNull(productPojo)) {
 
-            // TODO: send the barcode.
-            throw new ApiException("Product with barcode does not exist");
+            throw new ApiException("Product with barcode does not exist for barcode: " + barcode);
         }
         return productPojo;
     }

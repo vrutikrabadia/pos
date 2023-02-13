@@ -14,8 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-// TODO: make it plural
-@Table( name = "brand",
+@Table( name = "brands",
         uniqueConstraints = {@UniqueConstraint(name="unique_brand_category", columnNames = {"brand", "category"})})
 @Getter
 @Setter

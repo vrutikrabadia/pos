@@ -61,18 +61,17 @@ public class InventoryService {
     }
 
 
-    //  TODO: throw id in exception for all methods below this
     public void checkInventory(Integer productId, Integer quantity) throws ApiException{
         InventoryPojo inventory = getCheck(productId);
         if(inventory.getQuantity() < quantity){
-            throw new ApiException("Insufficient Inventory");
+            throw new ApiException("Insufficient Inventory for id:"+productId);
         }
     }
      
     public void reduceQuantity(Integer productId, Integer quantity) throws ApiException{
         InventoryPojo inventoryPojo = getCheck(productId);
         if(inventoryPojo.getQuantity() < quantity){
-            throw new ApiException("Insufficient Inventory");
+            throw new ApiException("Insufficient Inventory for id:"+productId+" to reduce quantity");
         }
         inventoryPojo.setQuantity(inventoryPojo.getQuantity()-quantity);
     } 

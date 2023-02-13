@@ -19,12 +19,15 @@ public class ProductForm {
     private String barcode;
     
     @NotBlank(message = "Brand cannot be blank")
+    @Size(max = 255, message = "Brand name length must be less than 255 characters")
     private String brand;
     
     @NotBlank(message = "Category cannot be blank")
+    @Size(max = 255, message = "Category name length must be less than 255 characters")
     private String category;
     
     @NotBlank(message = "Product Name cannot be blank")
+    @Size(max = 255, message = "Product Name length must be less than 255 characters")
     private String name;
 
     @NotNull(message = "MRP cannot be null")

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.increff.pdf.model.form.InvoiceForm;
-import com.increff.pdf.service.ApiException;
+import com.increff.pdf.util.ApiException;
 import com.increff.pdf.util.PdfUtil;
 import com.increff.pdf.util.XmlUtils;
 

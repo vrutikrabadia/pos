@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.increff.pdf.dto.InvoiceDto;
 import com.increff.pdf.model.form.InvoiceForm;
-import com.increff.pdf.service.ApiException;
+import com.increff.pdf.util.ApiException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
