@@ -22,19 +22,19 @@ public class ReportsApiController {
     @Autowired
     private ReportDto dto;
     @ApiOperation(value = "Get Inventory report")
-    @RequestMapping(path = "/reports/inventory", method = RequestMethod.GET)
+    @RequestMapping(path = "/inventory", method = RequestMethod.GET)
     public String getInventoryReport() throws ApiException, com.increff.pdf.service.ApiException {
         return dto.getInventoryReport();
     }
 
     @ApiOperation(value = "Get Sales report")
-    @RequestMapping(path = "/reports/sales", method = RequestMethod.POST)
+    @RequestMapping(path = "/sales", method = RequestMethod.POST)
     public String getSalesReport(@RequestBody SalesReportForm salesReportForm) throws ApiException, com.increff.pdf.service.ApiException {
         return dto.getSalesReport(salesReportForm);
     }
 
     @ApiOperation(value = "Get Brand report")
-    @RequestMapping(path = "/reports/brands", method = RequestMethod.GET)
+    @RequestMapping(path = "/brands", method = RequestMethod.GET)
     public String getBrandReport() throws ApiException, com.increff.pdf.service.ApiException {
         return dto.getBrandReport();
     }

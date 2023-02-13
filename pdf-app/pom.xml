@@ -6,8 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.increff.pos</groupId>
 	<artifactId>pdf-app</artifactId>
-    <packaging>jar</packaging>
-
+	<packaging>jar</packaging>
 	<name>pdf-app</name>
 
 	<parent>
@@ -45,14 +44,10 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-		
-
-			</dependencies>
+	</dependencies>
 
 	<build>
 		<plugins>
-
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.5.3</version>
@@ -63,7 +58,7 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<id>make-assembly</id>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
@@ -71,39 +66,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			
-		
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.7.1</version>
-			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.8</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<!-- attached to Maven test phase -->
-					<execution>
-						<id>report</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
-	<reporting>
-		<plugins>
-
-		</plugins>
-	</reporting>
 </project>
