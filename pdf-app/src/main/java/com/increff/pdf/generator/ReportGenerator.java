@@ -5,7 +5,7 @@ import java.util.List;
 import com.increff.pdf.model.data.BrandReportData;
 import com.increff.pdf.model.data.InventoryReportData;
 import com.increff.pdf.model.data.SalesReportData;
-import com.increff.pdf.service.ApiException;
+import com.increff.pdf.util.ApiException;
 import com.increff.pdf.util.PdfUtil;
 import com.increff.pdf.util.XmlUtils;
 

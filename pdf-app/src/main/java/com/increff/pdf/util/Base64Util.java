@@ -6,8 +6,6 @@ import java.util.Base64;
 
 import org.apache.commons.io.FileUtils;
 
-import com.increff.pdf.service.ApiException;
-
 public class Base64Util {
     public static String encodeFileToBase64Binary(String fileName)throws ApiException{
         File file = new File(fileName);

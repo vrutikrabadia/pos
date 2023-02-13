@@ -23,7 +23,7 @@ public class UserService {
 	public void add(UserPojo userPojo) throws ApiException {
 		UserPojo existingUser = dao.selectByColumn("email",userPojo.getEmail());
 		if (Objects.nonNull(existingUser)) {
-			throw new ApiException("User with given email already exists");
+			throw new ApiException("User with given email already exists with email: " + userPojo.getEmail());
 		}
 		dao.insert(userPojo);
 	}

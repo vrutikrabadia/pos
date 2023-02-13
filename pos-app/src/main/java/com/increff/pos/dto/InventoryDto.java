@@ -40,7 +40,7 @@ public class InventoryDto {
         InventoryPojo inventoryPojo = ConvertUtil.objectMapper(inventoryForm, InventoryPojo.class);
 
         if (Objects.isNull(productPojo)) {
-            throw new ApiException("Product does not exist.");
+            throw new ApiException("Product does not exist with barcode: " + inventoryForm.getBarcode());
         }
 
         inventoryPojo.setProductId(productPojo.getId());

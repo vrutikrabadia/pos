@@ -1,7 +1,7 @@
 package com.increff.pdf.generator;
 
 import com.increff.pdf.model.data.InvoiceData;
-import com.increff.pdf.service.ApiException;
+import com.increff.pdf.util.ApiException;
 import com.increff.pdf.util.PdfUtil;
 import com.increff.pdf.util.XmlUtils;
 

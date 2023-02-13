@@ -42,7 +42,7 @@ public class OrderService {
     public OrderPojo getCheck(Integer orderId) throws ApiException{
         OrderPojo orderPojo = get(orderId);
         if(Objects.isNull(orderPojo)){
-            throw new ApiException("Order does not exists");
+            throw new ApiException("Order does not exists with id: " + orderId);
         }
         return orderPojo;
     }

@@ -1,13 +1,6 @@
 package com.increff.pos.pojo;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.increff.pos.model.Roles;
 
@@ -16,9 +9,10 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Table(name = "users")
+@Table(name = "users",
+		uniqueConstraints = {@UniqueConstraint(name="unique_email", columnNames = {"email"})})
 @Setter
-// TODO: add unique constraint on email
+
 public class UserPojo {
 
 	@Id
