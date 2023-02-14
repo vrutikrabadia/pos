@@ -17,6 +17,8 @@ import com.increff.pos.model.form.UserForm;
 import com.increff.pos.util.ApiException;
 import com.increff.pos.util.PasswordUtil;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.web.servlet.ModelAndView;
 
 
 public class UserDtoTest extends AbstractUnitTest {
@@ -139,6 +141,41 @@ public class UserDtoTest extends AbstractUnitTest {
 
         UserPojo user = userDao.selectByColumn("email", email);
         checkEquals(user, form);
+    }
+
+    @Test
+    public void testLogin() throws ApiException {
+        String email = "abc@pos.com";
+        String password = "password";
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        LoginForm loginForm = testUtil.getLoginForm(email, password);
+        userDto.add(loginForm);
+        loginForm = testUtil.getLoginForm(email, password);
+        ModelAndView mav = userDto.login(request, loginForm);
+        assertEquals("redirect:/ui/home", mav.getViewName());
+    }
+
+    @Test
+    public void testLoginInvalid() throws ApiException {
+        String email = "abc@pos.com";
+        String password = "password";
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        LoginForm loginForm = testUtil.getLoginForm(email, password);
+        userDto.add(loginForm);
+        loginForm = testUtil.getLoginForm(email, "password1");
+        ModelAndView mav = userDto.login(request, loginForm);
+        assertEquals("redirect:/site/login", mav.getViewName());
+    }
+
+    @Test
+    public void testLogout() throws ApiException {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        ModelAndView mav = userDto.logout(request, response);
+
+        assertEquals("redirect:/site/logout", mav.getViewName());
     }
 
     @Test

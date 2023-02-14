@@ -68,7 +68,7 @@ public class ReportDto {
         return invReportFromMap(resultMap, brandCatIds);
     }
 
-    private String invReportFromMap(HashMap<Integer, Integer> resultMap, List<Integer> brandCatIds) throws com.increff.pdf.service.ApiException {
+    private String invReportFromMap(HashMap<Integer, Integer> resultMap, List<Integer> brandCatIds) throws com.increff.pdf.service.ApiException, ApiException {
         List<InventoryReportData> result = new ArrayList<InventoryReportData>();
 
         List<BrandPojo> brandList = bService.getInColumns(singletonList("id"), singletonList(brandCatIds));
@@ -84,6 +84,10 @@ public class ReportDto {
             res.setCategory(idtoBrandCat.get(key).getCategory());
 
             result.add(res);
+        }
+
+        if(result.isEmpty()) {
+            throw new ApiException("No inventory data found");
         }
         
         return ReportGenerator.generateInventoryReport(result);
@@ -216,7 +220,7 @@ public class ReportDto {
         HashMap<Integer, Integer> prodIdToBrandCatId = (HashMap<Integer, Integer>) prodList.stream()
                 .collect(Collectors.toMap(ProductPojo::getId, ProductPojo::getBrandCat));
       
-        HashMap<Integer, BrandPojo> idtoBrandCat = (HashMap<Integer, BrandPojo>) brandList.stream()
+        HashMap<Integer, BrandPojo> idToBrandCat = (HashMap<Integer, BrandPojo>) brandList.stream()
                 .collect(Collectors.toMap(BrandPojo::getId, e -> e));
 
         HashMap<Integer, Double> brandCatToRevenue = (HashMap<Integer, Double>) brandList.stream()
@@ -238,9 +242,8 @@ public class ReportDto {
 
         for(Integer key: brandCatToRevenue.keySet()){
             SalesReportData data = new SalesReportData();
-
-            data.setBrand(idtoBrandCat.get(key).getBrand());
-            data.setCategory(idtoBrandCat.get(key).getCategory());
+            data.setBrand(idToBrandCat.get(key).getBrand());
+            data.setCategory(idToBrandCat.get(key).getCategory());
             data.setQuantity(brandCatToQuantity.get(key));
             data.setRevenue(brandCatToRevenue.get(key));
 
@@ -252,16 +255,15 @@ public class ReportDto {
 
     //functions for brand report
 
-    public String getBrandReport() throws com.increff.pdf.service.ApiException {
+    public String getBrandReport() throws com.increff.pdf.service.ApiException, ApiException {
 
-        Integer totalBrands = bService.getTotalEntries();
-        List<BrandData> brandList = bDto.getAll(0, totalBrands, 1, null).getData();
+        List<BrandData> brandList = bDto.getAll();
+        if(brandList.isEmpty()){
+            throw new ApiException("No brands found");
+        }
 
         List<BrandReportData> brandReportData = brandList.stream().map(e->ConvertUtil.objectMapper(e, BrandReportData.class)).collect(Collectors.toList());
 
         return ReportGenerator.generateBrandReport(brandReportData);
     }
-
-    
-
 }

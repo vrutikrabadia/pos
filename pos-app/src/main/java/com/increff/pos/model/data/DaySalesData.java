@@ -14,6 +14,6 @@ public class DaySalesData{
     @JsonSerialize(using = CustomZonedDateTimeSerializer.class)
     private ZonedDateTime date;
     private Integer invoicedOrderCount;
-    private Integer invoicedItemsCount;
+    private Integer invoicedItemCount;
     private Double totalRevenue;  
 }

@@ -87,7 +87,6 @@ public class ProductService {
         return dao.countTotalEntries();
     }
 
-    // TODO: AFTER VERIFICATION: throw exception in DAO.
     public <T> List<ProductPojo> getInColumns(List<String> column, List<List<T>>values) throws ApiException{
         if(column.size() != values.size()){
             throw new ApiException("Column and Values size mismatch");

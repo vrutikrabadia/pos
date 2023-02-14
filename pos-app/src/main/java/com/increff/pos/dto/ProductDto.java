@@ -68,24 +68,20 @@ public class ProductDto {
         List<ProductPojo> pojoList = new ArrayList<ProductPojo>();
         int errorCount = 0;
 
-        for(ProductForm e : list){
-            BrandPojo brandP = null;
+        for(ProductForm productForm : list){
+            BrandPojo brandPojo = null;
             try {
-                brandP = bService.getCheckByBrandCategory(e.getBrand(), e.getCategory());
-            } catch (ApiException e1) {
-                JSONObject error = new JSONObject(new Gson().toJson(e));      
+                brandPojo = bService.getCheckByBrandCategory(productForm.getBrand(), productForm.getCategory());
+            } catch (ApiException apiException) {
                 errorCount+=1;
-                error.put("error", e1.getMessage());
-                errorList.put(error);
+                errorList.put(ExceptionUtil.generateJSONErrorObject(apiException.getMessage(), productForm));
                 continue;
             }
 
-            JSONObject error = new JSONObject(new Gson().toJson(e));
-            error.put("error", "");
-            errorList.put(error);
+            errorList.put(ExceptionUtil.generateJSONErrorObject("", productForm));
 
-            ProductPojo p = ConvertUtil.objectMapper(e, ProductPojo.class);
-            p.setBrandCat(brandP.getId());
+            ProductPojo p = ConvertUtil.objectMapper(productForm, ProductPojo.class);
+            p.setBrandCat(brandPojo.getId());
             pojoList.add(p);
         };
 

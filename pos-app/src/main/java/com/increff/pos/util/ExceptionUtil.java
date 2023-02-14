@@ -39,15 +39,11 @@ public class ExceptionUtil {
 
 		JSONArray errorList = new JSONArray();
 		repeatSet.forEach(e -> {
-			JSONObject error = new JSONObject(new Gson().toJson(e));
-			error.put("error", message);
-			errorList.put(error);
+			errorList.put(generateJSONErrorObject(message, e));
 		});
 
 		formSet.forEach(e -> {
-			JSONObject error = new JSONObject(new Gson().toJson(e));
-			error.put("error", "");
-			errorList.put(error);
+			errorList.put(generateJSONErrorObject(message, e));
 		});
 
 		throw new ApiException(errorList.toString());
@@ -60,17 +56,19 @@ public class ExceptionUtil {
 		JSONArray errorList = new JSONArray();
 		formSet.forEach(e->{
 			R repeated = ConvertUtil.objectMapper(e, clazz);
-			JSONObject error = new JSONObject(new Gson().toJson(repeated));
-			error.put("error", "");
-			errorList.put(error);
+			errorList.put(generateJSONErrorObject(message, repeated));
 		});
 		repeatSet.forEach(e -> {
 			R repeated = ConvertUtil.objectMapper(e, clazz);
-			JSONObject error = new JSONObject(new Gson().toJson(repeated));
-			error.put("error", message);
-			errorList.put(error);
+			errorList.put(generateJSONErrorObject(message, repeated));
 		});
 		throw new ApiException(errorList.toString());
+	}
+
+	public static <T> JSONObject generateJSONErrorObject(String message, T object){
+		JSONObject error = new JSONObject(new Gson().toJson(object));
+		error.put("error", message);
+		return error;
 	}
 
 

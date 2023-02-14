@@ -16,7 +16,6 @@ import lombok.Setter;
 public class InfoData implements Serializable {
 
 	private static final Long serialVersionUID = 1L;
-
 	private String message;
 	private String email;
 	private String role;

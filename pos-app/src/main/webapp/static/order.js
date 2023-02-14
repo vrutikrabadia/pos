@@ -109,6 +109,7 @@ function addOrderItem(event) {
     var $form = $("#order-item-form");
     var json = JSON.parse(toJson($form));
 
+
     if(json.barcode == "" || json.quantity == "" || json.sellingPrice == ""){
         Swal.fire({
             title: 'Oops...',

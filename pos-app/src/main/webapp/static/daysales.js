@@ -131,7 +131,7 @@ function init() {
                 }
             },
             {
-                "data": "invoicedItemsCount"
+                "data": "invoicedItemCount"
             },
             {
                 "data": "invoicedOrderCount"

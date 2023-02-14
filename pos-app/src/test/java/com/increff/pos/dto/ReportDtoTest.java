@@ -31,7 +31,7 @@ public class ReportDtoTest extends AbstractUnitTest{
     // brand report tests
 
     @Test
-    public void testGetBrandReport() throws com.increff.pdf.service.ApiException{
+    public void testGetBrandReport() throws com.increff.pdf.service.ApiException, ApiException{
         
         //add brand
         testUtil.addBrand("brand1", "category1");

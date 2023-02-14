@@ -30,7 +30,6 @@ public abstract class AbstractDao<T> {
 		cb = em.getCriteriaBuilder();
 	}
 
-	// TODO: AFTER VERIFICATION: throw exception if more than one entry
 	protected <R> R getSingle(TypedQuery<R> query){
 		return query.getResultList().stream().findFirst().orElse(null);
 	}
@@ -108,7 +107,6 @@ public abstract class AbstractDao<T> {
 		return getSingle(query);
 	}
 
-	// TODO: AFTER VERIFICATION: validate for empty list in service
 	public <R> List<T> selectInColumns(List<String> columnList, List<List<R>> valueList) {
 
 		CriteriaQuery<T> cq = cb.createQuery(pojoClass);
