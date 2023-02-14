@@ -1,7 +1,6 @@
 package com.increff.pos.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 
 import com.increff.pos.model.form.OrderForm;
@@ -17,7 +16,6 @@ import com.increff.pos.dto.OrderDto;
 import com.increff.pos.model.data.OrderData;
 import com.increff.pos.model.data.OrderItemsData;
 import com.increff.pos.model.data.SelectData;
-import com.increff.pos.model.form.OrderItemsForm;
 import com.increff.pos.util.ApiException;
 
 import io.swagger.annotations.Api;
@@ -60,6 +58,6 @@ public class OrderApiController {
     @ApiOperation(value = "Generate Invoice")
     @RequestMapping(path="/{orderId}/invoice", method = RequestMethod.GET)
     public String generateInvoice(@PathVariable Integer orderId) throws ApiException{
-         return dto.generateInvoice(orderId);
+         return dto.getInvoice(orderId);
     }
 }

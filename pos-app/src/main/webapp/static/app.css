@@ -33,14 +33,14 @@ body {
 }
 
 .secondary-btn{
-	background-color: #172b54;
-	border-color: #172b54;
+	background-color: #172b54 !important;
+	border-color: #172b54 !important;
 	margin-left: 0.5rem;
 	margin-right: 0.5rem;
-	color: #fff;
+	color: #fff !important;
 }
 .secondary-btn:hover{
-	color: #eb6469;
+	color: #eb6469 !important;
 }
 
 .page-item.active .page-link {

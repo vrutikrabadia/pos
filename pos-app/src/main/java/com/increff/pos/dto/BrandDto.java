@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,10 +33,10 @@ public class BrandDto {
 
         StringUtil.normalise(brandForm, BrandForm.class);
         ValidateUtil.validateForms(brandForm);
-        
+
         BrandPojo brandPojo = ConvertUtil.objectMapper(brandForm, BrandPojo.class);
 
-        if(Objects.isNull(service.getByBrandAndCategory(brandForm.getBrand(), brandForm.getCategory()))){
+        if (Objects.isNull(service.getByBrandAndCategory(brandForm.getBrand(), brandForm.getCategory()))) {
             service.add(brandPojo);
             return;
         }
@@ -50,7 +49,7 @@ public class BrandDto {
         ValidateUtil.validateList(brandFormList);
 
         checkListDuplications(brandFormList);
-        List<BrandPojo> brandPojoList = brandFormList.stream().map(e->ConvertUtil.objectMapper(e, BrandPojo.class)).collect(Collectors.toList());
+        List<BrandPojo> brandPojoList = brandFormList.stream().map(e -> ConvertUtil.objectMapper(e, BrandPojo.class)).collect(Collectors.toList());
         checkDbDuplicate(brandPojoList);
 
         service.bulkAdd(brandPojoList);
@@ -61,12 +60,18 @@ public class BrandDto {
         return ConvertUtil.objectMapper(p, BrandData.class);
     }
 
-    public SelectData<BrandData> getAll(Integer start, Integer length, Integer draw, String searchValue) {
+    public List<BrandData> getAll() {
+        List<BrandPojo> pojoList = service.getAll();
+        List<BrandData> dataList = pojoList.stream().map(e->ConvertUtil.objectMapper(e, BrandData.class)).collect(Collectors.toList());
+        return dataList;
+    }
+
+    public SelectData<BrandData> getAllPaginated(Integer start, Integer length, Integer draw, String searchValue) {
 
         List<BrandPojo> pojoList = new ArrayList<BrandPojo>();
         List<BrandData> dataList = new ArrayList<BrandData>();
 
-    if (Objects.nonNull(searchValue) && !searchValue.isEmpty()) {
+        if (Objects.nonNull(searchValue) && !searchValue.isEmpty()) {
             pojoList = service.searchQueryString(start, length, StringUtil.toLowerCase(searchValue));
         } else {
             pojoList = service.getAllPaginated(start, length);
@@ -95,29 +100,29 @@ public class BrandDto {
         BrandPojo recievedPojo = ConvertUtil.objectMapper(brandForm, BrandPojo.class);
 
         BrandPojo fetchedPojo = service.getByBrandAndCategory(recievedPojo.getBrand(), recievedPojo.getCategory());
-            
-        if(Objects.nonNull(fetchedPojo) && fetchedPojo.getId()!=recievedPojo.getId()){
+
+        if (Objects.nonNull(fetchedPojo) && fetchedPojo.getId() != recievedPojo.getId()) {
             throw new ApiException("DUPLICATE: Brand and Category already exists.");
         }
-        
+
         service.update(id, recievedPojo);
     }
 
     protected void checkListDuplications(List<BrandForm> brandFormList) throws ApiException {
         Set<String> brandCategoryRecievedSet = new HashSet<String>();
 
-        Set<BrandForm> repeatedBrandFormSet = brandFormList.stream().filter(e -> !brandCategoryRecievedSet.add(e.getBrand() +"#"+ e.getCategory()))
+        Set<BrandForm> repeatedBrandFormSet = brandFormList.stream().filter(e -> !brandCategoryRecievedSet.add(e.getBrand() + "#" + e.getCategory()))
                 .collect(Collectors.toSet());
 
         if (repeatedBrandFormSet.size() > 0) {
-            ExceptionUtil.generateBulkAddExceptionList( "DUPLICATE entry in same file", brandFormList, repeatedBrandFormSet);
+            ExceptionUtil.generateBulkAddExceptionList("DUPLICATE entry in same file", brandFormList, repeatedBrandFormSet);
         }
     }
 
-    protected void checkDbDuplicate(List<BrandPojo> brandPojoList) throws ApiException{
-        
+    protected void checkDbDuplicate(List<BrandPojo> brandPojoList) throws ApiException {
+
         List<String> recievedBrandList = brandPojoList.stream().map(BrandPojo::getBrand).collect(Collectors.toList());
-        List<BrandPojo> existingBrandList = service.getInColumns(Arrays.asList("brand"),Arrays.asList(recievedBrandList));
+        List<BrandPojo> existingBrandList = service.getInColumns(Arrays.asList("brand"), Arrays.asList(recievedBrandList));
         Set<String> existingBrandSet = new HashSet<String>();
         existingBrandSet = existingBrandList.stream().flatMap(pojo -> Stream.of(pojo.getBrand() + pojo.getCategory()))
                 .collect(Collectors.toSet());
@@ -130,5 +135,5 @@ public class BrandDto {
         }
     }
 
-    
+
 }

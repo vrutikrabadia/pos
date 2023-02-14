@@ -4,24 +4,20 @@ package com.increff.pos.dto;
 import com.google.gson.Gson;
 import com.increff.pos.model.data.InventoryData;
 import com.increff.pos.model.data.SelectData;
+import com.increff.pos.model.form.BrandForm;
 import com.increff.pos.model.form.InventoryForm;
 import com.increff.pos.pojo.InventoryPojo;
 import com.increff.pos.pojo.ProductPojo;
-import com.increff.pos.util.ApiException;
+import com.increff.pos.util.*;
 import com.increff.pos.service.InventoryService;
 import com.increff.pos.service.ProductService;
-import com.increff.pos.util.ConvertUtil;
-import com.increff.pos.util.StringUtil;
-import com.increff.pos.util.ValidateUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class InventoryDto {
@@ -61,12 +57,16 @@ public class InventoryDto {
         StringUtil.normaliseList(inventoryFormList, InventoryForm.class);
         ValidateUtil.validateList(inventoryFormList);
 
+        checkListDuplications(inventoryFormList);
+
         List<InventoryPojo> inventoryPojoList = getCheckProductAndConvertToPojo(inventoryFormList);
 
         service.bulkAdd(inventoryPojoList);
 
     }
-
+    
+    
+    
     public List<InventoryPojo> getCheckProductAndConvertToPojo(List<InventoryForm> inventoryFormList) throws ApiException {
         List<InventoryPojo> inventoryPojoList = new ArrayList<InventoryPojo>();
         JSONArray errorList = new JSONArray();
@@ -77,15 +77,12 @@ public class InventoryDto {
             try {
                 p1 = pService.getCheckByBarcode(inventoryForm.getBarcode());
             } catch (ApiException apiException) {
-                JSONObject error = new JSONObject(new Gson().toJson(inventoryForm));
-                error.put("error", apiException.getMessage());
-                errorList.put(error);
+                errorList.put(ExceptionUtil.generateJSONErrorObject(apiException.getMessage(), inventoryForm));
                 errorCount++;
                 continue;
             }
 
-            JSONObject error = new JSONObject(new Gson().toJson(inventoryForm));
-            error.put("error", "");
+            errorList.put(ExceptionUtil.generateJSONErrorObject("", inventoryForm));
 
             InventoryPojo inventoryPojo = ConvertUtil.objectMapper(inventoryForm, InventoryPojo.class);
 
@@ -140,7 +137,7 @@ public class InventoryDto {
             inventoryData.setBarcode(productPojo.getBarcode());
             inventoryDataList.add(inventoryData);
         }
-        ;
+
         Integer totalEntries = service.getTotalEntries();
 
         return new SelectData<InventoryData>(inventoryDataList, draw, totalEntries, totalEntries);
@@ -160,4 +157,14 @@ public class InventoryDto {
         service.update(inventoryPojo.getProductId(), inventoryPojo1);
     }
 
+    protected void checkListDuplications(List<InventoryForm> inventoryFormList) throws ApiException {
+        Set<String> barcodeRecievedSet = new HashSet<String>();
+
+        Set<InventoryForm> repeatedProductFormSet = inventoryFormList.stream().filter(e -> !barcodeRecievedSet.add(e.getBarcode()))
+                .collect(Collectors.toSet());
+
+        if (repeatedProductFormSet.size() > 0) {
+            ExceptionUtil.generateBulkAddExceptionList("DUPLICATE entry in same file", inventoryFormList, repeatedProductFormSet);
+        }
+    }
 }

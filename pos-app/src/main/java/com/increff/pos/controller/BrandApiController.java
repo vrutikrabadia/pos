@@ -1,7 +1,6 @@
 package com.increff.pos.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,7 +49,7 @@ public class BrandApiController {
     @RequestMapping(path = "", method = RequestMethod.GET)
     public SelectData<BrandData> get(@RequestParam Integer draw, @RequestParam Integer start, @RequestParam Integer length, @RequestParam(value = "search[value]") String searchValue)
             throws ApiException {
-        return dto.getAll(start, length, draw, searchValue);
+        return dto.getAllPaginated(start, length, draw, searchValue);
     }
 
     @ApiOperation(value = "Gets Brand and Category by names.")

@@ -75,6 +75,10 @@ public class ReportDto {
 
             result.add(res);
         }
+
+        if(result.isEmpty()) {
+            throw new ApiException("No inventory data found");
+        }
         
         return clientWrapper.getPdfClient().getPdfBase64(result, "inventoryReport");
     }
@@ -225,13 +229,16 @@ public class ReportDto {
 
         for(Integer key: brandCatToRevenue.keySet()){
             SalesReportData data = new SalesReportData();
-
             data.setBrand(idToBrandCat.get(key).getBrand());
             data.setCategory(idToBrandCat.get(key).getCategory());
             data.setQuantity(brandCatToQuantity.get(key));
             data.setRevenue(brandCatToRevenue.get(key));
 
             result.add(data);
+        }
+
+        if (result.isEmpty()) {
+            throw new ApiException("No sales found");
         }
 
         return clientWrapper.getPdfClient().getPdfBase64(result, "salesReport");
@@ -241,12 +248,11 @@ public class ReportDto {
 
     public String getBrandReport() throws ApiException {
 
-        Integer totalBrands = bService.getTotalEntries();
-        List<BrandData> brandList = bDto.getAll(0, totalBrands, 1, null).getData();
+        List<BrandData> brandList = bDto.getAll();
+        if(brandList.isEmpty()){
+            throw new ApiException("No brands found");
+        }
 
         return clientWrapper.getPdfClient().getPdfBase64(brandList, "brandReport");
     }
-
-    
-
 }

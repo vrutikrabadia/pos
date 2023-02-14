@@ -73,16 +73,12 @@ public class ProductDto {
             try {
                 brandPojo = bService.getCheckByBrandCategory(productForm.getBrand(), productForm.getCategory());
             } catch (ApiException apiException) {
-                JSONObject error = new JSONObject(new Gson().toJson(productForm));
                 errorCount+=1;
-                error.put("error", apiException.getMessage());
-                errorList.put(error);
+                errorList.put(ExceptionUtil.generateJSONErrorObject(apiException.getMessage(), productForm));
                 continue;
             }
 
-            JSONObject error = new JSONObject(new Gson().toJson(productForm));
-            error.put("error", "");
-            errorList.put(error);
+            errorList.put(ExceptionUtil.generateJSONErrorObject("", productForm));
 
             ProductPojo productPojo = ConvertUtil.objectMapper(productForm, ProductPojo.class);
             productPojo.setBrandCat(brandPojo.getId());

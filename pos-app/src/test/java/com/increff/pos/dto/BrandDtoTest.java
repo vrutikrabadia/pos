@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.Rule;
@@ -44,7 +43,7 @@ public class BrandDtoTest extends AbstractUnitTest {
 
         dto.add(form);
 
-        List<BrandData> d = dto.getAll(0, 1, 1, null).getData();
+        List<BrandData> d = dto.getAllPaginated(0, 1, 1, null).getData();
 
         assertEquals(d.get(0).getBrand(), "brand1");
         assertEquals(d.get(0).getCategory(), "category1");
@@ -61,11 +60,11 @@ public class BrandDtoTest extends AbstractUnitTest {
         f.setCategory("category2");
         f.setBrand("brand2");
 
-        List<BrandData> d = dto.getAll(0, 1, 1, null).getData();
+        List<BrandData> d = dto.getAllPaginated(0, 1, 1, null).getData();
 
         dto.update(d.get(0).getId(), f);
 
-        d = dto.getAll(0, 1, 1, null).getData();
+        d = dto.getAllPaginated(0, 1, 1, null).getData();
 
         assertEquals(d.get(0).getBrand(), "brand2");
         assertEquals(d.get(0).getCategory(), "category2");
@@ -78,7 +77,7 @@ public class BrandDtoTest extends AbstractUnitTest {
         testUtil.addBrand("brand2", "category2");
         testUtil.addBrand("brand3", "category3");
 
-        List<BrandData> d = dto.getAll(0, 5, 1, null).getData();
+        List<BrandData> d = dto.getAllPaginated(0, 5, 1, null).getData();
 
         assertEquals(d.size(), 3);
     }
@@ -102,7 +101,7 @@ public class BrandDtoTest extends AbstractUnitTest {
 
         testUtil.addBrand(brand, category);
 
-        List<BrandData> d = dto.getAll(0, 1, 1, null).getData();
+        List<BrandData> d = dto.getAllPaginated(0, 1, 1, null).getData();
 
         BrandData d1 = dto.getById(d.get(0).getId());
 
@@ -201,7 +200,7 @@ public class BrandDtoTest extends AbstractUnitTest {
 
         dto.bulkAdd(brandList);
 
-        SelectData<BrandData> dataList = dto.getAll(0, 3, 0, null);
+        SelectData<BrandData> dataList = dto.getAllPaginated(0, 3, 0, null);
 
         assertEquals(2, dataList.getData().size());
     }
@@ -211,7 +210,7 @@ public class BrandDtoTest extends AbstractUnitTest {
         testUtil.addBrand("b1", "c1");
         testUtil.addBrand("b2", "c2");
 
-        List<BrandData> d = dto.getAll(0, 2, 0, null).getData();
+        List<BrandData> d = dto.getAllPaginated(0, 2, 0, null).getData();
 
         BrandForm f = testUtil.getBrandForm("b1", "c1");
         f.setBrand("b2");
@@ -226,7 +225,7 @@ public class BrandDtoTest extends AbstractUnitTest {
         testUtil.addBrand("b2", "c2");
         testUtil.addBrand("b3", "c3");
 
-        SelectData<BrandData> d = dto.getAll(0, 3, 0, "b1");
+        SelectData<BrandData> d = dto.getAllPaginated(0, 3, 0, "b1");
 
         assertEquals(1, d.getData().size());
     }

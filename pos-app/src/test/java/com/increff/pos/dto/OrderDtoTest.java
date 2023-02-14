@@ -6,10 +6,8 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import com.increff.pos.model.form.OrderForm;
-import org.hibernate.criterion.Order;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -157,7 +155,7 @@ public class OrderDtoTest extends AbstractUnitTest {
         SelectData<OrderData> orderList = dto.getAll(0, 5, 1, null);
 
         try {
-            base64 = dto.generateInvoice(orderList.getData().get(0).getId());
+            base64 = dto.getInvoice(orderList.getData().get(0).getId());
         } catch (Exception e) {
 
         }

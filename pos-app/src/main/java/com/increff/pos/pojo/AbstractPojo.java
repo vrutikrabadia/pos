@@ -13,7 +13,6 @@ import com.increff.pos.util.DateTimeProvider;
 import lombok.Getter;
 import lombok.Setter;
 
-// TODO: try removing getters and setters from extended classes. - CANNOT BE DONE
 @MappedSuperclass
 @Getter
 @Setter

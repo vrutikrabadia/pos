@@ -14,6 +14,8 @@ import lombok.Setter;
 @Setter
 @Scope(value="session", proxyMode=ScopedProxyMode.TARGET_CLASS)
 public class InfoData implements Serializable {
+
+	private static final Long serialVersionUID = 1L;
 	private String message;
 	private String email;
 	private String role;
