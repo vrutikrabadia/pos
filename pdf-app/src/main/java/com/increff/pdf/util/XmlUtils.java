@@ -144,7 +144,7 @@ public class XmlUtils {
 
             //NAME
             Element name = doc.createElement("NAME");
-            name.setTextContent(item.getName());
+            name.setTextContent(item.getName().substring(0, Math.min(item.getName().length(), 15)));
             recordset.appendChild(name);
 
             //BARCODE 
@@ -245,12 +245,12 @@ public class XmlUtils {
 
             //BRAND
             Element brand_name = doc.createElement("BRAND");
-            brand_name.setTextContent(brand.getBrand());
+            brand_name.setTextContent(brand.getBrand().substring(0, Math.min(brand.getBrand().length(), 15)));
             recordset.appendChild(brand_name);
 
             //CATEGORY
             Element category = doc.createElement("CATEGORY");
-            category.setTextContent(brand.getCategory());
+            category.setTextContent(brand.getCategory().substring(0, Math.min(brand.getCategory().length(), 15)));
             recordset.appendChild(category);
 
             recordCount++;
@@ -326,12 +326,12 @@ public class XmlUtils {
 
             //BRAND
             Element brand_name = doc.createElement("BRAND");
-            brand_name.setTextContent(inv.getBrand());
+            brand_name.setTextContent(inv.getBrand().substring(0, Math.min(inv.getBrand().length(), 15)));
             recordset.appendChild(brand_name);
 
             //CATEGORY
             Element category = doc.createElement("CATEGORY");
-            category.setTextContent(inv.getCategory());
+            category.setTextContent(inv.getCategory().substring(0, Math.min(inv.getCategory().length(), 15)));
             recordset.appendChild(category);
 
             //QUANTITY
@@ -411,12 +411,12 @@ public class XmlUtils {
 
             //BRAND
             Element brand_name = doc.createElement("BRAND");
-            brand_name.setTextContent(sale.getBrand());
+            brand_name.setTextContent(sale.getBrand().substring(0, Math.min(sale.getBrand().length(), 15)));
             recordset.appendChild(brand_name);
 
             //CATEGORY
             Element category = doc.createElement("CATEGORY");
-            category.setTextContent(sale.getCategory());
+            category.setTextContent(sale.getCategory().substring(0, Math.min(sale.getCategory().length(), 15)));
             recordset.appendChild(category);
 
             //QUANTITY

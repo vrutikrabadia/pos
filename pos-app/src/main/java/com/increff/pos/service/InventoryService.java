@@ -79,7 +79,11 @@ public class InventoryService {
      
     public void increaseQuantity(Integer productId, Integer quantity) throws ApiException{
         InventoryPojo inventoryPojo = getCheck(productId);
-        inventoryPojo.setQuantity(inventoryPojo.getQuantity()+quantity);
+        try {
+            inventoryPojo.setQuantity(Math.addExact(inventoryPojo.getQuantity(),quantity));
+        } catch (ArithmeticException e) {
+            throw new ApiException("Inventory quantity overflow");
+        }
     } 
 
     public Integer getTotalEntries() {

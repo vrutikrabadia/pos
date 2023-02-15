@@ -51,7 +51,6 @@ public class UserDto {
 			passwordValidate = PasswordUtil.validatePassword(loginForm.getPassword(), userPojo.getPassword());
 		}
 		catch(Exception exception){
-			System.out.println("Error validating password");
 			info.setMessage("Error validating password");
 			info.setShown(false);
 			return new ModelAndView("redirect:/site/login");

@@ -89,3 +89,12 @@ input[type=number] {
     -moz-appearance: textfield;
 }
 
+table{
+    table-layout: fixed;
+    width: 100% !important;
+}
+
+td{
+    word-wrap: break-word;
+}
+

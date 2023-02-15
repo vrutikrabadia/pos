@@ -26,7 +26,7 @@ public class ReportDto {
         try {
             encodedXml = xmlUtils.generateBrandReportXml(form);
         } catch (Exception e) {
-
+            e.printStackTrace();
             throw new ApiException("Error generating XML");
         }
 
