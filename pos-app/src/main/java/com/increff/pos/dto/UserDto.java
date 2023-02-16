@@ -7,7 +7,9 @@ import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.ConstraintViolationException;
 
+import com.increff.pos.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,13 +24,8 @@ import com.increff.pos.model.data.UserPrincipal;
 import com.increff.pos.model.form.LoginForm;
 import com.increff.pos.model.form.UserForm;
 import com.increff.pos.pojo.UserPojo;
-import com.increff.pos.util.ApiException;
 import com.increff.pos.service.UserService;
 import com.increff.pos.spring.Properties;
-import com.increff.pos.util.ConvertUtil;
-import com.increff.pos.util.PasswordUtil;
-import com.increff.pos.util.SecurityUtil;
-import com.increff.pos.util.ValidateUtil;
 
 @Component
 public class UserDto {
@@ -77,6 +74,14 @@ public class UserDto {
 	}
 
     public ModelAndView signup(HttpServletRequest req, LoginForm loginForm) throws ApiException{
+		try{
+		ValidateUtil.validateForms(loginForm);
+		}
+		catch(ConstraintViolationException constraintViolationException){
+			info.setMessage(ExceptionUtil.getValidationMessage(constraintViolationException));
+			info.setShown(false);
+			return new ModelAndView("redirect:/site/signup");
+		}
 		info.setMessage("No message");
 		try{
 			add(loginForm);

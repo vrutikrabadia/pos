@@ -26,6 +26,13 @@ function searchDateRange() {
 }
 
 function refresh() {
+
+    let now = new Date();
+    let today = now.toISOString().slice(0, 10);
+    let firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10);
+
+    $('#inputStartDate').val(firstDay);
+    $('#inputEndDate').val(today);
     var table = $('#day-sales-table').DataTable();
     table.ajax.url(getDaySalesUrl()).load();
 }
